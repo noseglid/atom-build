@@ -1,0 +1,14 @@
+{
+  "name": "build",
+  "main": "./lib/build",
+  "version": "0.0.0",
+  "description": "Build your current project, straight from Atom",
+  "activationEvents": [ "build:trigger", "build:stop" ],
+  "repository": "https://github.com/atom/build",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.50.0"
+  },
+  "dependencies": {
+  }
+}

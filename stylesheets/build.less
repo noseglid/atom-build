@@ -1,0 +1,37 @@
+@import "ui-variables";
+
+.build {
+  h1.error {
+    background-image: none;
+    background-color: @background-color-error;
+  }
+
+  h1.success {
+    background-image: none;
+    background-color: @background-color-success;
+  }
+
+  ol {
+    padding: 0;
+    height: 500px;
+    overflow-y: auto;
+  }
+
+  li {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    list-style: none;
+  }
+
+  li.error {
+    animation: none;
+    -webkit-animation: none;
+    color: @text-color-error;
+  }
+
+  .btn {
+    position: absolute;
+    bottom: 19px;
+    right: 17px;
+  }
+}

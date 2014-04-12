@@ -1,0 +1,15 @@
+'context-menu':
+  '.overlayer':
+      'Enable build': 'build:trigger'
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'build'
+      'submenu': [
+        { 'label': 'Build current project', 'command': 'build:trigger' }
+      ]
+    ]
+  }
+]
