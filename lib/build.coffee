@@ -15,6 +15,9 @@ module.exports =
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
 
+  deactivate: ->
+    @child.kill('SIGKILL')
+
   buildCommand: ->
     cmd = 'make' if fs.existsSync @root + '/Makefile';
     return cmd
