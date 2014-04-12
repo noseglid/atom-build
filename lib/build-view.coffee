@@ -47,6 +47,7 @@ class BuildView extends View
   buildFinished: (success) ->
     @title.text(if success then 'Build finished.' else 'Build failed.')
     @title.addClass(if success then 'success' else 'error')
+    @closeButton.show() if !success
     clearTimeout @titleTimer if @titleTimer
 
   buildAborted: =>
