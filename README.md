@@ -4,6 +4,8 @@ Automatically build your project inside your new favorite editor, Atom.
 
   * `alt-cmd-b` builds your project
 
+![work work](http://noseglid.github.io/atom-build.gif)
+
 Only [GNU Make](https://www.gnu.org/software/make/) is supported at the moment.
 You can set the target and environment in settings:
 
