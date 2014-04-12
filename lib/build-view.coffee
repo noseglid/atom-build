@@ -3,15 +3,15 @@
 module.exports =
 class BuildView extends View
   @content: =>
-    @div class: 'build overlay from-bottom', =>
-      @button class: 'btn btn-info', outlet: 'closeButton', click: 'close' , "X"
+    @div tabIndex: -1, class: 'build overlay from-bottom', =>
+      @button class: 'btn btn-info', outlet: 'closeButton', click: 'close' , "close"
       @div =>
         @ol class: 'output panel-body', outlet: 'output'
       @div =>
         @h1 class: 'title panel-heading', outlet: 'title'
 
   constructor: ->
-    super
+    super()
     @titleLoop = [
       "Building",
       "Building.",
@@ -19,6 +19,10 @@ class BuildView extends View
       "Building..."
     ];
     @titleLoopIndex = 0
+
+  detach: ->
+    atom.workspaceView.focus();
+    super()
 
   reset: =>
     clearTimeout @titleTimer if @titleTimer
@@ -42,6 +46,7 @@ class BuildView extends View
   buildStarted: =>
     @reset()
     atom.workspaceView.append(this)
+    @focus()
     @updateTitle()
 
   buildFinished: (success) ->
