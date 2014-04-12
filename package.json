@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "Build your current project, straight from Atom",
   "activationEvents": [ "build:trigger", "build:stop" ],
-  "repository": "https://github.com/atom/build",
+  "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
   "engines": {
     "atom": ">=0.50.0"
