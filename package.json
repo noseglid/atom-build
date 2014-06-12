@@ -9,7 +9,6 @@
     "atom": ">=0.50.0"
   },
   "dependencies": {
-    "sane": "~0.5.1",
     "underscore": "~1.6.0"
   }
 }
