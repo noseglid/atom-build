@@ -28,7 +28,7 @@ class BuildTargets
 
       for f in @buildFiles
         buildfile = "#{@root}/#{f}".replace(/\/\/+/, "/")
-        fs.watchFile buildfile, => @update
+        fs.watchFile buildfile, => @update()
 
   # for each buildfile in @buildFiles, there is run `handler` on each file
   #

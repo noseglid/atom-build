@@ -30,7 +30,7 @@ class NpmTargets extends BuildTargets
 
   getCommands: () ->
     @buildFile (buildfile) =>
-      console.log "buildFile: #{buildfile}"
+      #console.log "buildFile: #{buildfile}"
       data = JSON.parse fs.readFileSync(buildfile, "utf8")
 
       commands = {}
@@ -38,10 +38,10 @@ class NpmTargets extends BuildTargets
       buildToolName = @buildTool.replace(/.*\//, '').replace(/\..*$/, '')
 
       if @canUpdate(data)
-        console.log "can update", @buildTargets
+        #console.log "can update", @buildTargets
 
         for target in @buildTargets
-          console.log "target", target
+          #console.log "target", target
           cmd = target
                 .replace(/\s+/, "-")
                 .replace(/\W/, "-")
@@ -49,11 +49,11 @@ class NpmTargets extends BuildTargets
 
           args = target.split(/\s+/)
 
-          console.log cmd, args
+          #console.log cmd, args
 
           commands["build:#{buildToolName}-#{cmd}"] = args
 
-      console.log "commands", commands
+      #console.log "commands", commands
 
       return commands
 
