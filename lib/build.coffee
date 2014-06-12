@@ -1,7 +1,9 @@
 child_process = require 'child_process'
 fs = require 'fs'
 qs = require 'querystring'
+_ = require 'underscore'
 
+buildTargets = require './build-targets'
 BuildView = require './build-view'
 
 module.exports =
@@ -14,20 +16,32 @@ module.exports =
     @buildView = new BuildView()
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
+    buildTargets.activate @
 
   deactivate: ->
     @child.kill('SIGKILL') if @child
 
   buildCommand: ->
-    cmd = 'make' if fs.existsSync @root + '/Makefile';
+    cmd = "make" if fs.existsSync @root + "/Makefile"
     return cmd
 
-  startNewBuild: ->
-    cmd = @buildCommand()
-    return if !cmd
+  startNewBuild: (opts) ->
+    {cmd, args, env, cwd} = opts
 
-    args = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
-    env = (qs.parse (atom.config.get 'build.environment'), ' ')
+    args = []    unless args
+    env  = {}    unless env
+    cwd  = @root unless cwd
+
+    env = _.extend {}, process.env, env
+
+    if !cmd
+      cmd = @buildCommand()
+      return if !cmd
+
+      args = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
+      env  = (qs.parse (atom.config.get 'build.environment'), ' ')
+
+    console.log cmd, args, { cwd: @root, env: env }
 
     @child = child_process.spawn(cmd, args, { cwd : @root, env: env })
     @child.stdout.on 'data', @buildView.append
