@@ -20,6 +20,11 @@ class BuildView extends View
     ];
     @titleLoopIndex = 0
 
+    h = atom.workspaceView.getActivePaneView().height()
+    w = atom.workspaceView.getActivePaneView().width()
+
+    @find('ol.panel-body').height(h*2/3)
+
   detach: ->
     atom.workspaceView.focus();
     super()
@@ -45,7 +50,7 @@ class BuildView extends View
 
   buildStarted: =>
     @reset()
-    atom.workspaceView.append(this)
+    atom.workspaceView.find('.vertical').eq(0).append(this)
     @focus()
     @updateTitle()
 
