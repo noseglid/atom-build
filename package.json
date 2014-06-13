@@ -9,6 +9,7 @@
     "atom": ">=0.50.0"
   },
   "dependencies": {
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "ansispan": "0.0.4"
   }
 }

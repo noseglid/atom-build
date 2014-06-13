@@ -1,4 +1,5 @@
 {$, EditorView, View} = require 'atom'
+ansispan = require 'ansispan'
 
 module.exports =
 class BuildView extends View
@@ -68,5 +69,6 @@ class BuildView extends View
 
   append: (line) =>
     line = line.toString()
-    @output.append "<li>#{line}</li>";
+
+    @output.append "<li>#{ansispan(line)}</li>";
     @output.scrollTop(@output[0].scrollHeight)
