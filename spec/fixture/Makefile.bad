@@ -1,0 +1,3 @@
+all:
+	@echo "Very bad..."
+	@exit 2

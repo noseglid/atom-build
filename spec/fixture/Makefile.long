@@ -1,0 +1,4 @@
+all:
+	@echo "Building, this will take some time..."
+	@sleep 30
+	@echo "Done!"
