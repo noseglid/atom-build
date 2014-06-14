@@ -1,8 +1,9 @@
-# Build package
+# Build package [![Build Status](https://travis-ci.org/noseglid/atom-build.svg?branch=master)](https://travis-ci.org/noseglid/atom-build)
 
 Automatically build your project inside your new favorite editor, Atom.
 
   * `alt-cmd-b` builds your project
+  * `escape` terminates build
 
 ![work work](http://noseglid.github.io/atom-build.gif)
 
