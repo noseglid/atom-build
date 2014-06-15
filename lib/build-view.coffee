@@ -1,4 +1,5 @@
 {$, EditorView, View} = require 'atom'
+ansispan = require 'ansispan'
 
 module.exports =
 class BuildView extends View
@@ -19,6 +20,11 @@ class BuildView extends View
       "Building..."
     ];
     @titleLoopIndex = 0
+
+    h = atom.workspaceView.getActivePaneView().height()
+    w = atom.workspaceView.getActivePaneView().width()
+
+    @find('ol.panel-body').height(h*2/3)
 
   detach: ->
     atom.workspaceView.focus();
@@ -45,7 +51,7 @@ class BuildView extends View
 
   buildStarted: =>
     @reset()
-    atom.workspaceView.append(this)
+    atom.workspaceView.find('.vertical').eq(0).append(this)
     @focus()
     @updateTitle()
 
@@ -63,5 +69,6 @@ class BuildView extends View
 
   append: (line) =>
     line = line.toString()
-    @output.append "<li>#{line}</li>";
+
+    @output.append "<li>#{ansispan(line)}</li>";
     @output.scrollTop(@output[0].scrollHeight)

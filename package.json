@@ -3,14 +3,13 @@
   "main": "./lib/build",
   "version": "0.1.4",
   "description": "Build your current project, straight from Atom",
-  "activationEvents": [
-    "build:trigger",
-    "build:stop"
-  ],
   "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
   "engines": {
     "atom": ">=0.50.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "underscore": "~1.6.0",
+    "ansispan": "0.0.4"
+  }
 }
