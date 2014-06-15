@@ -80,6 +80,4 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Terminated/
         atom.workspaceView.trigger 'build:stop'
-
-      runs ->
         expect(atom.workspaceView.find('.build')).not.toExist()
