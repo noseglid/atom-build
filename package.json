@@ -12,5 +12,7 @@
   "engines": {
     "atom": ">=0.50.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "underscore": "^1.6.0"
+  }
 }
