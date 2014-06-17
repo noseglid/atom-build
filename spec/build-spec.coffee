@@ -122,6 +122,7 @@ describe "Build", ->
         fs.unlinkSync pkgjsonfile
 
     it "should show the build window if it is atom engine", ->
+      return if (process.env.TRAVIS)
       expect(atom.workspaceView.find('.build')).not.toExist()
 
       fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodAtomfile))
@@ -164,6 +165,7 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: npm/
 
     it "should prioritise atom over grunt", ->
+      return if (process.env.TRAVIS)
       expect(atom.workspaceView.find('.build')).not.toExist()
 
       fs.writeFileSync(gruntfile, fs.readFileSync(goodGruntfile));
