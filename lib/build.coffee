@@ -3,8 +3,6 @@ fs = require 'fs'
 qs = require 'querystring'
 {_} = require 'underscore'
 
-buildSystemRegistry = require './build-systems'
-
 BuildView = require './build-view'
 
 module.exports =
@@ -13,19 +11,33 @@ module.exports =
     arguments: ""
 
   activate: (state) ->
+    console.log("activate")
     @root = atom.project.getPath()
     @buildView = new BuildView()
 
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
 
-    buildSystemRegistry.activate this
+    atom.on "build:register", (registry) =>
+      console.log("register")
+      Cake       = require "./build-commands-cake"
+      Make       = require "./build-commands-make"
+      {Apm, Npm} = require "./build-commands-packages-json"
 
-  addCommand: (name, command) ->
-    atom.workspaceView.command name, command
+      registry.register [ Cake, Make, Apm, Npm ]
+
+    atom.subscribe atom.packages, 'activated', =>
+      console.log("activated")
+      {BuildSystemRegistry} = require "atom-build-system"
+      atom.emit "build:register", new BuildSystemRegistry this
+
+  addCommand: (commandName, selector, options, handler) ->
+    console.log("add command #{commandName}")
+    atom.workspaceView.command commandName, selector, options, handler
 
   # removes command from atom workspace
   removeCommand: (name) ->
+    console.log("remove command #{name}")
     atom.workspaceView.off name
     # see space-pen jQuery extensions
     data = atom.workspaceView.data('documentation')
