@@ -11,6 +11,11 @@ module.exports =
     arguments: ""
 
   activate: (state) ->
+    # Manually append /usr/local/bin as it may not be set on some systems,
+    # and it's common to have node installed here. Keep it at end so it won't
+    # accidentially override any other node installation
+    process.env.PATH += ':/usr/local/bin'
+
     @root = atom.project.getPath()
     @buildView = new BuildView()
     atom.workspaceView.command "build:trigger", => @build()
@@ -20,36 +25,41 @@ module.exports =
     @child.kill('SIGKILL') if @child
 
   buildCommand: ->
-    if fs.existsSync @root + '/Gruntfile.js'
+    if fs.existsSync @root + '/package.json'
+      pkg = require(@root + '/package.json')
+      exec = 'apm' if pkg.engines.atom
+      exec = 'npm' if pkg.engines.node
+      args = [ '--color=always', 'install' ]
+
+    else if fs.existsSync @root + '/Gruntfile.js'
       if fs.existsSync @root + '/node_modules/.bin/grunt'
         # if grunt is installed locally, prefer this
-        cmd = @root + '/node_modules/.bin/grunt'
+        exec = @root + '/node_modules/.bin/grunt'
       else
         # else use global installation
-        cmd = 'grunt'
+        exec = 'grunt'
 
     else if fs.existsSync @root + '/Makefile'
-      cmd = 'make' if fs.existsSync @root + '/Makefile'
+      exec = 'make' if fs.existsSync @root + '/Makefile'
 
-    return cmd
+    return {
+      exec: exec,
+      args: args || []
+    }
 
   startNewBuild: ->
     cmd = @buildCommand()
-    return if !cmd
+    return if !cmd.exec
 
-    args = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
+    cargs = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
     env = _.extend(process.env, (qs.parse (atom.config.get 'build.environment'), ' '))
+    args = cmd.args.concat(cargs)
 
-    # Manually append /usr/local/bin as it may not be set on some systems,
-    # and it's common to have node installed here. Keep it at end so it won't
-    # accidentially override any other node installation
-    env.PATH = env.PATH + ':/usr/local/bin'
-
-    @child = child_process.spawn(cmd, args, { cwd : @root, env: env })
+    @child = child_process.spawn(cmd.exec, args, { cwd : @root, env: env })
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
     @child.on 'error', (err) =>
-      @buildView.append 'Could not execute command: ' + cmd
+      @buildView.append 'Could not execute command: ' + cmd.exec
 
     @child.on 'close', (exitCode) =>
       @buildView.buildFinished(0 == exitCode)
@@ -57,6 +67,7 @@ module.exports =
       @child = null
 
     @buildView.buildStarted()
+    @buildView.append 'Executing: ' + cmd.exec + [' '].concat(args).join(' ')
 
   abort: (cb) ->
     @child.removeAllListeners 'close'
