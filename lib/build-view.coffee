@@ -1,4 +1,5 @@
 {$, EditorView, View} = require 'atom'
+Convert = require 'ansi-to-html'
 
 module.exports =
 class BuildView extends View
@@ -19,6 +20,7 @@ class BuildView extends View
       "Building..."
     ];
     @titleLoopIndex = 0
+    @a2h = new Convert()
 
   detach: ->
     atom.workspaceView.focus();
@@ -63,5 +65,5 @@ class BuildView extends View
 
   append: (line) =>
     line = line.toString()
-    @output.append "<li>#{line}</li>";
+    @output.append "<li>#{@a2h.toHtml(line)}</li>";
     @output.scrollTop(@output[0].scrollHeight)
