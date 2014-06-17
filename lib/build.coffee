@@ -48,6 +48,9 @@ module.exports =
     @child = child_process.spawn(cmd, args, { cwd : @root, env: env })
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
+    @child.on 'error', (err) =>
+      @buildView.append 'Could not execute command: ' + cmd
+
     @child.on 'close', (exitCode) =>
       @buildView.buildFinished(0 == exitCode)
       @finishedTimer = (setTimeout (=> @buildView.detach()), 1000) if (0 == exitCode)
