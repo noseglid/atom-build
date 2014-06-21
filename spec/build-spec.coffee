@@ -1,4 +1,4 @@
-Build = require '../lib/build'
+Build = require '../lib/main'
 {WorkspaceView} = require 'atom';
 fs = require 'fs'
 

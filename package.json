@@ -1,6 +1,6 @@
 {
   "name": "build",
-  "main": "./lib/build",
+  "main": "./lib/main",
   "version": "0.1.3",
   "description": "Build your current project, straight from Atom",
   "activationEvents": [],
@@ -9,8 +9,10 @@
   "engines": {
     "atom": ">=0.50.0"
   },
+  "devDependencies": {
+    "atom-syntax-tools": "*"
+  },
   "dependencies": {
-    "atom-build-system": ">=0.0.0",
     "underscore": "~1.6.0"
   }
 }
