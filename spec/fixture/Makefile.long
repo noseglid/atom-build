@@ -2,3 +2,9 @@ all:
 	@echo "Building, this will take some time..."
 	@sleep 30
 	@echo "Done!"
+
+another-target:
+	@echo "another target"
+
+somefile.js: somefile.coffee
+	coffee somefile.coffee -o lib

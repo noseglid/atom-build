@@ -1,15 +1,17 @@
 {
-  "name": "build",
-  "main": "./lib/build",
-  "version": "0.1.3",
-  "description": "Build your current project, straight from Atom",
-  "repository": "https://github.com/noseglid/atom-build",
+  "name": "build-systems",
+  "main": "./lib/main",
+  "version": "0.0.0",
+  "description": "Make build targets available as atom commands",
+  "activationEvents": [],
+  "repository": "https://github.com/klorenz/atom-build-systems",
   "license": "MIT",
+  "author":  "Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (http://quelltexter.org)",
   "engines": {
     "atom": ">=0.50.0"
   },
   "dependencies": {
     "underscore": "~1.6.0",
-    "ansispan": "0.0.4"
+    "atom-syntax-tools": ">=0.1.0"
   }
 }
