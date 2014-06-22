@@ -12,6 +12,8 @@ After a build has finished, you can cycle through build results using `F4` for
 next result and `shift-f4` for previous result.  Hit ENTER to open file and jump
 to specified location.
 
+**This is under development**
+
 Extending
 ---------
 
