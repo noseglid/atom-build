@@ -1,12 +1,12 @@
 {
   "name": "build-systems",
   "main": "./lib/main",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Make build targets available as atom commands",
   "activationEvents": [],
   "repository": "https://github.com/klorenz/atom-build-systems",
   "license": "MIT",
-  "author":  "Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (http://quelltexter.org)",
+  "author": "Kay-Uwe (Kiwi) Lorenz <kiwi@franka.dyndns.org> (http://quelltexter.org)",
   "engines": {
     "atom": ">=0.50.0"
   },
