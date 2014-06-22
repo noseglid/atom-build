@@ -1,5 +1,7 @@
-'.platform-darwin':
-  'alt-cmd-b': 'build:trigger'
 
-'.build':
-  'escape': 'build:stop'
+'#build-output':
+  'enter': 'build:open-result-file'
+
+'.workspace':
+  'f4': 'build:goto-next-result'
+  'shift-f4': 'build:goto-prev-result'

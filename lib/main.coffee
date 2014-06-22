@@ -1,5 +1,6 @@
 Builder = require "./builder"
-BuildOutputView = require "./build-output-view"
+{BuildOutputView, BuildOutput} = require "./build-output-view"
+buildOutputGrammar = require "./build-output-grammar"
 
 url = require 'url'
 
@@ -10,6 +11,7 @@ module.exports =
 
   activate: (state) ->
     @builder = new Builder()
+    @buildOutput = null
 
     @packagesActivated = =>
       console.log "packages activated"
@@ -33,12 +35,42 @@ module.exports =
 
       return unless protocol == 'build-output:'
 
-      new BuildOutputView(@builder)
+      new BuildOutputView(builder: @builder)
 
     @builder.on 'build', (callback) =>
       @openBuildView callback
 
+    atom.workspaceView.command "build:goto-next-result", =>
+      @buildOutput.gotoNextResult()
+
+    atom.workspaceView.command "build:goto-prev-result", =>
+      @buildOutput.gotoNextResult(false)
+
+    atom.workspaceView.command "build:open-result-file", =>
+      @buildOutput.openResultFile()
+
   openBuildView: (callback) ->
+
+    unless @buildOutput
+      atom.workspace.getActivePane().splitDown()
+
+    atom.workspace.open("Build Output", searchAllPanes: true).done (editor) =>
+      unless @buildOutput
+        @buildOutput = new BuildOutput(@builder, editor)
+
+      editor.on "destroyed", =>
+        @buildOutput.shutdown()
+        @buildOutput = null
+
+      @buildOutput.clear()
+
+      if callback
+       callback()
+
+    return
+
+
+
     uri = "build-output://"
 
     return if @activateBuildView(uri, callback)
