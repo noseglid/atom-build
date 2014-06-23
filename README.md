@@ -31,4 +31,6 @@ You can set the target and environment in settings:
 
 These settings are global for all projects, so currently you have to change them
 when you switch project if you require different parameters for different projects.
-Sorry about that.
+You could use a package such as [project-switcher](https://atom.io/packages/project-switcher) or
+[project-manager](https://atom.io/packages/project-manager) for saving and restoring
+project specific settings.
