@@ -1,5 +1,5 @@
 Builder = require "./builder"
-{BuildOutputView, BuildOutput} = require "./build-output-view"
+{BuildOutput} = require "./build-output"
 buildOutputGrammar = require "./build-output-grammar"
 
 url = require 'url'

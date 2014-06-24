@@ -1,25 +1,113 @@
 @import "ui-variables";
 
-.build {
-  color: @text-color-info;
+
+.build-output {
   font-family: monospace;
 
-  li {
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    list-style: none;
+  .info {
+    color: @text-color-info;
   }
 
-  li.error {
-    animation: none;
-    -webkit-animation: none;
+  .success {
+    color: @text-color-success;
+  }
+
+  .error {
     color: @text-color-error;
   }
 
-  .btn {
-    position: absolute;
-    bottom: 19px;
-    right: 17px;
-  }
+  .ansi {
+    &.intense {
+      &.white {
+        color: white;
+      }
+      &.blue {
+        color: blue;
+      }
+      &.black {
+        color: black;
+      }
+      &.green {
+        color: green;
+      }
+      &.purple {
+        color: purple;
+      }
+      &.cyan {
+        color: cyan;
+      }
+      &.red {
+        color: red;
+      }
+    }
 
+    &.bg-intense {
+
+      &.bg-white {
+        background-color: white;
+      }
+      &.bg-blue {
+        background-color: blue;
+      }
+      &.bg-black {
+        background-color: black;
+      }
+      &.bg-green {
+        background-color: green;
+      }
+      &.bg-purple {
+        background-color: purple;
+      }
+      &.bg-cyan {
+        background-color: cyan;
+      }
+      &.bg-red {
+        background-color: red;
+      }
+    }
+
+    &.white {
+      color: lightgray;
+    }
+    &.blue {
+      color: darkblue;
+    }
+    &.black {
+      color: black;
+    }
+    &.green {
+      color: darkgreen;
+    }
+    &.purple {
+      color: darkmagenta;
+    }
+    &.cyan {
+      color: teal;
+    }
+    &.red {
+      color: darkred;
+    }
+
+    &.bg-white {
+      background-color: lightgray;
+    }
+    &.bg-blue {
+      background-color: darkblue;
+    }
+    &.bg-black {
+      background-color: black;
+    }
+    &.bg-green {
+      background-color: darkgreen;
+    }
+    &.bg-purple {
+      background-color: darkmagenta;
+    }
+    &.bg-cyan {
+      background-color: teal;
+    }
+    &.bg-red {
+      background-color: darkred;
+    }
+  }
 }
