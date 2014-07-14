@@ -25,7 +25,12 @@ module.exports =
     @child.kill('SIGKILL') if @child
 
   buildCommand: ->
-    if fs.existsSync @root + '/package.json'
+    if fs.existsSync @root + '/.atom-build.json'
+      delete require.cache[@root + '/.atom-build.json']
+      build = require @root + '/.atom-build.json'
+      [exec, env, args] = [ build.cmd, build.env, build.args ]
+
+    else if fs.existsSync @root + '/package.json'
       pkg = require(@root + '/package.json')
       exec = 'apm' if pkg.engines.atom
       exec = 'npm' if pkg.engines.node
@@ -44,6 +49,7 @@ module.exports =
 
     return {
       exec: exec,
+      env: env || {},
       args: args || []
     }
 
@@ -52,14 +58,15 @@ module.exports =
     return if !cmd.exec
 
     cargs = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
-    env = _.extend(process.env, (qs.parse (atom.config.get 'build.environment'), ' '))
+    env = _.extend(process.env, cmd.env, (qs.parse (atom.config.get 'build.environment'), ' '))
     args = cmd.args.concat(cargs)
 
     @child = child_process.spawn(cmd.exec, args, { cwd : @root, env: env })
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
     @child.on 'error', (err) =>
-      @buildView.append 'Could not execute command: ' + cmd.exec
+      @buildView.append 'Unable to execute: ' + cmd.exec
+      @buildView.append '`cmd` cannot contain space. Use `args` for arguments.' if /\s/.test(cmd.exec)
 
     @child.on 'close', (exitCode) =>
       @buildView.buildFinished(0 == exitCode)

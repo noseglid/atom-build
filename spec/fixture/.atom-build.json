@@ -1,0 +1,4 @@
+{
+  "cmd": "dd",
+  "args": [ "if=build-spec.coffee" ]
+}

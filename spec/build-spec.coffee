@@ -8,23 +8,26 @@ describe "Build", ->
   makefile = __dirname + '/Makefile'
   gruntfile = __dirname + '/Gruntfile.js'
   pkgjsonfile = __dirname + '/package.json'
+  atomBuildfile = __dirname + '/.atom-build.json'
+
   goodMakefile = __dirname + '/fixture/Makefile.good'
   badMakefile = __dirname + '/fixture/Makefile.bad'
   longMakefile = __dirname + '/fixture/Makefile.long'
   goodGruntfile = __dirname + '/fixture/Gruntfile.js'
   goodNodefile = __dirname + '/fixture/package.json.node'
   goodAtomfile = __dirname + '/fixture/package.json.atom'
+  goodAtomBuildfile = __dirname + '/fixture/.atom-build.json'
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     atom.config.set('build.arguments', '')
     atom.config.set('build.environment', '')
     promise = atom.packages.activatePackage('build')
-    _.each([makefile, gruntfile, pkgjsonfile], (file) ->
+    _.each([makefile, gruntfile, pkgjsonfile, atomBuildfile], (file) ->
       fs.unlinkSync file if fs.existsSync file)
 
   afterEach ->
-    _.each([makefile, gruntfile, pkgjsonfile], (file) ->
+    _.each([makefile, gruntfile, pkgjsonfile, atomBuildfile], (file) ->
       fs.unlinkSync file if fs.existsSync file)
 
     delete require.cache[pkgjsonfile]
@@ -135,7 +138,36 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: apm/
 
+  describe "when custom .atom-build.json is available", ->
+    it "should show the build window", ->
+      expect(atom.workspaceView.find('.build')).not.toExist();
+
+      fs.writeFileSync(atomBuildfile, fs.readFileSync(goodAtomBuildfile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /%#&%%#€"#"%€#%"#€%%#"/
+
   describe "when multiple build options are available", ->
+    it "should prioritise .atom-build.json over node", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      fs.writeFileSync(atomBuildfile, fs.readFileSync(goodAtomBuildfile))
+      fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodNodefile));
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor (-> atom.workspaceView.find('.build .title').hasClass('success'))
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /%#&%%#€"#"%€#%"#€%%#"/
+
     it "should prioritise grunt over make", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
