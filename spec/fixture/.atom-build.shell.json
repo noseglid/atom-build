@@ -1,0 +1,7 @@
+{
+  "cmd": "echo $SOMEVAR && ls fixture/.*",
+  "args": [],
+  "env": {
+    "SOMEVAR": "Good news, everyone!"
+  }
+}

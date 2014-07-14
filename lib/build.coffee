@@ -61,7 +61,7 @@ module.exports =
     env = _.extend(process.env, cmd.env, (qs.parse (atom.config.get 'build.environment'), ' '))
     args = cmd.args.concat(cargs)
 
-    @child = child_process.spawn(cmd.exec, args, { cwd : @root, env: env })
+    @child = child_process.spawn('/bin/sh', [ '-c', [cmd.exec].concat(args).join(' ') ], { cwd : @root, env: env })
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
     @child.on 'error', (err) =>

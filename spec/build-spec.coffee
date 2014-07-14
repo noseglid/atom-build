@@ -17,6 +17,7 @@ describe "Build", ->
   goodNodefile = __dirname + '/fixture/package.json.node'
   goodAtomfile = __dirname + '/fixture/package.json.atom'
   goodAtomBuildfile = __dirname + '/fixture/.atom-build.json'
+  shellAtomBuildfile = __dirname + '/fixture/.atom-build.shell.json'
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
@@ -152,6 +153,22 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build')).toExist()
         # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
         expect(atom.workspaceView.find('.build .output').text()).toMatch /%#&%%#€"#"%€#%"#€%%#"/
+
+    it "should be possible to exec shell commands with wildcard expansion", ->
+      expect(atom.workspaceView.find('.build')).not.toExist();
+
+      fs.writeFileSync(atomBuildfile, fs.readFileSync(shellAtomBuildfile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Good news, everyone!/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /\.atom-build\.shell\.json/
+
 
   describe "when multiple build options are available", ->
     it "should prioritise .atom-build.json over node", ->
