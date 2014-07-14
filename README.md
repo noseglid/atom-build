@@ -13,6 +13,7 @@ Supported build tools:
   * [Atom](http://atom.io) (runs `apm install`) - if `package.json` exists where `engines['atom']` is set
   * [Grunt](http://gruntjs.com/) - if `Gruntfile.js` exists
   * [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
+  * Custom by [specifying your own build command](#custom-build-command)
 
 If multiple viable build options are found, `atom-build` will
 prioritise according to the list above. For instance, if `package.json` and
@@ -31,6 +32,27 @@ You can set the arguments and environment in settings:
 
 These settings are global for all projects, so currently you have to change them
 when you switch project if you require different parameters for different projects.
-You could use a package such as [project-switcher](https://atom.io/packages/project-switcher) or
-[project-manager](https://atom.io/packages/project-manager) for saving and restoring
-project specific settings.
+
+You can specify your build command in the `.atom-build.json' file where you will
+also be able to specify arguments to the command, and the environment in which
+to run.
+
+<a name="custom-build-command"></a>
+## Specifying your own build command
+
+If the built-in defaults are not enough to suit your needs, you can specify
+exactly what to execute. Create a file named `.atom-build.json`:
+
+    {
+      "cmd": "<command to exectue>",
+      "args": [ "<argument1>", "<argument2>" ],
+      "env" {
+        "VARIABLE1": "VALUE1",
+        "VARIABLE2": "VALUE2"
+      }
+    }
+
+Note that `cmd` must only be the executable - no arguments here. If the
+executable is not in your path, either fully qualify it or specify the path
+in you environment (e.g. by setting the `PATH` var appropriately on UNIX-like
+systems).
