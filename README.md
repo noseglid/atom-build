@@ -33,7 +33,7 @@ You can set the arguments and environment in settings:
 These settings are global for all projects, so currently you have to change them
 when you switch project if you require different parameters for different projects.
 
-You can specify your build command in the `.atom-build.json' file where you will
+You can specify your build command in the `.atom-build.json` file where you will
 also be able to specify arguments to the command, and the environment in which
 to run.
 
