@@ -45,7 +45,7 @@ module.exports =
         exec = 'grunt'
 
     if !exec && fs.existsSync @root + '/Makefile'
-      exec = 'make' if fs.existsSync @root + '/Makefile'
+      exec = 'make'
 
     return {
       exec: exec,
