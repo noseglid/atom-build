@@ -30,13 +30,13 @@ module.exports =
       build = require @root + '/.atom-build.json'
       [exec, env, args] = [ build.cmd, build.env, build.args ]
 
-    else if fs.existsSync @root + '/package.json'
+    if !exec && fs.existsSync @root + '/package.json'
       pkg = require(@root + '/package.json')
-      exec = 'apm' if pkg.engines.atom
-      exec = 'npm' if pkg.engines.node
+      exec = 'apm' if pkg.engines?.atom
+      exec = 'npm' if pkg.engines?.node
       args = [ '--color=always', 'install' ]
 
-    else if fs.existsSync @root + '/Gruntfile.js'
+    if !exec && fs.existsSync @root + '/Gruntfile.js'
       if fs.existsSync @root + '/node_modules/.bin/grunt'
         # if grunt is installed locally, prefer this
         exec = @root + '/node_modules/.bin/grunt'
@@ -44,7 +44,7 @@ module.exports =
         # else use global installation
         exec = 'grunt'
 
-    else if fs.existsSync @root + '/Makefile'
+    if !exec && fs.existsSync @root + '/Makefile'
       exec = 'make' if fs.existsSync @root + '/Makefile'
 
     return {

@@ -16,6 +16,7 @@ describe "Build", ->
   goodGruntfile = __dirname + '/fixture/Gruntfile.js'
   goodNodefile = __dirname + '/fixture/package.json.node'
   goodAtomfile = __dirname + '/fixture/package.json.atom'
+  badPackageJsonfile = __dirname + '/fixture/package.json.noengine'
   goodAtomBuildfile = __dirname + '/fixture/.atom-build.json'
   shellAtomBuildfile = __dirname + '/fixture/.atom-build.shell.json'
 
@@ -138,6 +139,18 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: apm/
+
+    it "should not do anything if engines are not available in the file", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      fs.writeFileSync(pkgjsonfile, fs.readFileSync(badPackageJsonfile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waits 1000
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).not.toExist()
+
 
   describe "when custom .atom-build.json is available", ->
     it "should show the build window", ->
