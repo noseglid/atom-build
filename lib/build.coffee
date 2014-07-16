@@ -25,7 +25,7 @@ module.exports =
     @child.kill('SIGKILL') if @child
 
   buildCommand: ->
-    if fs.existsSync @root + './atom-build.json'
+    if fs.existsSync @root + '/.atom-build.json'
       realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
       delete require.cache[realAtomBuild]
       build = require realAtomBuild
