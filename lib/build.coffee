@@ -25,13 +25,16 @@ module.exports =
     @child.kill('SIGKILL') if @child
 
   buildCommand: ->
-    if fs.existsSync @root + '/.atom-build.json'
-      delete require.cache[@root + '/.atom-build.json']
-      build = require @root + '/.atom-build.json'
+    if fs.existsSync @root + './atom-build.json'
+      realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
+      delete require.cache[realAtomBuild]
+      build = require realAtomBuild
       [exec, env, args] = [ build.cmd, build.env, build.args ]
 
     if !exec && fs.existsSync @root + '/package.json'
-      pkg = require(@root + '/package.json')
+      realPackage = fs.realpathSync @root + '/package.json'
+      delete require.cache[realPackage]
+      pkg = require realPackage
       exec = 'apm' if pkg.engines?.atom
       exec = 'npm' if pkg.engines?.node
       args = [ '--color=always', 'install' ]
