@@ -1,5 +1,8 @@
 '.platform-darwin':
-  'alt-cmd-b': 'build:trigger'
+  'cmd-alt-b': 'build:trigger'
+
+'.platform-linux':
+  'ctrl-alt-b': 'build:trigger'
 
 '.build':
   'escape': 'build:stop'
