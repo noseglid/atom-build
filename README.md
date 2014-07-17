@@ -33,18 +33,14 @@ You can set the arguments and environment in settings:
 These settings are global for all projects, so currently you have to change them
 when you switch project if you require different parameters for different projects.
 
-You can specify your build command in the `.atom-build.json` file where you will
-also be able to specify arguments to the command, and the environment in which
-to run.
-
 <a name="custom-build-command"></a>
 ## Specifying your own build command
 
 If the built-in defaults are not enough to suit your needs, you can specify
-exactly what to execute. Create a file named `.atom-build.json`:
+exactly what to execute. Create a file named `.atom-build.json` in your project root:
 
     {
-      "cmd": "<command to exectue>",
+      "cmd": "<command to execute>",
       "args": [ "<argument1>", "<argument2>" ],
       "env" {
         "VARIABLE1": "VALUE1",
