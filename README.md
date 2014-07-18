@@ -9,11 +9,11 @@ Automatically build your project inside your new favorite editor, Atom.
 
 Supported build tools:
 
-  * [NodeJS](http://nodejs.org) (runs `npm install`) - if `package.json` exists where `engines['node']` is set
-  * [Atom](http://atom.io) (runs `apm install`) - if `package.json` exists where `engines['atom']` is set
-  * [Grunt](http://gruntjs.com/) - if `Gruntfile.js` exists
-  * [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
-  * Custom by [specifying your own build command](#custom-build-command)
+  1. Custom by [specifying your own build command](#custom-build-command)
+  1. [NodeJS](http://nodejs.org) (runs `npm install`) - if `package.json` exists where `engines['node']` is set
+  1. [Atom](http://atom.io) (runs `apm install`) - if `package.json` exists where `engines['atom']` is set
+  1. [Grunt](http://gruntjs.com/) - if `Gruntfile.js` exists
+  1. [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
 
 If multiple viable build options are found, `atom-build` will
 prioritise according to the list above. For instance, if `package.json` and
