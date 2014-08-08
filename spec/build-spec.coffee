@@ -240,3 +240,19 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: apm/
+
+  describe "when package.json exists, but without engines and Makefile is present", ->
+    it "(Issue#3) should run Makefile without any npm arguments", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      fs.writeFileSync(pkgjsonfile, fs.readFileSync(badPackageJsonfile));
+      fs.writeFileSync(makefile, fs.readFileSync(goodMakefile));
+
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Surprising is the passing of time\nbut not so, as the time of passing/;

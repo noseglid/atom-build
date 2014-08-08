@@ -37,7 +37,7 @@ module.exports =
       pkg = require realPackage
       exec = 'apm' if pkg.engines?.atom
       exec = 'npm' if pkg.engines?.node
-      args = [ '--color=always', 'install' ]
+      args = [ '--color=always', 'install' ] if pkg.engines
 
     if !exec && fs.existsSync @root + '/Gruntfile.js'
       if fs.existsSync @root + '/node_modules/.bin/grunt'
