@@ -41,10 +41,13 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
 
     {
       "cmd": "<command to execute>",
-      "args": [ "<argument1>", "<argument2>" ],
+      "args": [ "<argument1>", "<argument2>", ... ],
       "env" {
         "VARIABLE1": "VALUE1",
-        "VARIABLE2": "VALUE2"
+        "VARIABLE2": "VALUE2",
+        ...
+        ...
+        ...
       }
     }
 
