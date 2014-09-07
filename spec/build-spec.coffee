@@ -264,3 +264,19 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Surprising is the passing of time\nbut not so, as the time of passing/;
+
+  describe "when build is started with deprecated valued", ->
+    it "should show deprecation warning", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      atom.config.set('build.arguments', 'all')
+
+      fs.writeFileSync(makefile, fs.readFileSync(goodMakefile));
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('warning')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Surprising is the passing of time\nbut not so, as the time of passing/;

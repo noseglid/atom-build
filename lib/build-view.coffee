@@ -43,8 +43,7 @@ class BuildView extends View
   reset: =>
     clearTimeout @titleTimer if @titleTimer
     @titleTimer = null
-    @title.removeClass('success')
-    @title.removeClass('error')
+    @title.removeClass('success error warning')
     @output.empty()
     @title.text 'Cleared.'
     @detach()
@@ -81,7 +80,13 @@ class BuildView extends View
 
   buildFinished: (success) ->
     @title.text(if success then 'Build finished.' else 'Build failed.')
-    @title.addClass(if success then 'success' else 'error')
+
+    if atom.config.get('build.arguments') || atom.config.get('build.environment')
+      @title.append(' Deprecated: use `.atom-build.json` instead of `arguments` or `environment` configuration')
+      @title.addClass('warning')
+    else
+      @title.addClass(if success then 'success' else 'error')
+
     clearTimeout @titleTimer if @titleTimer
 
   buildAbortInitiated: =>
