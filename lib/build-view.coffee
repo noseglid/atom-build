@@ -4,8 +4,13 @@ Convert = require 'ansi-to-html'
 module.exports =
 class BuildView extends View
   @content: =>
-    @div tabIndex: -1, class: 'build overlay from-bottom', =>
-      @button class: 'btn btn-info', outlet: 'closeButton', click: 'close' , "close"
+    @div tabIndex: -1, class: 'build tool-panel panel-bottom', =>
+      @div class: 'btn-container', =>
+        @button class: 'btn btn-default icon icon-x', outlet: 'closeButton', click: 'close'
+        @button class: 'btn btn-default icon icon-chevron-up', outlet: 'monocleButton', click: 'toggleMonocle'
+        @button class: 'btn btn-default icon icon-trashcan new-row', outlet: 'clearButton', click: 'clear'
+        @button class: 'btn btn-default icon icon-zap', outlet: 'triggerButton', click: 'build', title: 'Build current project'
+
       @div =>
         @ol class: 'output panel-body', outlet: 'output'
       @div =>
@@ -21,20 +26,27 @@ class BuildView extends View
     ];
     @titleLoopIndex = 0
     @a2h = new Convert()
+    atom.config.observe 'build.keepVisible', @visibleFromConfig
 
-  detach: ->
+  attach: ->
+    atom.workspaceView.prependToBottom(this)
+
+  detach: (force = false) ->
+
     atom.workspaceView.focus();
-    super()
+    super() if force || !(atom.config.get 'build.keepVisible')
+
+  visibleFromConfig: (val) =>
+    @attach() if val
+    @detach() if !val
 
   reset: =>
     clearTimeout @titleTimer if @titleTimer
-    clearTimeout @abortTimer if @abortTimer
-    @abortTimer = null
     @titleTimer = null
     @title.removeClass('success')
     @title.removeClass('error')
-    @closeButton.hide()
     @output.empty()
+    @title.text 'Cleared.'
     @detach()
 
   updateTitle: =>
@@ -43,25 +55,42 @@ class BuildView extends View
     @titleTimer = setTimeout @updateTitle, 200
 
   close: (event, element) ->
-    @detach()
+    @detach(true)
+
+  clear: (event, element) ->
+    @reset()
+
+  build: (event, element) ->
+    atom.workspaceView.trigger 'build:trigger'
+
+  toggleMonocle: (event, element) =>
+    newHeight = 3 * (@output.offset().top - @output.height()) / 4
+    if (!@monocle)
+      @output.css('height', newHeight + 'px')
+      @monocleButton.removeClass('icon-chevron-up').addClass('icon-chevron-down');
+    else
+      @output.css('height', '')
+      @monocleButton.removeClass('icon-chevron-down').addClass('icon-chevron-up');
+    @monocle = !@monocle
 
   buildStarted: =>
     @reset()
-    atom.workspaceView.append(this)
+    @attach()
     @focus()
     @updateTitle()
 
   buildFinished: (success) ->
     @title.text(if success then 'Build finished.' else 'Build failed.')
     @title.addClass(if success then 'success' else 'error')
-    @closeButton.show() if !success
     clearTimeout @titleTimer if @titleTimer
+
+  buildAbortInitiated: =>
+    @title.text('Build process termination imminent...')
+    clearTimeout @titleTimer if @titleTimer
+    @title.addClass('error')
 
   buildAborted: =>
     @title.text('Aborted!')
-    @title.addClass('error')
-    clearTimeout @titleTimer if @titleTimer
-    @abortTimer = setTimeout @reset, 1000
 
   append: (line) =>
     line = line.toString()

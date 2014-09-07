@@ -4,7 +4,6 @@ fs = require 'fs'
 _ = require 'underscore'
 
 describe "Build", ->
-  promise = null
   makefile = __dirname + '/Makefile'
   gruntfile = __dirname + '/Gruntfile.js'
   pkgjsonfile = __dirname + '/package.json'
@@ -24,7 +23,14 @@ describe "Build", ->
     atom.workspaceView = new WorkspaceView
     atom.config.set('build.arguments', '')
     atom.config.set('build.environment', '')
-    promise = atom.packages.activatePackage('build')
+    atom.config.set('build.keepVisible', false)
+
+    jasmine.unspy window, 'setTimeout'
+    jasmine.unspy window, 'clearTimeout'
+
+    waitsForPromise ->
+      atom.packages.activatePackage('build')
+
     _.each([makefile, gruntfile, pkgjsonfile, atomBuildfile], (file) ->
       fs.unlinkSync file if fs.existsSync file)
 
@@ -33,6 +39,10 @@ describe "Build", ->
       fs.unlinkSync file if fs.existsSync file)
 
     delete require.cache[pkgjsonfile]
+
+  describe "when package is activated", ->
+    it "should not show build window if keepVisible is false", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
 
   describe "when build is triggered with Makefile", ->
     it "should not show the build window if no buildfile exists", ->
@@ -89,13 +99,11 @@ describe "Build", ->
       waitsFor ->
         atom.workspaceView.find('.build .title').hasClass('error')
 
-      waitsFor ->
-        /Terminated/.test(atom.workspaceView.find('.build .output').text())
-
       runs ->
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /Terminated/
         atom.workspaceView.trigger 'build:stop'
-        expect(atom.workspaceView.find('.build')).not.toExist()
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').text() == 'Aborted!'
 
   describe "when build is triggered with grunt file", ->
     it "should show the build window", ->

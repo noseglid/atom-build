@@ -2,11 +2,7 @@
   "name": "build",
   "main": "./lib/build",
   "version": "0.5.3",
-  "description": "Build your current project, straight from Atom",
-  "activationEvents": [
-    "build:trigger",
-    "build:stop"
-  ],
+  "description": "Build your current project, directly from Atom",
   "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
   "engines": {

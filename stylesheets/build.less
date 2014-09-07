@@ -2,18 +2,21 @@
 
 .build {
   h1.error {
+    color: white;
     background-image: none;
     background-color: @background-color-error;
   }
 
   h1.success {
+    color: white;
     background-image: none;
     background-color: @background-color-success;
   }
 
   ol {
-    padding: 0;
-    height: 500px;
+    padding: 10px 0 0 10px;
+    min-height: 100px;
+    height: 100px;
     overflow-y: auto;
   }
 
@@ -29,9 +32,24 @@
     color: @text-color-error;
   }
 
-  .btn {
-    position: absolute;
-    bottom: 19px;
-    right: 17px;
+  .btn-container {
+    float: right;
+
+    .btn {
+      float: right;
+      margin: 10px 10px 0 0;
+
+      &:focus, &:active, &:hover {
+        color: #fff;
+      }
+    }
+
+    .icon::before {
+      margin: 0;
+    }
+
+    .new-row {
+      clear: both;
+    }
   }
 }

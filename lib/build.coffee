@@ -3,12 +3,15 @@ fs = require 'fs'
 qs = require 'querystring'
 _ = require 'underscore'
 
+{$, EditorView, View} = require 'atom'
+
 BuildView = require './build-view'
 
 module.exports =
   configDefaults:
     environment: "",
-    arguments: ""
+    arguments: "",
+    keepVisible: true
 
   activate: (state) ->
     # Manually append /usr/local/bin as it may not be set on some systems,
@@ -21,8 +24,11 @@ module.exports =
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
 
+    @buildView.attach() if atom.config.get 'build.keepVisible'
+
   deactivate: ->
     @child.kill('SIGKILL') if @child
+    clearTimeout @finishedTimer
 
   buildCommand: ->
     if fs.existsSync @root + '/.atom-build.json'
@@ -49,6 +55,7 @@ module.exports =
 
     if !exec && fs.existsSync @root + '/Makefile'
       exec = 'make'
+      args = []
 
     return {
       exec: exec,
@@ -64,7 +71,12 @@ module.exports =
     env = _.extend(process.env, cmd.env, (qs.parse (atom.config.get 'build.environment'), ' '))
     args = cmd.args.concat(cargs)
 
-    @child = child_process.spawn('/bin/sh', [ '-c', [cmd.exec].concat(args).join(' ') ], { cwd : @root, env: env })
+    @child = child_process.spawn(
+      '/bin/sh',
+      [ '-c', [cmd.exec].concat(args).join(' ') ],
+      { cwd : @root, env: env }
+    )
+
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
     @child.on 'error', (err) =>
@@ -85,14 +97,25 @@ module.exports =
       @child = null
       cb() if cb
     @child.kill()
+    @child.killed = true;
 
   build: ->
     clearTimeout @finishedTimer
     if @child then @abort(=> @startNewBuild()) else @startNewBuild()
 
   stop: ->
+    clearTimeout @finishedTimer
     if @child
-      @abort()
-      @buildView.buildAborted()
+      if (@child.killed)
+        # This child has been killed, but hasn't terminated. Hide it from user.
+        @child.removeAllListeners()
+        @child = null
+        @buildView.buildAborted()
+        return
+
+      @abort(=>
+        @buildView.buildAborted()
+      )
+      @buildView.buildAbortInitiated()
     else
       @buildView.reset()
