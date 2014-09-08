@@ -2,7 +2,8 @@
 
 Automatically build your project inside your new favorite editor, Atom.
 
-  * `alt-cmd-b` builds your project
+  * `alt-cmd-b` builds your project (Mac OS X)
+  * `ctrl-alt-b` builds your project (Linux)
   * `escape` terminates build
 
 ![work work](http://noseglid.github.io/atom-build.gif)
