@@ -1,4 +1,4 @@
-# Build package [![Build Status](https://travis-ci.org/noseglid/atom-build.svg?branch=master)](https://travis-ci.org/noseglid/atom-build)
+# Build package [![Build Status](https://travis-ci.org/noseglid/atom-build.svg?branch=master)](https://travis-ci.org/noseglid/atom-build) [![Gitter chat](https://badges.gitter.im/noseglid/atom-build.png)](https://gitter.im/noseglid/atom-build)
 
 Automatically build your project inside your new favorite editor, Atom.
 
