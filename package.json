@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "underscore": "^1.6.0",
-    "ansi-to-html": "^0.2.0"
+    "ansi-to-html": "^0.2.0",
+    "temp": "^0.8.1",
+    "fs-plus": "^2.3.0"
   }
 }

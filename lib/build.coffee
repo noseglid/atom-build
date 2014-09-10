@@ -3,7 +3,7 @@ fs = require 'fs'
 qs = require 'querystring'
 _ = require 'underscore'
 
-{$, EditorView, View} = require 'atom'
+{$} = require 'atom'
 
 BuildView = require './build-view'
 
@@ -70,6 +70,11 @@ module.exports =
     cargs = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
     env = _.extend(process.env, cmd.env, (qs.parse (atom.config.get 'build.environment'), ' '))
     args = cmd.args.concat(cargs)
+    args = _.map args, (arg) ->
+      arg = arg.replace '{FILE_ACTIVE}', atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
+      arg = arg.replace '{PROJECT_PATH}', atom.project.getPath()
+      arg = arg.replace '{REPO_BRANCH_SHORT}', atom.project.getRepo().getShortHead() if atom.project.getRepo()
+      return arg
 
     @child = child_process.spawn(
       '/bin/sh',

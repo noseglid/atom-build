@@ -285,3 +285,25 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Surprising is the passing of time\nbut not so, as the time of passing/;
+
+    describe "when replacements are specified in the atom-build.json file", ->
+      it "should replace those with their dynamic value", ->
+
+        expect(atom.workspaceView.find('.build')).not.toExist();
+
+        fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(replaceAtomBuildFile))
+
+        waitsForPromise ->
+          atom.workspace.open '.atom-build.json'
+
+        runs ->
+          atom.workspaceView.trigger 'build:trigger'
+
+        waitsFor ->
+          atom.workspaceView.find('.build .title').hasClass('success')
+
+        runs ->
+          expect(atom.workspaceView.find('.build')).toExist()
+          console.log atom.workspaceView.find('.build .output').text()
+          expect(atom.workspaceView.find('.build .output').text()).not.toMatch /PROJECT_PATH=\{PROJECT_PATH\}/
+          expect(atom.workspaceView.find('.build .output').text()).toMatch /FILE_ACTIVE=.*\.atom-build\.json/
