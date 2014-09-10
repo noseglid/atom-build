@@ -1,4 +1,4 @@
 {
   "cmd": "dd",
-  "args": [ "if=build-spec.coffee" ]
+  "args": [ "if=.atom-build.json" ]
 }

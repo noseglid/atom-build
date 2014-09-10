@@ -1,14 +1,11 @@
 Build = require '../lib/build'
 {WorkspaceView} = require 'atom';
-fs = require 'fs'
+fs = require 'fs-plus'
+path = require 'path'
 _ = require 'underscore'
+temp = require 'temp'
 
 describe "Build", ->
-  makefile = __dirname + '/Makefile'
-  gruntfile = __dirname + '/Gruntfile.js'
-  pkgjsonfile = __dirname + '/package.json'
-  atomBuildfile = __dirname + '/.atom-build.json'
-
   goodMakefile = __dirname + '/fixture/Makefile.good'
   badMakefile = __dirname + '/fixture/Makefile.bad'
   longMakefile = __dirname + '/fixture/Makefile.long'
@@ -18,12 +15,30 @@ describe "Build", ->
   badPackageJsonfile = __dirname + '/fixture/package.json.noengine'
   goodAtomBuildfile = __dirname + '/fixture/.atom-build.json'
   shellAtomBuildfile = __dirname + '/fixture/.atom-build.shell.json'
+  replaceAtomBuildFile = __dirname + '/fixture/.atom-build.replace.json'
+
+  directory = null;
+
+  temp.track();
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
+    atom.workspace = atom.workspaceView.model
+    directory = temp.mkdirSync({ prefix: 'atom-build-spec-' }) + '/';
+    atom.project.setPath(directory);
+    console.log directory
+
     atom.config.set('build.arguments', '')
     atom.config.set('build.environment', '')
     atom.config.set('build.keepVisible', false)
+
+    # Set up grunt
+    fs.copySync(path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
+    binGrunt = path.join(directory, 'node_modules', '.bin', 'grunt')
+    realGrunt = path.join(directory, 'node_modules', 'grunt-cli', 'bin', 'grunt')
+    fs.unlinkSync(binGrunt);
+    fs.chmodSync(realGrunt, 0o700);
+    fs.symlinkSync(realGrunt, binGrunt);
 
     jasmine.unspy window, 'setTimeout'
     jasmine.unspy window, 'clearTimeout'
@@ -31,14 +46,8 @@ describe "Build", ->
     waitsForPromise ->
       atom.packages.activatePackage('build')
 
-    _.each([makefile, gruntfile, pkgjsonfile, atomBuildfile], (file) ->
-      fs.unlinkSync file if fs.existsSync file)
-
   afterEach ->
-    _.each([makefile, gruntfile, pkgjsonfile, atomBuildfile], (file) ->
-      fs.unlinkSync file if fs.existsSync file)
-
-    delete require.cache[pkgjsonfile]
+    fs.removeSync(directory)
 
   describe "when package is activated", ->
     it "should not show build window if keepVisible is false", ->
@@ -59,7 +68,7 @@ describe "Build", ->
     it "should show the build window if buildfile exists", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(makefile, fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -72,7 +81,7 @@ describe "Build", ->
     it "should show build failed if build fails", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(makefile, fs.readFileSync(badMakefile));
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(badMakefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -85,7 +94,7 @@ describe "Build", ->
     it "should cancel build when stopping it, and remove when stopping again", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(makefile, fs.readFileSync(longMakefile));
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(longMakefile));
       atom.workspaceView.trigger 'build:trigger'
 
       # Let build run for one second before we terminate it
@@ -109,7 +118,7 @@ describe "Build", ->
     it "should show the build window", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(gruntfile, fs.readFileSync(goodGruntfile));
+      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -123,7 +132,7 @@ describe "Build", ->
     it "should show the build window if it is node engine", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodNodefile));
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -132,13 +141,12 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: npm/
-        fs.unlinkSync pkgjsonfile
 
     it "should show the build window if it is atom engine", ->
       return if (process.env.TRAVIS)
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodAtomfile))
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile))
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor (-> atom.workspaceView.find('.build .title').hasClass('success')),
@@ -151,7 +159,7 @@ describe "Build", ->
     it "should not do anything if engines are not available in the file", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(badPackageJsonfile))
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(badPackageJsonfile))
       atom.workspaceView.trigger 'build:trigger'
 
       waits 1000
@@ -164,7 +172,7 @@ describe "Build", ->
     it "should show the build window", ->
       expect(atom.workspaceView.find('.build')).not.toExist();
 
-      fs.writeFileSync(atomBuildfile, fs.readFileSync(goodAtomBuildfile))
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile))
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -172,13 +180,12 @@ describe "Build", ->
 
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
-        # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /%#&%%#€"#"%€#%"#€%%#"/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /"cmd": "dd"/
 
     it "should be possible to exec shell commands with wildcard expansion", ->
       expect(atom.workspaceView.find('.build')).not.toExist();
 
-      fs.writeFileSync(atomBuildfile, fs.readFileSync(shellAtomBuildfile))
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shellAtomBuildfile))
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -188,29 +195,27 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build')).toExist()
         # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Good news, everyone!/
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /\.atom-build\.shell\.json/
 
 
   describe "when multiple build options are available", ->
     it "should prioritise .atom-build.json over node", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(atomBuildfile, fs.readFileSync(goodAtomBuildfile))
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodNodefile));
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile))
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor (-> atom.workspaceView.find('.build .title').hasClass('success'))
 
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
-        # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /%#&%%#€"#"%€#%"#€%%#"/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /"cmd": "dd"/
 
     it "should prioritise grunt over make", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(gruntfile, fs.readFileSync(goodGruntfile));
-      fs.writeFileSync(makefile, fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -223,8 +228,8 @@ describe "Build", ->
     it "should prioritise node over grunt", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(gruntfile, fs.readFileSync(goodGruntfile));
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodNodefile));
+      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->
@@ -238,8 +243,8 @@ describe "Build", ->
       return if (process.env.TRAVIS)
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(gruntfile, fs.readFileSync(goodGruntfile));
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(goodAtomfile));
+      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor (-> atom.workspaceView.find('.build .title').hasClass('success')),
@@ -253,8 +258,8 @@ describe "Build", ->
     it "(Issue#3) should run Makefile without any npm arguments", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
 
-      fs.writeFileSync(pkgjsonfile, fs.readFileSync(badPackageJsonfile));
-      fs.writeFileSync(makefile, fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(badPackageJsonfile));
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
       atom.workspaceView.trigger 'build:trigger'
 
@@ -271,7 +276,7 @@ describe "Build", ->
 
       atom.config.set('build.arguments', 'all')
 
-      fs.writeFileSync(makefile, fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
       atom.workspaceView.trigger 'build:trigger'
 
       waitsFor ->

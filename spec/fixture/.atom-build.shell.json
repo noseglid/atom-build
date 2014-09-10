@@ -1,5 +1,5 @@
 {
-  "cmd": "echo $SOMEVAR && ls fixture/.*",
+  "cmd": "echo $SOMEVAR",
   "args": [],
   "env": {
     "SOMEVAR": "Good news, everyone!"
