@@ -1,0 +1,4 @@
+{
+  "cmd": "echo",
+  "args": [ "FILE_ACTIVE={FILE_ACTIVE}", "PROJECT_PATH={PROJECT_PATH}", "REPO_BRANCH_SHORT={REPO_BRANCH_SHORT}" ]
+}
