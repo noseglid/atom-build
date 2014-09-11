@@ -63,18 +63,23 @@ module.exports =
       args: args || []
     }
 
+  replace: (value) ->
+    value = value.replace '{FILE_ACTIVE}', fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
+    value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPath()
+    value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepo().getShortHead() if atom.project.getRepo()
+    return value;
+
   startNewBuild: ->
     cmd = @buildCommand()
     return if !cmd.exec
 
-    cargs = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
     env = _.extend(process.env, cmd.env, (qs.parse (atom.config.get 'build.environment'), ' '))
+    _.each env, (value, key, list) =>
+      list[key] = @replace value
+
+    cargs = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
     args = cmd.args.concat(cargs)
-    args = _.map args, (arg) ->
-      arg = arg.replace '{FILE_ACTIVE}', atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
-      arg = arg.replace '{PROJECT_PATH}', atom.project.getPath()
-      arg = arg.replace '{REPO_BRANCH_SHORT}', atom.project.getRepo().getShortHead() if atom.project.getRepo()
-      return arg
+    args = _.map args, @replace
 
     @child = child_process.spawn(
       '/bin/sh',

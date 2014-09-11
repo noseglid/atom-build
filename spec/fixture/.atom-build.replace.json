@@ -1,4 +1,12 @@
 {
   "cmd": "echo",
-  "args": [ "FILE_ACTIVE={FILE_ACTIVE}", "PROJECT_PATH={PROJECT_PATH}", "REPO_BRANCH_SHORT={REPO_BRANCH_SHORT}" ]
+  "args": [
+    "FILE_ACTIVE={FILE_ACTIVE}",
+    "PROJECT_PATH={PROJECT_PATH}",
+    "REPO_BRANCH_SHORT={REPO_BRANCH_SHORT}",
+    "FROM_ENV=$FROM_ENV"
+  ],
+  "env": {
+    "FROM_ENV": "{FILE_ACTIVE}"
+  }
 }

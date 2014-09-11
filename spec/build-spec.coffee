@@ -24,7 +24,7 @@ describe "Build", ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     atom.workspace = atom.workspaceView.model
-    directory = temp.mkdirSync({ prefix: 'atom-build-spec-' }) + '/';
+    directory = fs.realpathSync(temp.mkdirSync { prefix: 'atom-build-spec-' } ) + '/';
     atom.project.setPath(directory);
 
     atom.config.set('build.arguments', '')
@@ -285,23 +285,26 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Surprising is the passing of time\nbut not so, as the time of passing/;
 
-    describe "when replacements are specified in the atom-build.json file", ->
-      it "should replace those with their dynamic value", ->
+  describe "when replacements are specified in the atom-build.json file", ->
+    it "should replace those with their dynamic value", ->
 
-        expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(atom.workspaceView.find('.build')).not.toExist();
 
-        fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(replaceAtomBuildFile))
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(replaceAtomBuildFile))
 
-        waitsForPromise ->
-          atom.workspace.open '.atom-build.json'
+      waitsForPromise ->
+        atom.workspace.open '.atom-build.json'
 
-        runs ->
-          atom.workspaceView.trigger 'build:trigger'
+      runs ->
+        atom.workspaceView.trigger 'build:trigger'
 
-        waitsFor ->
-          atom.workspaceView.find('.build .title').hasClass('success')
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
 
-        runs ->
-          expect(atom.workspaceView.find('.build')).toExist()
-          expect(atom.workspaceView.find('.build .output').text()).not.toMatch /PROJECT_PATH=\{PROJECT_PATH\}/
-          expect(atom.workspaceView.find('.build .output').text()).toMatch /FILE_ACTIVE=.*\.atom-build\.json/
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        output = atom.workspaceView.find('.build .output').text()
+
+        expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe -1
+        expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe -1
+        expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe -1
