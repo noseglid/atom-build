@@ -26,7 +26,6 @@ describe "Build", ->
     atom.workspace = atom.workspaceView.model
     directory = temp.mkdirSync({ prefix: 'atom-build-spec-' }) + '/';
     atom.project.setPath(directory);
-    console.log directory
 
     atom.config.set('build.arguments', '')
     atom.config.set('build.environment', '')
@@ -304,6 +303,5 @@ describe "Build", ->
 
         runs ->
           expect(atom.workspaceView.find('.build')).toExist()
-          console.log atom.workspaceView.find('.build .output').text()
           expect(atom.workspaceView.find('.build .output').text()).not.toMatch /PROJECT_PATH=\{PROJECT_PATH\}/
           expect(atom.workspaceView.find('.build .output').text()).toMatch /FILE_ACTIVE=.*\.atom-build\.json/
