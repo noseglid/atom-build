@@ -16,6 +16,9 @@ describe "Build", ->
   goodAtomBuildfile = __dirname + '/fixture/.atom-build.json'
   shellAtomBuildfile = __dirname + '/fixture/.atom-build.shell.json'
   replaceAtomBuildFile = __dirname + '/fixture/.atom-build.replace.json'
+  shFalseAtomBuildFile = __dirname + '/fixture/.atom-build.sh-false.json'
+  shTrueAtomBuildFile = __dirname + '/fixture/.atom-build.sh-true.json'
+  shDefaultAtomBuildFile = __dirname + '/fixture/.atom-build.sh-default.json'
 
   directory = null;
 
@@ -194,6 +197,45 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build')).toExist()
         # The text to match can be anything since this is the file that 'dd' in .atom-build reads and outputs
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Good news, everyone!/
+
+    it "should show sh message if sh is true", ->
+      expect(atom.workspaceView.find('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shTrueAtomBuildFile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Executing with sh:/;
+
+    it "should not show sh message if sh is false", ->
+      expect(atom.workspaceView.find('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shFalseAtomBuildFile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Executing:/;
+
+    it "should show sh message if sh is unspecified", ->
+      expect(atom.workspaceView.find('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shDefaultAtomBuildFile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Executing with sh:/;
 
 
   describe "when multiple build options are available", ->

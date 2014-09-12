@@ -1,0 +1,6 @@
+{
+  "cmd": "echo Hello",
+  "args": [],
+  "sh": true,
+  "env": {}
+}
