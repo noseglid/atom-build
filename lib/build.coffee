@@ -95,7 +95,7 @@ module.exports =
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
     @child.on 'error', (err) =>
-      @buildView.append 'Unable to execute: ' + cmd.exec
+      @buildView.append (if cmd.sh then 'Unable to execute with sh: ' else 'Unable to execute: ')  + cmd.exec
       @buildView.append '`cmd` cannot contain space. Use `args` for arguments.' if /\s/.test(cmd.exec)
 
     @child.on 'close', (exitCode) =>
@@ -104,7 +104,7 @@ module.exports =
       @child = null
 
     @buildView.buildStarted()
-    @buildView.append 'Executing: ' + cmd.exec + [' '].concat(args).join(' ')
+    @buildView.append (if cmd.sh then 'Executing with sh: ' else 'Executing: ') + cmd.exec + [' '].concat(args).join(' ')
 
   abort: (cb) ->
     @child.removeAllListeners 'close'
