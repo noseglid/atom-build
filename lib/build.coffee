@@ -37,7 +37,6 @@ module.exports =
       delete require.cache[realAtomBuild]
       build = require realAtomBuild
       [ exec, env, args, cwd, sh ] = [ build.cmd, build.env, build.args, build.cwd, build.sh ]
-      sh = true if not sh?
 
     if !exec && fs.existsSync @root + '/package.json'
       realPackage = fs.realpathSync @root + '/package.json'
@@ -64,7 +63,7 @@ module.exports =
       env: env || {},
       args: args || [],
       cwd: cwd || @root,
-      sh: sh
+      sh: if sh? then sh else true
     }
 
   replace: (value) ->
