@@ -36,7 +36,8 @@ module.exports =
       realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
       delete require.cache[realAtomBuild]
       build = require realAtomBuild
-      [ exec, env, args, cwd ] = [ build.cmd, build.env, build.args, build.cwd ]
+      [ exec, env, args, cwd, sh ] = [ build.cmd, build.env, build.args, build.cwd, build.sh ]
+      sh = true if not sh?
 
     if !exec && fs.existsSync @root + '/package.json'
       realPackage = fs.realpathSync @root + '/package.json'
@@ -62,7 +63,8 @@ module.exports =
       exec: exec,
       env: env || {},
       args: args || [],
-      cwd: cwd || @root
+      cwd: cwd || @root,
+      sh: sh
     }
 
   replace: (value) ->
@@ -86,8 +88,8 @@ module.exports =
     args = _.map args, @replace
 
     @child = child_process.spawn(
-      '/bin/sh',
-      [ '-c', [cmd.exec].concat(args).join(' ') ],
+      if cmd.sh then '/bin/sh' else cmd.exec,
+      if cmd.sh then[ '-c', [cmd.exec].concat(args).join(' ') ] else args,
       { cwd : @replace cmd.cwd, env: env }
     )
 
