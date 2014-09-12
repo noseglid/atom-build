@@ -142,7 +142,7 @@ describe "Build", ->
 
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: npm/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing with sh: npm/
 
     it "should show the build window if it is atom engine", ->
       return if (process.env.TRAVIS)
@@ -156,7 +156,7 @@ describe "Build", ->
 
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: apm/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing with sh: apm/
 
     it "should not do anything if engines are not available in the file", ->
       expect(atom.workspaceView.find('.build')).not.toExist()
@@ -278,7 +278,7 @@ describe "Build", ->
 
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: npm/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing with sh: npm/
 
     it "should prioritise atom over grunt", ->
       return if (process.env.TRAVIS)
@@ -293,7 +293,7 @@ describe "Build", ->
 
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
-        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing: apm/
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /^Executing with sh: apm/
 
   describe "when package.json exists, but without engines and Makefile is present", ->
     it "(Issue#3) should run Makefile without any npm arguments", ->
