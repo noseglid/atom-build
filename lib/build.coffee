@@ -1,5 +1,6 @@
 child_process = require 'child_process'
 fs = require 'fs'
+path = require 'path'
 qs = require 'querystring'
 _ = require 'underscore'
 
@@ -35,7 +36,7 @@ module.exports =
       realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
       delete require.cache[realAtomBuild]
       build = require realAtomBuild
-      [exec, env, args] = [ build.cmd, build.env, build.args ]
+      [ exec, env, args, cwd ] = [ build.cmd, build.env, build.args, build.cwd ]
 
     if !exec && fs.existsSync @root + '/package.json'
       realPackage = fs.realpathSync @root + '/package.json'
@@ -60,11 +61,14 @@ module.exports =
     return {
       exec: exec,
       env: env || {},
-      args: args || []
+      args: args || [],
+      cwd: cwd || @root
     }
 
   replace: (value) ->
-    value = value.replace '{FILE_ACTIVE}', fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
+    activeFile = fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
+    value = value.replace '{FILE_ACTIVE}', activeFile if atom.workspace.getActiveEditor()
+    value = value.replace '{FILE_ACTIVE_PATH}', path.dirname(activeFile) if atom.workspace.getActiveEditor()
     value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPath()
     value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepo().getShortHead() if atom.project.getRepo()
     return value;
@@ -84,7 +88,7 @@ module.exports =
     @child = child_process.spawn(
       '/bin/sh',
       [ '-c', [cmd.exec].concat(args).join(' ') ],
-      { cwd : @root, env: env }
+      { cwd : @replace cmd.cwd, env: env }
     )
 
     @child.stdout.on 'data', @buildView.append
