@@ -1,6 +1,6 @@
 {
-  "cmd": "echo Hello",
-  "args": [],
+  "cmd": "echo",
+  "args": ["Hello"],
   "sh": false,
   "env": {}
 }
