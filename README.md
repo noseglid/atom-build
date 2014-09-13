@@ -65,3 +65,13 @@ systems).
   * `args`: An array of arguments for the command
   * `sh`: If true, the combined command and arguments will be passed to /bin/sh
   * `env`: An array of environment variables and their values to set
+
+### Replacements
+
+The following parameters will be replaced in `cmd`, any entry in `args`, `cwd` and
+values of `env`. They should all be enclosed in curly brackets `{}`
+
+  * `{FILE_ACTIVE}` - Full path to the currently active file in Atom. E.g. `/home/noseglid/github/atom-build/lib/build.coffee`
+  * `{FILE_ACTIVE_PATH}` - Full path to the folder where the currently active file is. E.g. `/home/noseglid/github/atom-build/lib`
+  * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/noseglid/github/atom-build`
+  * `{REPO_BRANCH_SHORT}` - Short name of the current active branch (if project is backed by git). E.g `master` or `v0.9.1`.
