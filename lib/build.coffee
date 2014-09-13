@@ -36,7 +36,7 @@ module.exports =
       realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
       delete require.cache[realAtomBuild]
       build = require realAtomBuild
-      [ exec, env, args, cwd ] = [ build.cmd, build.env, build.args, build.cwd ]
+      [ exec, env, args, cwd, sh ] = [ build.cmd, build.env, build.args, build.cwd, build.sh ]
 
     if !exec && fs.existsSync @root + '/package.json'
       realPackage = fs.realpathSync @root + '/package.json'
@@ -62,7 +62,8 @@ module.exports =
       exec: exec,
       env: env || {},
       args: args || [],
-      cwd: cwd || @root
+      cwd: cwd || @root,
+      sh: if sh? then sh else true
     }
 
   replace: (value) ->
@@ -86,15 +87,15 @@ module.exports =
     args = _.map args, @replace
 
     @child = child_process.spawn(
-      '/bin/sh',
-      [ '-c', [cmd.exec].concat(args).join(' ') ],
+      if cmd.sh then '/bin/sh' else cmd.exec,
+      if cmd.sh then[ '-c', [cmd.exec].concat(args).join(' ') ] else args,
       { cwd : @replace cmd.cwd, env: env }
     )
 
     @child.stdout.on 'data', @buildView.append
     @child.stderr.on 'data', @buildView.append
     @child.on 'error', (err) =>
-      @buildView.append 'Unable to execute: ' + cmd.exec
+      @buildView.append (if cmd.sh then 'Unable to execute with sh: ' else 'Unable to execute: ')  + cmd.exec
       @buildView.append '`cmd` cannot contain space. Use `args` for arguments.' if /\s/.test(cmd.exec)
 
     @child.on 'close', (exitCode) =>
@@ -103,7 +104,7 @@ module.exports =
       @child = null
 
     @buildView.buildStarted()
-    @buildView.append 'Executing: ' + cmd.exec + [' '].concat(args).join(' ')
+    @buildView.append (if cmd.sh then 'Executing with sh: ' else 'Executing: ') + cmd.exec + [' '].concat(args).join(' ')
 
   abort: (cb) ->
     @child.removeAllListeners 'close'

@@ -1,7 +1,7 @@
 '.platform-darwin':
   'cmd-alt-b': 'build:trigger'
 
-'.platform-linux':
+'.platform-linux, .platform-win32':
   'ctrl-alt-b': 'build:trigger'
 
 '.build':
