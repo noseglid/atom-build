@@ -45,7 +45,7 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
     {
       "cmd": "<command to execute>",
       "args": [ "<argument1>", "<argument2>", ... ],
-      "sh": false,
+      "sh": true,
       "env": {
         "VARIABLE1": "VALUE1",
         "VARIABLE2": "VALUE2",
@@ -53,7 +53,7 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
       }
     }
 
-Note that `cmd` must only be the executable - no arguments here. If the
+Note that if `sh` is false `cmd` must only be the executable - no arguments here. If the
 executable is not in your path, either fully qualify it or specify the path
 in you environment (e.g. by setting the `PATH` var appropriately on UNIX-like
 systems).
@@ -63,7 +63,7 @@ systems).
 
   * `cmd`: The executable command
   * `args`: An array of arguments for the command
-  * `sh`: If true, the combined command and arguments will be passed to /bin/sh
+  * `sh`: If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
   * `env`: An array of environment variables and their values to set
 
 ### Replacements
