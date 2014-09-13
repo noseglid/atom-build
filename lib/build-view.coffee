@@ -14,7 +14,7 @@ class BuildView extends View
       @div =>
         @ol class: 'output panel-body', outlet: 'output'
       @div =>
-        @h1 class: 'title panel-heading', outlet: 'title'
+        @h1 class: 'title panel-heading', outlet: 'title', "Ready"
 
   constructor: ->
     super()
@@ -27,14 +27,21 @@ class BuildView extends View
     @titleLoopIndex = 0
     @a2h = new Convert()
     atom.config.observe 'build.keepVisible', @visibleFromConfig
+    atom.config.observe 'build.monocleHeight', @heightFromConfig
+    atom.config.observe 'build.minimizedHeight', @heightFromConfig
 
   attach: ->
     atom.workspaceView.prependToBottom(this)
 
   detach: (force = false) ->
-
     atom.workspaceView.focus();
     super() if force || !(atom.config.get 'build.keepVisible')
+
+  heightFromConfig: (val) =>
+    if @monocle
+      @setHeightPercent(atom.config.get('build.monocleHeight'))
+    else
+      @setHeightPercent(atom.config.get('build.minimizedHeight'))
 
   visibleFromConfig: (val) =>
     @attach() if val
@@ -62,13 +69,16 @@ class BuildView extends View
   build: (event, element) ->
     atom.workspaceView.trigger 'build:trigger'
 
+  setHeightPercent: (percent) =>
+    newHeight = percent * (@output.offset().top + @output.height())
+    @output.css('height', newHeight + 'px')
+
   toggleMonocle: (event, element) =>
-    newHeight = 3 * (@output.offset().top - @output.height()) / 4
     if (!@monocle)
-      @output.css('height', newHeight + 'px')
+      @setHeightPercent(atom.config.get('build.monocleHeight'))
       @monocleButton.removeClass('icon-chevron-up').addClass('icon-chevron-down');
     else
-      @output.css('height', '')
+      @setHeightPercent(atom.config.get('build.minimizedHeight'))
       @monocleButton.removeClass('icon-chevron-down').addClass('icon-chevron-up');
     @monocle = !@monocle
 

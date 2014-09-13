@@ -12,6 +12,8 @@ module.exports =
   configDefaults:
     environment: "",
     arguments: "",
+    monocleHeight: 0.75,
+    minimizedHeight: 0.15,
     keepVisible: true
 
   activate: (state) ->
