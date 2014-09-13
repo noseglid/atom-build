@@ -46,6 +46,7 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
       "cmd": "<command to execute>",
       "args": [ "<argument1>", "<argument2>", ... ],
       "sh": true,
+      "cwd": "<current working directory for `cmd`>",
       "env": {
         "VARIABLE1": "VALUE1",
         "VARIABLE2": "VALUE2",
@@ -64,6 +65,7 @@ systems).
   * `cmd`: The executable command
   * `args`: An array of arguments for the command
   * `sh`: If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
+  * `cwd`: The working directory for the command. E.g. what `.` resolves to.
   * `env`: An array of environment variables and their values to set
 
 ### Replacements
