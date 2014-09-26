@@ -56,6 +56,10 @@ module.exports =
         # else use global installation
         exec = 'grunt'
 
+    if !exec && fs.existsSync @root + '/mix.exs'
+      exec = 'mix'
+      args = ['compile']
+
     if !exec && fs.existsSync @root + '/Makefile'
       exec = 'make'
       args = []
