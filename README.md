@@ -26,16 +26,6 @@ utilize the [postinstall-script](https://www.npmjs.org/doc/misc/npm-scripts.html
 package.json. This will also help you if grunt is run as a node module since it
 will be downloaded (via `npm install`) prior.
 
-> **Deprecated - use `.atom-build.json` instead**
->
-> You can set the arguments and environment in settings:
->
->  * `arguments` The argument line to the build tool invocation. These will simply be appended.
->  * `environment` The environment to set for the build tool. Use `=`-separated key/values: `MOOD=EXCELLENT INTOXICATION=MEDIUM`
->
->These settings are global for all projects, so currently you have to change them
->when you switch project if you require different parameters for different projects.
-
 <a name="custom-build-command"></a>
 ## Specifying your own build command
 
