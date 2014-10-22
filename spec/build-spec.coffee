@@ -28,7 +28,7 @@ describe "Build", ->
     atom.workspaceView = new WorkspaceView
     atom.workspace = atom.workspaceView.model
     directory = fs.realpathSync(temp.mkdirSync { prefix: 'atom-build-spec-' } ) + '/';
-    atom.project.setPath(directory);
+    atom.project.setPaths([directory]);
 
     atom.config.set('build.keepVisible', false)
 

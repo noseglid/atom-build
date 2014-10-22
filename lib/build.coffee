@@ -9,12 +9,16 @@ _ = require 'underscore'
 BuildView = require './build-view'
 
 module.exports =
-  configDefaults:
-    environment: "",
-    arguments: "",
-    monocleHeight: 0.75,
-    minimizedHeight: 0.15,
-    keepVisible: true
+  config:
+    monocleHeight:
+      type: 'number',
+      default: 0.75,
+    minimizedHeight:
+      type: 'number',
+      default: 0.15,
+    keepVisible:
+      type: 'boolean',
+      default: true
 
   activate: (state) ->
     # Manually append /usr/local/bin as it may not be set on some systems,
@@ -22,7 +26,7 @@ module.exports =
     # accidentially override any other node installation
     process.env.PATH += ':/usr/local/bin'
 
-    @root = atom.project.getPath()
+    @root = atom.project.getPaths()[0]
     @buildView = new BuildView()
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
@@ -76,8 +80,8 @@ module.exports =
     activeFile = fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
     value = value.replace '{FILE_ACTIVE}', activeFile if atom.workspace.getActiveEditor()
     value = value.replace '{FILE_ACTIVE_PATH}', path.dirname(activeFile) if atom.workspace.getActiveEditor()
-    value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPath()
-    value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepo().getShortHead() if atom.project.getRepo()
+    value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPaths()[0]
+    value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepositories()[0].getShortHead() if atom.project.getRepositories[0]
     return value;
 
   startNewBuild: ->

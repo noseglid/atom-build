@@ -1,4 +1,4 @@
-{$, EditorView, View} = require 'atom'
+{$, TextEditorView, View} = require 'atom'
 Convert = require 'ansi-to-html'
 
 module.exports =
