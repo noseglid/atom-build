@@ -84,13 +84,11 @@ module.exports =
     cmd = @buildCommand()
     return if !cmd.exec
 
-    env = _.extend(process.env, cmd.env, (qs.parse (atom.config.get 'build.environment'), ' '))
+    env = _.extend(process.env, cmd.env)
     _.each env, (value, key, list) =>
       list[key] = @replace value
 
-    cargs = (atom.config.get('build.arguments').split(' ')).filter((e) -> '' != e)
-    args = cmd.args.concat(cargs)
-    args = _.map args, @replace
+    args = _.map cmd.args, @replace
 
     @child = child_process.spawn(
       if cmd.sh then '/bin/sh' else cmd.exec,
