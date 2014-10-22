@@ -1,15 +1,22 @@
-'context-menu':
-  '.overlayer':
-      'Enable build': 'build:trigger'
-
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'build'
-      'submenu': [
-        { 'label': 'Build current project', 'command': 'build:trigger' }
-      ]
+      {
+        'label': 'build'
+        'submenu': [
+          {
+            'label': 'Build project...'
+            'command': 'build:trigger'
+          },
+          {
+            'label': 'Terminate build.'
+            'command': 'build:stop'
+          }
+        ]
+      }
     ]
   }
 ]
+
+'context-menu': {}
