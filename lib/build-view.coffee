@@ -1,5 +1,6 @@
 {$, TextEditorView, View} = require 'atom'
 Convert = require 'ansi-to-html'
+_ = require 'underscore'
 
 module.exports =
 class BuildView extends View
@@ -103,6 +104,6 @@ class BuildView extends View
     @title.text('Aborted!')
 
   append: (line) =>
-    line = line.toString()
+    line = _.escape line.toString()
     @output.append "<li>#{@a2h.toHtml(line)}</li>";
     @output.scrollTop(@output[0].scrollHeight)

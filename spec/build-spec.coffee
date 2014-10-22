@@ -9,6 +9,7 @@ describe "Build", ->
   goodMakefile = __dirname + '/fixture/Makefile.good'
   badMakefile = __dirname + '/fixture/Makefile.bad'
   longMakefile = __dirname + '/fixture/Makefile.long'
+  escapeMakefile = __dirname + '/fixture/Makefile.escape'
   goodGruntfile = __dirname + '/fixture/Gruntfile.js'
   goodNodefile = __dirname + '/fixture/package.json.node'
   goodAtomfile = __dirname + '/fixture/package.json.atom'
@@ -332,3 +333,17 @@ describe "Build", ->
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe -1
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe -1
         expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe -1
+
+  describe "when output from build contains HTML characters", ->
+    it "should escape those properly so the output is not garbled or missing", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(escapeMakefile));
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').html()).toMatch /&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/
