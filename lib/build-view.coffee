@@ -66,6 +66,7 @@ class BuildView extends View
 
   clear: (event, element) ->
     @reset()
+    @attach()
 
   build: (event, element) ->
     atom.workspaceView.trigger 'build:trigger'
