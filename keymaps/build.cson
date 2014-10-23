@@ -4,5 +4,5 @@
 '.platform-linux, .platform-win32':
   'ctrl-alt-b': 'build:trigger'
 
-'.build':
+'body':
   'escape': 'build:stop'
