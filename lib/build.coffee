@@ -26,7 +26,7 @@ module.exports =
     # accidentially override any other node installation
     process.env.PATH += ':/usr/local/bin'
 
-    @root = atom.project.getPaths()[0]
+
     @buildView = new BuildView()
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
@@ -38,6 +38,7 @@ module.exports =
     clearTimeout @finishedTimer
 
   buildCommand: ->
+    @root = atom.project.getPaths()[0]
     if fs.existsSync @root + '/.atom-build.json'
       realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
       delete require.cache[realAtomBuild]
