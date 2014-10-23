@@ -60,6 +60,14 @@ module.exports =
         # else use global installation
         exec = 'grunt'
 
+    if !exec && fs.existsSync @root + '/gulpfile.js'
+      if fs.existsSync @root + '/node_modules/.bin/gulp'
+        # if gulp is installed locally, prefer this
+        exec = @root + '/node_modules/.bin/gulp'
+      else
+        # else use global installation
+        exec = 'gulp'
+
     if !exec && fs.existsSync @root + '/mix.exs'
       exec = 'mix'
       args = ['compile']

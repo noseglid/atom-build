@@ -11,6 +11,7 @@ describe "Build", ->
   longMakefile = __dirname + '/fixture/Makefile.long'
   escapeMakefile = __dirname + '/fixture/Makefile.escape'
   goodGruntfile = __dirname + '/fixture/Gruntfile.js'
+  goodGulpfile = __dirname + '/fixture/gulpfile.js'
   goodNodefile = __dirname + '/fixture/package.json.node'
   goodAtomfile = __dirname + '/fixture/package.json.atom'
   badPackageJsonfile = __dirname + '/fixture/package.json.noengine'
@@ -33,13 +34,22 @@ describe "Build", ->
 
     atom.config.set('build.keepVisible', false)
 
-    # Set up grunt
+    # Set up dependencies
     fs.copySync(path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
+
+    # Set up grunt
     binGrunt = path.join(directory, 'node_modules', '.bin', 'grunt')
     realGrunt = path.join(directory, 'node_modules', 'grunt-cli', 'bin', 'grunt')
     fs.unlinkSync(binGrunt);
     fs.chmodSync(realGrunt, 0o700);
     fs.symlinkSync(realGrunt, binGrunt);
+
+    # Set up gulp
+    binGulp = path.join(directory, 'node_modules', '.bin', 'gulp')
+    realGulp = path.join(directory, 'node_modules', 'gulp', 'bin', 'gulp.js')
+    fs.unlinkSync(binGulp);
+    fs.chmodSync(realGulp, 0o700);
+    fs.symlinkSync(realGulp, binGulp);
 
     jasmine.unspy window, 'setTimeout'
     jasmine.unspy window, 'clearTimeout'
@@ -236,6 +246,19 @@ describe "Build", ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Executing with sh:/;
 
+  describe "when build is triggered with gulp file", ->
+    it "should show the build window", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /gulp built/;
 
   describe "when multiple build options are available", ->
     it "should prioritise .atom-build.json over node", ->
