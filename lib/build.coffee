@@ -26,7 +26,7 @@ module.exports =
     # accidentially override any other node installation
     process.env.PATH += ':/usr/local/bin'
 
-    @root = atom.project.getPaths()[0]
+
     @buildView = new BuildView()
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
@@ -38,6 +38,7 @@ module.exports =
     clearTimeout @finishedTimer
 
   buildCommand: ->
+    @root = atom.project.getPaths()[0]
     if fs.existsSync @root + '/.atom-build.json'
       realAtomBuild = fs.realpathSync @root + '/.atom-build.json'
       delete require.cache[realAtomBuild]
@@ -88,6 +89,8 @@ module.exports =
     activeFile = fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
     value = value.replace '{FILE_ACTIVE}', activeFile if atom.workspace.getActiveEditor()
     value = value.replace '{FILE_ACTIVE_PATH}', path.dirname(activeFile) if atom.workspace.getActiveEditor()
+    value = value.replace '{FILE_ACTIVE_NAME}', path.basename(activeFile) if atom.workspace.getActiveEditor()
+    value = value.replace '{FILE_ACTIVE_NAME_BASE}', path.basename(activeFile, path.extname(activeFile)) if atom.workspace.getActiveEditor()
     value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPaths()[0]
     value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepositories()[0].getShortHead() if atom.project.getRepositories[0]
     return value;
@@ -101,6 +104,8 @@ module.exports =
       list[key] = @replace value
 
     args = _.map cmd.args, @replace
+
+    cmd.exec = @replace cmd.exec
 
     @child = child_process.spawn(
       if cmd.sh then '/bin/sh' else cmd.exec,

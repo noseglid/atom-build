@@ -356,6 +356,8 @@ describe "Build", ->
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe -1
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe -1
         expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe -1
+        expect(output.indexOf('FILE_ACTIVE_NAME=.atom-build.json')).not.toBe -1
+        expect(output.indexOf('FILE_ACTIVE_NAME_BASE=.atom-build')).not.toBe -1
 
   describe "when output from build contains HTML characters", ->
     it "should escape those properly so the output is not garbled or missing", ->
