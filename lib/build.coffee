@@ -103,6 +103,8 @@ module.exports =
 
     args = _.map cmd.args, @replace
 
+    cmd.exec = @replace cmd.exec
+
     @child = child_process.spawn(
       if cmd.sh then '/bin/sh' else cmd.exec,
       if cmd.sh then[ '-c', [cmd.exec].concat(args).join(' ') ] else args,
