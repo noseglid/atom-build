@@ -89,6 +89,8 @@ module.exports =
     activeFile = fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
     value = value.replace '{FILE_ACTIVE}', activeFile if atom.workspace.getActiveEditor()
     value = value.replace '{FILE_ACTIVE_PATH}', path.dirname(activeFile) if atom.workspace.getActiveEditor()
+    value = value.replace '{FILE_ACTIVE_NAME}', path.basename(activeFile) if atom.workspace.getActiveEditor()
+    value = value.replace '{FILE_ACTIVE_NAME_BASE}', path.basename(activeFile, path.extname(activeFile)) if atom.workspace.getActiveEditor()
     value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPaths()[0]
     value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepositories()[0].getShortHead() if atom.project.getRepositories[0]
     return value;
