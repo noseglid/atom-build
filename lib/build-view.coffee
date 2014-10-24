@@ -32,7 +32,10 @@ class BuildView extends View
     atom.config.observe 'build.minimizedHeight', @heightFromConfig
 
   attach: ->
-    atom.workspace.addBottomPanel({ item: this })
+    if atom.workspace.addBottomPanel
+      atom.workspace.addBottomPanel({ item: this })
+    else
+      atom.workspaceView.prependToBottom(this)
 
   detach: (force = false) ->
     atom.workspaceView.focus();
