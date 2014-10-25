@@ -26,7 +26,6 @@ module.exports =
     # accidentially override any other node installation
     process.env.PATH += ':/usr/local/bin'
 
-
     @buildView = new BuildView()
     atom.workspaceView.command "build:trigger", => @build()
     atom.workspaceView.command "build:stop", => @stop()
@@ -86,11 +85,13 @@ module.exports =
     }
 
   replace: (value) ->
-    activeFile = fs.realpathSync atom.workspace.getActiveEditor().getPath() if atom.workspace.getActiveEditor()
-    value = value.replace '{FILE_ACTIVE}', activeFile if atom.workspace.getActiveEditor()
-    value = value.replace '{FILE_ACTIVE_PATH}', path.dirname(activeFile) if atom.workspace.getActiveEditor()
-    value = value.replace '{FILE_ACTIVE_NAME}', path.basename(activeFile) if atom.workspace.getActiveEditor()
-    value = value.replace '{FILE_ACTIVE_NAME_BASE}', path.basename(activeFile, path.extname(activeFile)) if atom.workspace.getActiveEditor()
+    if atom.workspace.getActiveEditor()
+      activeFile = fs.realpathSync atom.workspace.getActiveEditor().getPath()
+      value = value.replace '{FILE_ACTIVE}', activeFile
+      value = value.replace '{FILE_ACTIVE_PATH}', path.dirname(activeFile)
+      value = value.replace '{FILE_ACTIVE_NAME}', path.basename(activeFile)
+      value = value.replace '{FILE_ACTIVE_NAME_BASE}', path.basename(activeFile, path.extname(activeFile))
+
     value = value.replace '{PROJECT_PATH}', fs.realpathSync atom.project.getPaths()[0]
     value = value.replace '{REPO_BRANCH_SHORT}', atom.project.getRepositories()[0].getShortHead() if atom.project.getRepositories[0]
     return value;
