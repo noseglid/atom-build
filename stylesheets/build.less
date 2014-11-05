@@ -38,24 +38,23 @@
     color: @text-color-error;
   }
 
-  .btn-container {
+}
+
+.btn-container {
+  .btn {
     float: right;
+    margin: 10px 10px 0 0;
 
-    .btn {
-      float: right;
-      margin: 10px 10px 0 0;
-
-      &:focus, &:active, &:hover {
-        color: #fff;
-      }
+    &:focus, &:active, &:hover {
+      color: #fff;
     }
+  }
 
-    .icon::before {
-      margin: 0;
-    }
+  .icon::before {
+    margin: 0;
+  }
 
-    .new-row {
-      clear: both;
-    }
+  .new-row {
+    clear: both;
   }
 }

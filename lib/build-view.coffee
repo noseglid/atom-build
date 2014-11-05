@@ -6,7 +6,7 @@ module.exports =
 class BuildView extends View
   @content: =>
     @div tabIndex: -1, class: 'build tool-panel panel-bottom', =>
-      @div class: 'btn-container', =>
+      @div class: 'btn-container pull-right', =>
         @button class: 'btn btn-default icon icon-x', outlet: 'closeButton', click: 'close'
         @button class: 'btn btn-default icon icon-chevron-up', outlet: 'monocleButton', click: 'toggleMonocle'
         @button class: 'btn btn-default icon icon-trashcan new-row', outlet: 'clearButton', click: 'clear'

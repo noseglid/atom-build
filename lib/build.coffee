@@ -7,6 +7,7 @@ _ = require 'underscore'
 {$} = require 'atom'
 
 BuildView = require './build-view'
+SaveConfirmView = require './save-confirm-view'
 
 module.exports =
   config:
@@ -110,7 +111,7 @@ module.exports =
 
     @child = child_process.spawn(
       if cmd.sh then '/bin/sh' else cmd.exec,
-      if cmd.sh then[ '-c', [cmd.exec].concat(args).join(' ') ] else args,
+      if cmd.sh then [ '-c', [cmd.exec].concat(args).join(' ') ] else args,
       { cwd : @replace cmd.cwd, env: env }
     )
 
@@ -138,7 +139,21 @@ module.exports =
 
   build: ->
     clearTimeout @finishedTimer
-    if @child then @abort(=> @startNewBuild()) else @startNewBuild()
+
+    @doSaveConfirm @unsavedEditors(), =>
+      if @child then @abort(=> @startNewBuild()) else @startNewBuild()
+
+  doSaveConfirm: (modifiedEditors, continuecb, cancelcb) ->
+    if (0 == _.size modifiedEditors)
+      continuecb()
+      return
+
+    saveConfirmView = new SaveConfirmView()
+    saveConfirmView.show(continuecb, cancelcb)
+
+  unsavedEditors: ->
+    return _.filter atom.workspace.getTextEditors(), (editor) ->
+      return editor.isModified()
 
   stop: ->
     clearTimeout @finishedTimer
@@ -150,9 +165,9 @@ module.exports =
         @buildView.buildAborted()
         return
 
-      @abort(=>
+      @abort =>
         @buildView.buildAborted()
-      )
+
       @buildView.buildAbortInitiated()
     else
       @buildView.reset()

@@ -6,3 +6,6 @@
 
 '.build':
   'escape': 'build:stop'
+
+'.build-confirm':
+  'enter': 'build:confirm'
