@@ -19,7 +19,7 @@ module.exports =
       default: 0.15,
     keepVisible:
       type: 'boolean',
-      default: true
+      default: false
     saveOnBuild:
       type: 'boolean',
       default: false
