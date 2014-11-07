@@ -20,6 +20,9 @@ module.exports =
     keepVisible:
       type: 'boolean',
       default: true
+    saveOnBuild:
+      type: 'boolean',
+      default: false
 
   activate: (state) ->
     # Manually append /usr/local/bin as it may not be set on some systems,
