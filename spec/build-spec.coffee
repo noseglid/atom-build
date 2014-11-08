@@ -29,10 +29,13 @@ describe "Build", ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     atom.workspace = atom.workspaceView.model
+    atom.workspaceView.attachToDom()
+
     directory = fs.realpathSync(temp.mkdirSync { prefix: 'atom-build-spec-' } ) + '/';
     atom.project.setPaths([directory]);
 
     atom.config.set('build.keepVisible', false)
+    atom.config.set('build.saveOnBuild', false)
 
     # Set up dependencies
     fs.copySync(path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
@@ -372,3 +375,105 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').html()).toMatch /&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/
+
+  describe "when the text editor is modified", ->
+    it "should show the save confirmation", ->
+      expect(atom.workspaceView.find('.build-confirm')).not.toExist()
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise ->
+        atom.workspace.open('Makefile')
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        editor.insertText 'hello kansas'
+        atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build-confirm').length == 1
+
+      runs ->
+        expect(atom.workspaceView.find('.btn-success:focus')).toExist()
+
+    it "should save and build when selecting save and build", ->
+      expect(atom.workspaceView.find('.build-confirm')).not.toExist()
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise ->
+        atom.workspace.open('Makefile')
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        editor.insertText 'dummy:\n\techo kansas\n'
+        atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build-confirm').length == 1
+
+      runs ->
+        atom.workspaceView.find(':focus').click()
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').html()).toMatch /kansas/
+        expect(!editor.isModified())
+
+    it "should build but not save when opting so", ->
+      expect(atom.workspaceView.find('.build-confirm')).not.toExist()
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise ->
+        atom.workspace.open('Makefile')
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        editor.insertText 'dummy:\n\techo kansas\n'
+        atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build-confirm').length == 1
+
+      runs ->
+        atom.workspaceView.find('button[click="confirmWithoutSave"]').click()
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('success')
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').html()).not.toMatch /kansas/
+        expect(editor.isModified())
+
+    it "should do nothing when cancelling", ->
+      expect(atom.workspaceView.find('.build-confirm')).not.toExist()
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise ->
+        atom.workspace.open('Makefile')
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        editor.insertText 'dummy:\n\techo kansas\n'
+        atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build-confirm').length == 1
+
+      runs ->
+        atom.workspaceView.find('button[click="cancel"]').click()
+
+      waits 2
+
+      runs ->
+        {editor} = atom.workspaceView.getActiveView()
+        expect(atom.workspaceView.find('.build')).not.toExist()
+        expect(editor.isModified())
