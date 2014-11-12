@@ -6,7 +6,7 @@ Automatically build your project inside your new favorite editor, Atom.
   * `ctrl-alt-b` builds your project (Linux/Windows)
   * `escape` terminates build
 
-![work work](http://noseglid.github.io/atom-build.gif)
+![work work](https://noseglid.github.io/atom-build.gif)
 
 Supported build tools:
 
