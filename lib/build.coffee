@@ -145,7 +145,7 @@ module.exports =
       @child = null
       cb() if cb
     @child.kill()
-    @child.killed = true;
+    @child.killed = true
 
   build: ->
     clearTimeout @finishedTimer

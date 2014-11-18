@@ -24,7 +24,7 @@ class BuildView extends View
       "Building.",
       "Building..",
       "Building..."
-    ];
+    ]
     @titleLoopIndex = 0
     @a2h = new Convert()
     atom.config.observe 'build.keepVisible', @visibleFromConfig
@@ -38,7 +38,7 @@ class BuildView extends View
       atom.workspaceView.prependToBottom(this)
 
   detach: (force = false) ->
-    atom.workspaceView.focus();
+    atom.workspaceView.focus()
     super() if force || !(atom.config.get 'build.keepVisible')
 
   heightFromConfig: (val) =>
@@ -108,11 +108,11 @@ class BuildView extends View
     @title.text('Aborted!')
 
   errorMessage: (title, error) =>
-    @title.text(title);
+    @title.text(title)
     @title.addClass('error') if error
     @attach()
 
   append: (line) =>
     line = _.escape line.toString()
-    @output.append "<li>#{@a2h.toHtml(line)}</li>";
+    @output.append "<li>#{@a2h.toHtml(line)}</li>"
     @output.scrollTop(@output[0].scrollHeight)
