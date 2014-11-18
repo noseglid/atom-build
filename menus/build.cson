@@ -3,7 +3,7 @@
     'label': 'Packages'
     'submenu': [
       {
-        'label': 'build'
+        'label': 'Build'
         'submenu': [
           {
             'label': 'Build project...'
