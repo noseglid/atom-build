@@ -101,7 +101,14 @@ module.exports =
     return value;
 
   startNewBuild: ->
-    cmd = @buildCommand()
+    try
+      cmd = @buildCommand()
+    catch error
+      @buildView.reset()
+      @buildView.errorMessage "You have a syntax error in your build file.", true
+      @buildView.append(error.message)
+      return
+
     return if !cmd.exec
 
     env = _.extend(process.env, cmd.env)

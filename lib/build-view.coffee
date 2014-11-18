@@ -107,6 +107,11 @@ class BuildView extends View
   buildAborted: =>
     @title.text('Aborted!')
 
+  errorMessage: (title, error) =>
+    @title.text(title);
+    @title.addClass('error') if error
+    @attach()
+
   append: (line) =>
     line = _.escape line.toString()
     @output.append "<li>#{@a2h.toHtml(line)}</li>";
