@@ -1,4 +1,4 @@
-{WorkspaceView} = require 'atom';
+{WorkspaceView} = require 'atom'
 
 describe "Visible", ->
 
