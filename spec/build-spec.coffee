@@ -21,6 +21,7 @@ describe "Build", ->
   shFalseAtomBuildFile = __dirname + '/fixture/.atom-build.sh-false.json'
   shTrueAtomBuildFile = __dirname + '/fixture/.atom-build.sh-true.json'
   shDefaultAtomBuildFile = __dirname + '/fixture/.atom-build.sh-default.json'
+  syntaxErrorAtomBuildFile = __dirname + '/fixture/.atom-build.syntax-error.json'
 
   directory = null;
 
@@ -248,6 +249,20 @@ describe "Build", ->
       runs ->
         expect(atom.workspaceView.find('.build')).toExist()
         expect(atom.workspaceView.find('.build .output').text()).toMatch /Executing with sh:/;
+
+    it "should show graphical error message if build-file contains syntax errors", ->
+      expect(atom.workspaceView.find('.build')).not.toExist()
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(syntaxErrorAtomBuildFile))
+      atom.workspaceView.trigger 'build:trigger'
+
+      waitsFor ->
+        atom.workspaceView.find('.build .title').hasClass('error')
+
+      runs ->
+        expect(atom.workspaceView.find('.build')).toExist()
+        expect(atom.workspaceView.find('.build .output').text()).toMatch /Unexpected token t/
+        expect(atom.workspaceView.find('.build .title').text()).toBe 'You have a syntax error in your build file.';
 
   describe "when build is triggered with gulp file", ->
     it "should show the build window", ->
