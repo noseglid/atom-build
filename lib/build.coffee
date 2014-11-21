@@ -4,8 +4,6 @@ path = require 'path'
 qs = require 'querystring'
 _ = require 'underscore'
 
-{$} = require 'atom'
-
 BuildView = require './build-view'
 SaveConfirmView = require './save-confirm-view'
 

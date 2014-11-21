@@ -1,4 +1,4 @@
-{$, TextEditorView, View} = require 'atom'
+{View} = require 'space-pen'
 Convert = require 'ansi-to-html'
 _ = require 'underscore'
 

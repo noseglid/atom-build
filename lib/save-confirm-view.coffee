@@ -1,5 +1,5 @@
 _ = require 'underscore'
-{View, Emitter} = require 'atom'
+{View} = require 'space-pen'
 
 module.exports =
 class SaveConfirmView extends View
