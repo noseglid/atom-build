@@ -13,7 +13,11 @@ notifications:
     on_start: false
 
 
-before_script: npm install -g coffeelint
+before_script:
+  - npm install -g jshint
+  - npm install -g jscs
+
 script:
   - 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
-  - 'coffeelint -f coffeelint.json lib/'
+  - 'jshint lib/*.js spec/*.js'
+  - 'jscs lib/*.js spec/*.js'

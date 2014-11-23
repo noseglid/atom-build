@@ -1,0 +1,43 @@
+{
+  // Restricting options
+  "strict":     true,       // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode
+  "trailing":   true,       // Makes it an error to leave a trailing whitespace in your code.
+  "curly":      true,       // Force braces around blocks in loops and conditionals.
+  "undef":      true,       // Prohibits the use of explicitly undeclared variables. Use /*global ... */ for exceptions
+  "latedef":    true,       // Prohibits the use of a variable before it has been defined.
+  "unused":     "vars",     // Warns when you define and never use your variables.
+  "newcap":     true,       // Forces you to capitalize names of constructor functions.
+  "noarg":      true,       // Prohibits the use of arguments.caller and arguments.callee, which are deprecated in EcmaScript 5.
+  "quotmark":   "single",   // Force single quotes for strings
+
+  // Relaxing options
+  "expr":       true,       // Allow expressions where normally you would expect to see assignments or function calls.
+  "onecase":    true,       // Allow switches with only one case (not counting default)
+  "sub":        true,       // Allow using [] notation when it can also be expressed in dot notation: person['name'] vs. person.name.
+
+  // Environment
+  "node":       true,       // Define common browser globals: require, nodule, etc.
+  "devel":      true,       // Define globals that are usually used for debugging: console, alert, etc.
+  "globals": {              // Define globals that are not defined per default
+    "window":          false,
+    "atom":            false,
+    "module":          false,
+    // Jasmine
+    "jasmine":         false,
+    "before":          false,
+    "beforeEach":      false,
+    "after":           false,
+    "afterEach":       false,
+    "describe":        false,
+    "it":              false,
+    "waits":           false,
+    "waitsFor":        false,
+    "waitsForPromise": false,
+    "runs":            false,
+    "expect":          false
+  },
+
+  // Misc.
+  "white":      true,       // Enforce Crockford style guides
+  "indent":     2           // Set indentation to two spaces
+}
