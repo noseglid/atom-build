@@ -1,0 +1,14 @@
+{
+  ".platform-darwin": {
+    "cmd-alt-b": "build:trigger"
+  },
+  ".platform-linux, .platform-win32": {
+    "ctrl-alt-b": "build:trigger"
+  },
+  ".build": {
+    "escape": "build:stop"
+  },
+  ".build-confirm": {
+    "enter": "build:confirm"
+  }
+}

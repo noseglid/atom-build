@@ -1,0 +1,18 @@
+{
+  "menu": [ {
+    "label": "Packages",
+    "submenu": [ {
+        "label": "Build",
+        "submenu": [ {
+          "label": "Build project...",
+          "command": "build:trigger"
+        },
+        {
+          "label": "Terminate build.",
+          "command": "build:stop"
+        } ]
+      } ]
+  } ],
+
+  "context-menu": {}
+}
