@@ -13,6 +13,6 @@
     "ansi-to-html": "^0.2.0",
     "temp": "^0.8.1",
     "fs-plus": "^2.3.0",
-    "space-pen": "^3.8.2"
+    "space-pen": "^4.2.2"
   }
 }
