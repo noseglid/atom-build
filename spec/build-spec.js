@@ -1,4 +1,3 @@
-var WorkspaceView = require('atom').WorkspaceView;
 var fs = require('fs-plus');
 var path = require('path');
 var temp = require('temp');
@@ -24,13 +23,11 @@ describe('Build', function() {
   var syntaxErrorAtomBuildFile = __dirname + '/fixture/.atom-build.syntax-error.json';
 
   var directory = null;
+  var workspaceElement = null;
 
   temp.track();
 
   beforeEach(function() {
-    atom.workspaceView = new WorkspaceView();
-    atom.workspace = atom.workspaceView.model;
-
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
@@ -57,12 +54,13 @@ describe('Build', function() {
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
 
-    waitsForPromise(function() {
-      return atom.packages.activatePackage('build');
+    runs(function() {
+      workspaceElement = atom.views.getView(atom.workspace);
+      jasmine.attachToDOM(workspaceElement);
     });
 
-    runs(function() {
-      atom.workspaceView.attachToDom();
+    waitsForPromise(function() {
+      return atom.packages.activatePackage('build');
     });
   });
 
@@ -72,118 +70,114 @@ describe('Build', function() {
 
   describe('when package is activated', function() {
     it('should not show build window if keepVisible is false', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
     });
   });
 
   describe('when build is triggered with Makefile', function() {
     it('should not show the build window if no buildfile exists', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      atom.workspaceView.trigger('build:trigger');
-
-      waitsForPromise(function() {
-        return atom.workspaceView.open();
-      });
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).not.toExist();
+        expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
 
     it('should show the build window if buildfile exists', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
       });
     });
 
     it('should show build failed if build fails', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(badMakefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('error');
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Very bad\.\.\./);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
       });
     });
 
     it('should cancel build when stopping it, and remove when stopping again', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(longMakefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       // Let build run for one second before we terminate it
       waits(1000);
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Building, this will take some time.../);
-        atom.workspaceView.trigger('build:stop');
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
+        atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('error');
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
-        atom.workspaceView.trigger('build:stop');
+        atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
       waitsFor(function() {
-        return (atom.workspaceView.find('.build .title').text() == 'Aborted!');
+        return (workspaceElement.querySelector('.build .title').textContent == 'Aborted!');
       });
     });
   });
 
   describe('when build is triggered with grunt file', function() {
     it('should show the build window', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Surprising is the passing of time. But not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time. But not so, as the time of passing/);
       });
     });
   });
 
   describe('when build is triggered with package.json file', function() {
     it('should show the build window if it is node engine', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/^Executing with sh: npm/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: npm/);
       });
     });
 
@@ -192,201 +186,201 @@ describe('Build', function() {
         return;
       }
 
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       }, 'build to be successful', 10000);
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/^Executing with sh: apm/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: apm/);
       });
     });
 
     it('should not do anything if engines are not available in the file', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(badPackageJsonfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waits(1000);
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).not.toExist();
+        expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
   });
 
   describe('when custom .atom-build.json is available', function() {
     it('should show the build window', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/"cmd": "dd"/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
       });
     });
 
     it('should be possible to exec shell commands with wildcard expansion', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shellAtomBuildfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Good news, everyone!/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Good news, everyone!/);
       });
     });
 
     it('should show sh message if sh is true', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shTrueAtomBuildFile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Executing with sh:/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Executing with sh:/);
       });
     });
 
     it('should not show sh message if sh is false', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shFalseAtomBuildFile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Executing:/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Executing:/);
       });
     });
 
     it('should show sh message if sh is unspecified', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shDefaultAtomBuildFile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Executing with sh:/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Executing with sh:/);
       });
     });
 
     it('should show graphical error message if build-file contains syntax errors', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(syntaxErrorAtomBuildFile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('error');
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Unexpected token t/);
-        expect(atom.workspaceView.find('.build .title').text()).toBe('You have a syntax error in your build file.');
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Unexpected token t/);
+        expect(workspaceElement.querySelector('.build .title').textContent).toBe('You have a syntax error in your build file.');
       });
     });
   });
 
   describe('when build is triggered with gulp file', function() {
     it('should show the build window', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/gulp built/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/gulp built/);
       });
     });
   });
 
   describe('when multiple build options are available', function() {
     it('should prioritise .atom-build.json over node', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/"cmd": "dd"/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
       });
     });
 
     it('should prioritise grunt over make', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Running "default" task/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Running "default" task/);
       });
     });
 
     it('should prioritise node over grunt', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/^Executing with sh: npm/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: npm/);
       });
     });
 
@@ -394,39 +388,39 @@ describe('Build', function() {
       if (process.env.TRAVIS) {
         return;
       }
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       }, 'build to be successful', 10000);
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/^Executing with sh: apm/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: apm/);
       });
     });
   });
 
   describe('when package.json exists, but without engines and Makefile is present', function() {
     it('(Issue#3) should run Makefile without any npm arguments', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'package.json', fs.readFileSync(badPackageJsonfile));
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').text()).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
       });
     });
   });
@@ -434,7 +428,7 @@ describe('Build', function() {
   describe('when replacements are specified in the atom-build.json file', function() {
     it('should replace those with their dynamic value', function() {
 
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(replaceAtomBuildFile));
 
@@ -443,16 +437,16 @@ describe('Build', function() {
       });
 
       runs(function() {
-        atom.workspaceView.trigger('build:trigger');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        var output = atom.workspaceView.find('.build .output').text();
+        expect(workspaceElement.querySelector('.build')).toExist();
+        var output = workspaceElement.querySelector('.build .output').textContent;
 
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe(-1);
@@ -465,25 +459,25 @@ describe('Build', function() {
 
   describe('when output from build contains HTML characters', function() {
     it('should escape those properly so the output is not garbled or missing', function() {
-      expect(atom.workspaceView.find('.build')).not.toExist();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(escapeMakefile));
-      atom.workspaceView.trigger('build:trigger');
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').html()).toMatch(/&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/);
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/);
       });
     });
   });
 
   describe('when the text editor is modified', function() {
     it('should show the save confirmation', function() {
-      expect(atom.workspaceView.find('.build-confirm')).not.toExist();
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
@@ -492,22 +486,22 @@ describe('Build', function() {
       });
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
+        var editor = atom.workspace.getActiveTextEditor();
         editor.insertText('hello kansas');
-        atom.workspaceView.trigger('build:trigger');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waitsFor(function() {
-        return (atom.workspaceView.find('.build-confirm').length == 1);
+        return workspaceElement.querySelector(':focus');
       });
 
       runs(function() {
-        expect(atom.workspaceView.find('.btn-success:focus')).toExist();
+        expect(workspaceElement.querySelector('.btn-success:focus')).toExist();
       });
     });
 
     it('should save and build when selecting save and build', function() {
-      expect(atom.workspaceView.find('.build-confirm')).not.toExist();
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
@@ -516,33 +510,34 @@ describe('Build', function() {
       });
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
+        var editor = atom.workspace.getActiveTextEditor();
         editor.insertText('dummy:\n\techo kansas\n');
-        atom.workspaceView.trigger('build:trigger');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waitsFor(function() {
-        return (atom.workspaceView.find('.build-confirm').length == 1);
+        return workspaceElement.querySelector(':focus');
       });
 
       runs(function() {
-        atom.workspaceView.find(':focus').click();
+        console.log(workspaceElement.activeElement);
+        workspaceElement.querySelector(':focus').click();
       });
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').html()).toMatch(/kansas/);
+        var editor = atom.workspace.getActiveTextEditor();
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/kansas/);
         expect(!editor.isModified());
       });
     });
 
     it('should build but not save when opting so', function() {
-      expect(atom.workspaceView.find('.build-confirm')).not.toExist();
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
@@ -551,33 +546,33 @@ describe('Build', function() {
       });
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
+        var editor = atom.workspace.getActiveTextEditor();
         editor.insertText('dummy:\n\techo kansas\n');
-        atom.workspaceView.trigger('build:trigger');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waitsFor(function() {
-        return (atom.workspaceView.find('.build-confirm').length == 1);
+        return workspaceElement.querySelector(':focus');
       });
 
       runs(function() {
-        atom.workspaceView.find('button[click="confirmWithoutSave"]').click();
+        workspaceElement.querySelector('button[click="confirmWithoutSave"]').click();
       });
 
       waitsFor(function() {
-        return atom.workspaceView.find('.build .title').hasClass('success');
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
-        expect(atom.workspaceView.find('.build')).toExist();
-        expect(atom.workspaceView.find('.build .output').html()).not.toMatch(/kansas/);
+        var editor = atom.workspace.getActiveTextEditor();
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').innerHTML).not.toMatch(/kansas/);
         expect(editor.isModified());
       });
     });
 
     it('should do nothing when cancelling', function() {
-      expect(atom.workspaceView.find('.build-confirm')).not.toExist();
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
@@ -586,24 +581,24 @@ describe('Build', function() {
       });
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
+        var editor = atom.workspace.getActiveTextEditor();
         editor.insertText('dummy:\n\techo kansas\n');
-        atom.workspaceView.trigger('build:trigger');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waitsFor(function() {
-        return (atom.workspaceView.find('.build-confirm').length == 1);
+        return workspaceElement.querySelector(':focus');
       });
 
       runs(function() {
-        atom.workspaceView.find('button[click="cancel"]').click();
+        workspaceElement.querySelector('button[click="cancel"]').click();
       });
 
       waits(2);
 
       runs(function() {
-        var editor = atom.workspaceView.getActiveView().editor;
-        expect(atom.workspaceView.find('.build')).not.toExist();
+        var editor = atom.workspace.getActiveTextEditor();
+        expect(workspaceElement.querySelector('.build')).not.toExist();
         expect(editor.isModified());
       });
     });
