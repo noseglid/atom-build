@@ -9,6 +9,7 @@
     "escape": "build:stop"
   },
   ".build-confirm": {
-    "enter": "build:confirm"
+    "enter": "build:confirm",
+    "escape": "build:no-confirm"
   }
 }
