@@ -20,7 +20,7 @@
   "devel":      true,       // Define globals that are usually used for debugging: console, alert, etc.
   "globals": {              // Define globals that are not defined per default
     "window":          false,
-    "document":        false
+    "document":        false,
     "atom":            false,
     "module":          false,
     // Jasmine
