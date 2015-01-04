@@ -14,10 +14,8 @@ notifications:
 
 
 before_script:
-  - npm install -g jshint
-  - npm install -g jscs
+  - npm install
+  - npm test
 
 script:
   - 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
-  - 'jshint lib/*.js spec/*.js'
-  - 'jscs lib/*.js spec/*.js'
