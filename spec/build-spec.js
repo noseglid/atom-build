@@ -1,6 +1,7 @@
 var fs = require('fs-plus');
 var path = require('path');
 var temp = require('temp');
+var _ = require('underscore');
 
 describe('Build', function() {
   'use strict';
@@ -497,6 +498,37 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.btn-success:focus')).toExist();
+      });
+    });
+
+    it('should not confirm if a TextEditor edits an unsaved file', function() {
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise(function() {
+        return atom.workspace.open('Makefile');
+      });
+
+      waitsForPromise(function() {
+        return atom.workspace.open();
+      });
+
+      runs(function() {
+        var editor = _.find(atom.workspace.getTextEditors(), function(textEditor) {
+          return ('untitled' === textEditor.getTitle());
+        });
+        editor.insertText('Just some temporary place to write stuff');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
       });
     });
 
