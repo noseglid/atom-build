@@ -9,7 +9,7 @@
     "atom": ">=0.50.0"
   },
   "dependencies": {
-    "underscore": "^1.6.0",
+    "lodash": "^2.4.1",
     "ansi-to-html": "^0.2.0",
     "temp": "^0.8.1",
     "fs-plus": "^2.3.0",

@@ -1,7 +1,7 @@
 var fs = require('fs-plus');
 var path = require('path');
 var temp = require('temp');
-var _ = require('underscore');
+var _ = require('lodash');
 
 describe('Build', function() {
   'use strict';
