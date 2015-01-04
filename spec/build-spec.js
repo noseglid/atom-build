@@ -501,6 +501,31 @@ describe('Build', function() {
       });
     });
 
+    it('should cancel the confirm window when pressing escape', function() {
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise(function() {
+        return atom.workspace.open('Makefile');
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        editor.insertText('hello kansas');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector(':focus');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:no-confirm');
+        expect(workspaceElement.querySelector('.btn-success:focus')).not.toExist();
+      });
+    });
+
     it('should not confirm if a TextEditor edits an unsaved file', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
