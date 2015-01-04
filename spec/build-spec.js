@@ -520,7 +520,6 @@ describe('Build', function() {
       });
 
       runs(function() {
-        console.log(workspaceElement.activeElement);
         workspaceElement.querySelector(':focus').click();
       });
 
