@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "lodash": "^2.4.1",
-    "ansi-to-html": "^0.2.0",
+    "ansi-to-html": "^0.3.0",
     "temp": "^0.8.1",
-    "fs-plus": "^2.3.0",
-    "space-pen": "^4.2.2"
+    "fs-plus": "^2.4.0",
+    "space-pen": "^4.3.3"
   },
   "devDependencies": {
     "jshint": "^2.5.11",
