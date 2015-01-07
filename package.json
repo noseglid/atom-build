@@ -13,7 +13,7 @@
     "ansi-to-html": "^0.3.0",
     "temp": "^0.8.1",
     "fs-plus": "^2.4.0",
-    "atom-space-pen-views": "^2.0.2"
+    "atom-space-pen-views": "^2.0.3"
   },
   "devDependencies": {
     "jshint": "^2.5.11",
