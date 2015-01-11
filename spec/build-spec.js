@@ -75,6 +75,34 @@ describe('Build', function() {
     });
   });
 
+  describe('when build is triggered twice', function() {
+    it('should not leave multiple panels behind', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      atom.config.set('build.keepVisible', true);
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
+      });
+    });
+  });
+
   describe('when build is triggered with Makefile', function() {
     it('should not show the build window if no buildfile exists', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
