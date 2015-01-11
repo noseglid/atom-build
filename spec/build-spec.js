@@ -32,6 +32,7 @@ describe('Build', function() {
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
+    atom.config.set('build.autoBuildOnSave', false);
     atom.config.set('build.keepVisible', false);
     atom.config.set('build.saveOnBuild', false);
 
@@ -684,6 +685,52 @@ describe('Build', function() {
         var editor = atom.workspace.getActiveTextEditor();
         expect(workspaceElement.querySelector('.build')).not.toExist();
         expect(editor.isModified());
+      });
+    });
+  });
+
+  describe('when the text editor is saved', function() {
+    it('should build when autoBuildOnSave is true', function() {
+      atom.config.set('build.autoBuildOnSave', true);
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise(function() {
+        return atom.workspace.open('dummy');
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        editor.save();
+      });
+
+      waitsFor(function() {
+        expect(workspaceElement.querySelector('.build ')).toExist();
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+      });
+    });
+
+    it('should not build when autoBuildOnSave is false', function() {
+      atom.config.set('build.autoBuildOnSave', false);
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise(function() {
+        return atom.workspace.open('dummy');
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        editor.save();
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
   });
