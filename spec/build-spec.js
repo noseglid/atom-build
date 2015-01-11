@@ -32,6 +32,7 @@ describe('Build', function() {
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
+    atom.config.set('build.autoBuildOnSave', false);
     atom.config.set('build.keepVisible', false);
     atom.config.set('build.saveOnBuild', false);
 
