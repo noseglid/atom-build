@@ -32,7 +32,7 @@ describe('Build', function() {
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
-    atom.config.set('build.autoBuildOnSave', false);
+    atom.config.set('build.buildOnSave', false);
     atom.config.set('build.keepVisible', false);
     atom.config.set('build.saveOnBuild', false);
 
@@ -690,8 +690,8 @@ describe('Build', function() {
   });
 
   describe('when the text editor is saved', function() {
-    it('should build when autoBuildOnSave is true', function() {
-      atom.config.set('build.autoBuildOnSave', true);
+    it('should build when buildOnSave is true', function() {
+      atom.config.set('build.buildOnSave', true);
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
@@ -715,8 +715,8 @@ describe('Build', function() {
       });
     });
 
-    it('should not build when autoBuildOnSave is false', function() {
-      atom.config.set('build.autoBuildOnSave', false);
+    it('should not build when buildOnSave is false', function() {
+      atom.config.set('build.buildOnSave', false);
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
