@@ -5,7 +5,6 @@
   "requireSpacesInFunctionExpression": { "beforeOpeningCurlyBrace": true },
   "disallowEmptyBlocks": true,
   "requireSpacesInsideObjectBrackets": "all",
-  "requireSpacesInsideArrayBrackets": "all",
   "disallowSpaceAfterObjectKeys": true,
   "requireCommaBeforeLineBreak": true,
   "requireOperatorBeforeLineBreak": [ "?", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=" ],
