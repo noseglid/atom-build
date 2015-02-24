@@ -6,7 +6,7 @@
   "undef":      true,       // Prohibits the use of explicitly undeclared variables. Use /*global ... */ for exceptions
   "latedef":    true,       // Prohibits the use of a variable before it has been defined.
   "unused":     "vars",     // Warns when you define and never use your variables.
-  "newcap":     true,       // Forces you to capitalize names of constructor functions.
+  "newcap":     false,      // Forces you to capitalize names of constructor functions.
   "noarg":      true,       // Prohibits the use of arguments.caller and arguments.callee, which are deprecated in EcmaScript 5.
   "quotmark":   "single",   // Force single quotes for strings
 

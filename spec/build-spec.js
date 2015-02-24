@@ -22,6 +22,8 @@ describe('Build', function() {
   var shTrueAtomBuildFile = __dirname + '/fixture/.atom-build.sh-true.json';
   var shDefaultAtomBuildFile = __dirname + '/fixture/.atom-build.sh-default.json';
   var syntaxErrorAtomBuildFile = __dirname + '/fixture/.atom-build.syntax-error.json';
+  var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
+  var errorMatchNLCAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-no-line-col.json';
 
   var directory = null;
   var workspaceElement = null;
@@ -731,6 +733,60 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).not.toExist();
+      });
+    });
+  });
+
+  describe('when output is captured to show editor on error', function () {
+    it('should place the line and column on error in correct file', function () {
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(function() {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        var bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(7);
+      });
+    });
+
+    it('should open just the file if line and column is not available', function () {
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchNLCAtomBuildFile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(function() {
+        console.log('utnz');
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
       });
     });
   });
