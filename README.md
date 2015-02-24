@@ -43,7 +43,8 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
         "VARIABLE1": "VALUE1",
         "VARIABLE2": "VALUE2",
         ...
-      }
+      },
+      "errorMatch": "^regexp$"
     }
 
 Note that if `sh` is false `cmd` must only be the executable - no arguments here. If the
