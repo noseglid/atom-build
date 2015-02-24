@@ -780,7 +780,6 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        console.log('utnz');
         return atom.workspace.getActiveTextEditor();
       });
 
