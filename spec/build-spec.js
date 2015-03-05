@@ -209,7 +209,7 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: npm/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: npm/);
       });
     });
 
@@ -229,7 +229,7 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: apm/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: apm/);
       });
     });
 
@@ -412,7 +412,7 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: npm/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: npm/);
       });
     });
 
@@ -432,7 +432,7 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing with sh: apm/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: apm/);
       });
     });
   });
