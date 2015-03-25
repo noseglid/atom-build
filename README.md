@@ -19,7 +19,7 @@ Supported build tools:
   1. [Gulp](http://gulpjs.com/) - if `gulpfile.js` exists
   1. [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
   1. [Elixir](http://elixir-lang.org/) - if `mix.exs` exists
-  1. [Cargo](http://elixir-lang.org/) - if `Cargo.toml` exists
+  1. [Cargo](http://doc.crates.io) - if `Cargo.toml` exists
     * Supports error matching.
 
 If multiple viable build options are found, `atom-build` will
