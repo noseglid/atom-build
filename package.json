@@ -22,5 +22,12 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/jscs lib/*.js spec/*.js && ./node_modules/.bin/jshint lib/*.js spec/*.js"
-  }
+  },
+  "keywords": [
+    "build",
+    "compile",
+    "gulp",
+    "make",
+    "process"
+  ]
 }
