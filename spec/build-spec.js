@@ -707,7 +707,7 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        expect(workspaceElement.querySelector('.build ')).toExist();
+        expect(workspaceElement.querySelector('.build')).toExist();
         return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
@@ -786,6 +786,34 @@ describe('Build', function() {
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
         expect(editor.getTitle()).toEqual('.atom-build.json');
+      });
+    });
+  });
+
+  describe('when multiple project roots are open', function () {
+    it('should run the second root if a file there is active', function () {
+      var directory2 = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
+      atom.project.addPath(directory2);
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+
+      fs.writeFileSync(directory2 + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
+      waitsForPromise(function () {
+        return atom.workspace.open(directory2 + '/main.c');
+      });
+
+      runs(function() {
+        atom.workspace.getActiveTextEditor().save();
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        expect(workspaceElement.querySelector('.build ')).toExist();
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
       });
     });
   });
