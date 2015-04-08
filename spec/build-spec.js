@@ -10,6 +10,10 @@ describe('Build', function() {
   var badMakefile = __dirname + '/fixture/Makefile.bad';
   var longMakefile = __dirname + '/fixture/Makefile.long';
   var escapeMakefile = __dirname + '/fixture/Makefile.escape';
+  var goodSConstruct = __dirname + '/fixture/SConstruct.good';
+  var badSConstruct = __dirname + '/fixture/SConstruct.bad';
+  var longSConstruct = __dirname + '/fixture/SConstruct.long';
+  var escapeSConstruct = __dirname + '/fixture/SConstruct.escape';
   var goodGruntfile = __dirname + '/fixture/Gruntfile.js';
   var goodGulpfile = __dirname + '/fixture/gulpfile.js';
   var goodNodefile = __dirname + '/fixture/package.json.node';
@@ -153,6 +157,78 @@ describe('Build', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(longMakefile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      // Let build run for one second before we terminate it
+      waits(1000);
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+
+      waitsFor(function() {
+        return (workspaceElement.querySelector('.build .title').textContent == 'Aborted!');
+      });
+    });
+  });
+
+  describe('when build is triggered with SConstruct', function() {
+    it('should not show the build window if no buildfile exists', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).not.toExist();
+      });
+    });
+
+    it('should show the build window if buildfile exists', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'SConstruct', fs.readFileSync(goodSConstruct));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+      });
+    });
+
+    it('should show build failed if build fails', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'SConstruct', fs.readFileSync(badSConstruct));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
+      });
+    });
+
+    it('should cancel build when stopping it, and remove when stopping again', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'SConstruct', fs.readFileSync(longSConstruct));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       // Let build run for one second before we terminate it
@@ -379,6 +455,23 @@ describe('Build', function() {
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
+      });
+    });
+
+    it('should prioritise make over scons', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + 'SConstruct', fs.readFileSync(goodSConstruct));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Running "default" task/);
       });
     });
 
