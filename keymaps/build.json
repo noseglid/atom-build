@@ -1,11 +1,13 @@
 {
   ".platform-darwin": {
     "cmd-alt-b": "build:trigger",
-    "cmd-alt-g": "build:error-match"
+    "cmd-alt-g": "build:error-match",
+    "cmd-alt-h": "build:error-match-first"
   },
   ".platform-linux, .platform-win32": {
     "ctrl-alt-b": "build:trigger",
-    "ctrl-alt-g": "build:error-match"
+    "ctrl-alt-g": "build:error-match",
+    "ctrl-alt-h": "build:error-match-first"
   },
   ".build": {
     "escape": "build:stop"
