@@ -5,7 +5,8 @@
 Automatically build your project inside your new favorite editor, Atom.
 
   * `cmd-alt-b` / `ctrl-alt-b` builds your project.
-  * `cmd-alt-g` / `ctrl-alt-g` jumps to cause of build error. See [Error Matching](#error-match).
+  * `cmd-alt-g` / `ctrl-alt-g` cycles through causes of build error. See [Error Matching](#error-match).
+  * `cmd-alt-h` / `ctrl-alt-h` goes to the first build error. See [Error Matching](#error-match).
   * `escape` terminates build
 
 ![work work](https://noseglid.github.io/atom-build.gif)
@@ -105,3 +106,9 @@ The following named groups can be matched from the output:
   * `col` - **[optional]** the column the error resides on. `(?<col> RE)`.
 
 Since the regular expression is written in a JSON file, backslashes must be escaped.
+
+If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
+to cycle through the errors (in the order they appear in the output of the build script).
+
+Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
+To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
