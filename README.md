@@ -28,7 +28,7 @@ prioritise according to the list above. For instance, if `package.json` and
 `Gruntfile.js` are both available in the root folder, `npm install` will be
 executed by `atom-build`.
 
-If you need to run `grunt`, `gulp` or other tool to build you project, then you can utilize the [postinstall-script](https://www.npmjs.org/doc/misc/npm-scripts.html) of package.json. This will also help you if grunt is run as a node module since it
+If you need to run `grunt`, `gulp` or other tool to build your project, then you can utilize the [postinstall-script](https://www.npmjs.org/doc/misc/npm-scripts.html) of package.json. This will also help you if grunt is run as a node module since it
 will be downloaded (via `npm install`) prior.
 
 <a name="custom-build-command"></a>
