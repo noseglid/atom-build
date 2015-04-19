@@ -32,7 +32,7 @@ If you need to run `grunt`, `gulp` or other tool to build you project, then you 
 will be downloaded (via `npm install`) prior.
 
 <a name="custom-build-command"></a>
-## Specifying your own build command
+## Specifying a custom build command
 
 If the built-in defaults are not enough to suit your needs, you can specify
 exactly what to execute. Create a file named `.atom-build.json` in your project root:
