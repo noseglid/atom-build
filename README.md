@@ -108,7 +108,7 @@ The following named groups can be matched from the output:
 Since the regular expression is written in a JSON file, backslashes must be escaped.
 
 If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
-to cycle through the errors (in the order they appear in the output of the build script).
+to cycle through the errors (in the order they appear, first on stderr then on stdout).
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
