@@ -5,8 +5,9 @@
 Automatically build your project inside your new favorite editor, Atom.
 
   * `cmd-alt-b` / `ctrl-alt-b` builds your project.
-  * `cmd-alt-g` / `ctrl-alt-g` jumps to cause of build error. See [Error Matching](#error-match).
-  * `escape` terminates build
+  * `cmd-alt-g` / `ctrl-alt-g` cycles through causes of build error. See [Error Matching](#error-match).
+  * `cmd-alt-h` / `ctrl-alt-h` goes to the first build error. See [Error Matching](#error-match).
+  * `escape` terminates build / closes the build window.
 
 ![work work](https://noseglid.github.io/atom-build.gif)
 
@@ -27,11 +28,11 @@ prioritise according to the list above. For instance, if `package.json` and
 `Gruntfile.js` are both available in the root folder, `npm install` will be
 executed by `atom-build`.
 
-If you need to run `grunt`, `gulp` or other tool to build you project, then you can utilize the [postinstall-script](https://www.npmjs.org/doc/misc/npm-scripts.html) of package.json. This will also help you if grunt is run as a node module since it
+If you need to run `grunt`, `gulp` or other tool to build your project, then you can utilize the [postinstall-script](https://www.npmjs.org/doc/misc/npm-scripts.html) of package.json. This will also help you if grunt is run as a node module since it
 will be downloaded (via `npm install`) prior.
 
 <a name="custom-build-command"></a>
-## Specifying your own build command
+## Specifying a custom build command
 
 If the built-in defaults are not enough to suit your needs, you can specify
 exactly what to execute. Create a file named `.atom-build.json` in your project root:
@@ -105,3 +106,9 @@ The following named groups can be matched from the output:
   * `col` - **[optional]** the column the error resides on. `(?<col> RE)`.
 
 Since the regular expression is written in a JSON file, backslashes must be escaped.
+
+If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
+to cycle through the errors (in the order they appear, first on stderr then on stdout).
+
+Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
+To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
