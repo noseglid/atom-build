@@ -37,7 +37,7 @@ describe('Build', function() {
     atom.project.setPaths([ directory ]);
 
     atom.config.set('build.buildOnSave', false);
-    atom.config.set('build.keepVisible', false);
+    atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
 
     // Set up dependencies
@@ -74,8 +74,37 @@ describe('Build', function() {
     fs.removeSync(directory);
   });
 
+  describe('when panel visibility is set to show on error', function() {
+    it('should only show an the build panel if a build fails', function () {
+      atom.config.set('build.panelVisibility', 'Show on Error');
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      /* Give it some reasonable time to show itself if there is a bug */
+      waits(1000);
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).not.toExist();
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(badMakefile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
+      });
+    });
+  });
+
   describe('when package is activated', function() {
-    it('should not show build window if keepVisible is false', function() {
+    it('should not show build window if panelVisibility is Toggle ', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
     });
   });
@@ -84,7 +113,7 @@ describe('Build', function() {
     it('should not leave multiple panels behind', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      atom.config.set('build.keepVisible', true);
+      atom.config.set('build.panelVisibility', 'Keep Visible');
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
       atom.commands.dispatch(workspaceElement, 'build:trigger');

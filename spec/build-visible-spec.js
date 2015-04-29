@@ -5,7 +5,7 @@ describe('Build', function() {
   var workspaceElement = null;
 
   beforeEach(function() {
-    atom.config.set('build.keepVisible', true);
+    atom.config.set('build.panelVisibility', 'Keep Visible');
 
     runs(function() {
       workspaceElement = atom.views.getView(atom.workspace);
