@@ -107,6 +107,10 @@ The following named groups can be matched from the output:
 
 Since the regular expression is written in a JSON file, backslashes must be escaped.
 
+The `file` should be relative the `cwd` specified. If no `cwd` has been specified, then
+the `file` should be relative the project root (e.g. the top most directory shown in the
+Atom Editor).
+
 If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
 to cycle through the errors (in the order they appear, first on stderr then on stdout).
 
