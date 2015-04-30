@@ -23,11 +23,11 @@ describe('Build', function() {
     });
   });
 
-  describe('when build window is toggled and it is visible', function() {
-    it('should hide the build window', function() {
+  describe('when build panel is toggled and it is visible', function() {
+    it('should hide the build panel', function() {
       expect(workspaceElement.querySelector('.build')).toExist();
 
-      atom.commands.dispatch(workspaceElement, 'build:toggle-view');
+      atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
 
       expect(workspaceElement.querySelector('.build')).not.toExist();
     });
