@@ -970,4 +970,14 @@ describe('Build', function() {
       });
     });
   });
+
+  describe('when build panel is toggled and it is not visible', function() {
+    it('should show the build panel', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
+
+      expect(workspaceElement.querySelector('.build')).toExist();
+    });
+  });
 });

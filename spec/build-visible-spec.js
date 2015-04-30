@@ -22,4 +22,14 @@ describe('Build', function() {
       expect(workspaceElement.querySelector('.build')).toExist();
     });
   });
+
+  describe('when build panel is toggled and it is visible', function() {
+    it('should hide the build panel', function() {
+      expect(workspaceElement.querySelector('.build')).toExist();
+
+      atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
+
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+    });
+  });
 });
