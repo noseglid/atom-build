@@ -48,7 +48,8 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
         "VARIABLE2": "VALUE2",
         ...
       },
-      "errorMatch": "^regexp$"
+      "errorMatch": "^regexp$",
+      "buildViewTimeout": 1000
     }
 
 Note that if `sh` is false `cmd` must only be the executable - no arguments here. If the
@@ -65,6 +66,7 @@ systems).
   * `cwd` - **[optional]** The working directory for the command. E.g. what `.` resolves to.
   * `env` - **[optional]** An array of environment variables and their values to set
   * `errorMatch` - **[optional]** A regular expression to match output to a file, row and col. See [Error matching](#error-match) for details.
+  * `buildViewTimeout` - **[optional]** Interval in milliseconds to dismiss build view
 
 ### Replacements
 
