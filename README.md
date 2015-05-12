@@ -117,3 +117,20 @@ to cycle through the errors (in the order they appear, first on stderr then on s
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
+
+## Analytics
+
+The `atom-build` package uses google analytics to keep track of which features are in use
+and at what frequency. This gives the maintainers a sense of what parts of the
+package is most important and what parts can be removed.
+
+The data is fully anonymous and can not be tracked back to you in any way.
+This is what is collected
+
+  * Build triggered, succeeded or failed.
+  * Which build tool was used.
+  * Visibility of UI components.
+
+If you really do not want to share this information, you can opt out by disabling
+the [metrics package](https://atom.io/packages/metrics). This will disable all analytics
+collection, including the one from `atom-build`.

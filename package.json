@@ -14,7 +14,8 @@
     "temp": "^0.8.1",
     "fs-plus": "^2.4.0",
     "atom-space-pen-views": "^2.0.3",
-    "xregexp": "^2.0.0"
+    "xregexp": "^2.0.0",
+    "node-uuid": "^1.4.3"
   },
   "devDependencies": {
     "jshint": "^2.5.11",
