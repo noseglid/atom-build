@@ -1,3 +1,11 @@
+This is a fork of the original [Build-Package](https://github.com/noseglid/atom-build) for Atom.
+
+# Changes to original Atom package
+- Added `errorMatchPathAbsolute` option for `.atom-build.js`. If this is set to true, the path to the file which causes the error is interpreted as absolute path.
+- Build command now searches for a build file in all root directories added to Atom. The first one that finds a build file is chosen.
+
+___
+
 # Atom Build package
 [![Build Travis](https://travis-ci.org/noseglid/atom-build.svg?branch=master)](https://travis-ci.org/noseglid/atom-build)
 [![Gitter chat](https://badges.gitter.im/noseglid/atom-build.svg)](https://gitter.im/noseglid/atom-build)
