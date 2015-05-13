@@ -1,9 +1,9 @@
 {
-  "name": "build-2",
+  "name": "build",
   "main": "./lib/build",
   "version": "0.31.0",
   "description": "Build your current project, directly from Atom",
-  "repository": "https://github.com/mirhec/atom-build",
+  "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
   "engines": {
     "atom": ">=0.50.0"
