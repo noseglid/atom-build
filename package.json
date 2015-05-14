@@ -15,7 +15,8 @@
     "fs-plus": "^2.4.0",
     "atom-space-pen-views": "^2.0.3",
     "xregexp": "^2.0.0",
-    "node-uuid": "^1.4.3"
+    "node-uuid": "^1.4.3",
+    "getmac": "^1.0.7"
   },
   "devDependencies": {
     "jshint": "^2.5.11",
