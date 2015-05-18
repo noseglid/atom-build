@@ -236,5 +236,32 @@ describe('Build', function() {
         expect(bufferPosition.column).toEqual(7);
       });
     });
+
+    it('should open the absolute file if absFile is set', function () {
+      var atomBuild = {
+        cmd: 'echo __' + directory + '.atom-build.json__ && return 1',
+        errorMatch: '__(?<absFile>.+)__'
+      };
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify(atomBuild));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        return atom.commands.dispatch(workspaceElement, 'build:error-match-first');
+      });
+
+      waitsFor(function () {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        expect(editor.getPath()).toEqual(directory + '.atom-build.json');
+      });
+
+    });
   });
 });
