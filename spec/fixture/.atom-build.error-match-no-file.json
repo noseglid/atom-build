@@ -1,0 +1,4 @@
+{
+	"cmd": "echo 'file:black-hole,line:3,column:8' && return 1",
+	"errorMatch": "file:(?<file>[^,]+),line:(?<line>\\d+),column:(?<col>\\d+)"
+}
