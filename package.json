@@ -9,7 +9,8 @@
     "atom": ">=0.50.0"
   },
   "dependencies": {
-    "lodash": "^2.4.1",
+    "lodash": "^3.8.0",
+    "bluebird": "^2.9.25",
     "ansi-to-html": "^0.3.0",
     "temp": "^0.8.1",
     "fs-plus": "^2.4.0",

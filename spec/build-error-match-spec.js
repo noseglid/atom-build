@@ -48,7 +48,8 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
@@ -75,7 +76,8 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
@@ -98,7 +100,8 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
@@ -122,7 +125,8 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
@@ -183,7 +187,8 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
@@ -246,7 +251,8 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(function() {
