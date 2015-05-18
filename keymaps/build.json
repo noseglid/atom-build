@@ -4,8 +4,7 @@
     "cmd-alt-v": "build:toggle-panel",
     "cmd-alt-g": "build:error-match",
     "cmd-alt-h": "build:error-match-first",
-    "shift-alt-t": "build:select-active-target",
-    "alt-t": "build:build-active-target"
+    "shift-alt-t": "build:select-active-target"
   },
   ".platform-linux, .platform-win32": {
     "ctrl-alt-b": "build:trigger",
