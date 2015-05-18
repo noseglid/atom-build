@@ -8,6 +8,7 @@ Automatically build your project inside your new favorite editor, Atom.
   * `cmd-alt-g` / `ctrl-alt-g` cycles through causes of build error. See [Error Matching](#error-match).
   * `cmd-alt-h` / `ctrl-alt-h` goes to the first build error. See [Error Matching](#error-match).
   * `cmd-alt-v` / `ctrl-alt-v` Toggles the build panel.
+  * `cmd-alt-t` / `ctrl-alt-t` Displays the available build targets.
   * `escape` terminates build / closes the build window.
 
 ![work work](https://noseglid.github.io/atom-build.gif)
