@@ -7,6 +7,7 @@ Automatically build your project inside your new favorite editor, Atom.
   * `cmd-alt-b` / `ctrl-alt-b` builds your project.
   * `cmd-alt-g` / `ctrl-alt-g` cycles through causes of build error. See [Error Matching](#error-match).
   * `cmd-alt-h` / `ctrl-alt-h` goes to the first build error. See [Error Matching](#error-match).
+  * `cmd-alt-v` / `ctrl-alt-v` Toggles the build panel.
   * `escape` terminates build / closes the build window.
 
 ![work work](https://noseglid.github.io/atom-build.gif)
@@ -101,14 +102,36 @@ and has the syntax for named groups: `(?<name> RE )` where `name` would be the n
 matched by the regular expression `RE`.
 
 The following named groups can be matched from the output:
-  * `file` - **[required]** the file to open. `(?<file> RE)`.
+  * `file` - **[required if not `absFile` is set]** the file to open. `(?<file> RE)`.
+  * `absFile` - **[required if not `file` is set]** the absolute path to file. `(?<absFile> RE)`.
   * `line` - **[optional]** the line the error resides on. `(?<line> RE)`.
   * `col` - **[optional]** the column the error resides on. `(?<col> RE)`.
 
 Since the regular expression is written in a JSON file, backslashes must be escaped.
+
+The `file` should be relative the `cwd` specified. If no `cwd` has been specified, then
+the `file` should be relative the project root (e.g. the top most directory shown in the
+Atom Editor).
 
 If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
 to cycle through the errors (in the order they appear, first on stderr then on stdout).
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
+
+## Analytics
+
+The `atom-build` package uses google analytics to keep track of which features are in use
+and at what frequency. This gives the maintainers a sense of what parts of the
+package is most important and what parts can be removed.
+
+The data is fully anonymous and can not be tracked back to you in any way.
+This is what is collected
+
+  * Build triggered, succeeded or failed.
+  * Which build tool was used.
+  * Visibility of UI components.
+
+If you really do not want to share this information, you can opt out by disabling
+the [metrics package](https://atom.io/packages/metrics). This will disable all analytics
+collection, including the one from `atom-build`.

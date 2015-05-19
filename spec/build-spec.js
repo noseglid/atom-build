@@ -1,7 +1,6 @@
 var fs = require('fs-plus');
 var path = require('path');
 var temp = require('temp');
-var _ = require('lodash');
 
 describe('Build', function() {
   'use strict';
@@ -22,10 +21,6 @@ describe('Build', function() {
   var shTrueAtomBuildFile = __dirname + '/fixture/.atom-build.sh-true.json';
   var shDefaultAtomBuildFile = __dirname + '/fixture/.atom-build.sh-default.json';
   var syntaxErrorAtomBuildFile = __dirname + '/fixture/.atom-build.syntax-error.json';
-  var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
-  var errorMatchNLCAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-no-line-col.json';
-  var errorMatchMultiAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple.json';
-  var errorMatchMultiFirstAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-first.json';
 
   var directory = null;
   var workspaceElement = null;
@@ -37,7 +32,7 @@ describe('Build', function() {
     atom.project.setPaths([ directory ]);
 
     atom.config.set('build.buildOnSave', false);
-    atom.config.set('build.keepVisible', false);
+    atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
 
     // Set up dependencies
@@ -74,8 +69,37 @@ describe('Build', function() {
     fs.removeSync(directory);
   });
 
+  describe('when panel visibility is set to show on error', function() {
+    it('should only show an the build panel if a build fails', function () {
+      atom.config.set('build.panelVisibility', 'Show on Error');
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      /* Give it some reasonable time to show itself if there is a bug */
+      waits(1000);
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).not.toExist();
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(badMakefile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
+      });
+    });
+  });
+
   describe('when package is activated', function() {
-    it('should not show build window if keepVisible is false', function() {
+    it('should not show build window if panelVisibility is Toggle ', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
     });
   });
@@ -84,7 +108,7 @@ describe('Build', function() {
     it('should not leave multiple panels behind', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      atom.config.set('build.keepVisible', true);
+      atom.config.set('build.panelVisibility', 'Keep Visible');
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
@@ -509,190 +533,6 @@ describe('Build', function() {
     });
   });
 
-  describe('when the text editor is modified', function() {
-    it('should show the save confirmation', function() {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('hello kansas');
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector(':focus');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.btn-success:focus')).toExist();
-      });
-    });
-
-    it('should cancel the confirm window when pressing escape', function() {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('hello kansas');
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector(':focus');
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:no-confirm');
-        expect(workspaceElement.querySelector('.btn-success:focus')).not.toExist();
-      });
-    });
-
-    it('should not confirm if a TextEditor edits an unsaved file', function() {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
-      });
-
-      waitsForPromise(function() {
-        return atom.workspace.open();
-      });
-
-      runs(function() {
-        var editor = _.find(atom.workspace.getTextEditors(), function(textEditor) {
-          return ('untitled' === textEditor.getTitle());
-        });
-        editor.insertText('Just some temporary place to write stuff');
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
-      });
-    });
-
-    it('should save and build when selecting save and build', function() {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('dummy:\n\techo kansas\n');
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector(':focus');
-      });
-
-      runs(function() {
-        workspaceElement.querySelector(':focus').click();
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/kansas/);
-        expect(!editor.isModified());
-      });
-    });
-
-    it('should build but not save when opting so', function() {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('dummy:\n\techo kansas\n');
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector(':focus');
-      });
-
-      runs(function() {
-        workspaceElement.querySelector('button[click="confirmWithoutSave"]').click();
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').innerHTML).not.toMatch(/kansas/);
-        expect(editor.isModified());
-      });
-    });
-
-    it('should do nothing when cancelling', function() {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('dummy:\n\techo kansas\n');
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector(':focus');
-      });
-
-      runs(function() {
-        workspaceElement.querySelector('button[click="cancel"]').click();
-      });
-
-      waits(2);
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        expect(workspaceElement.querySelector('.build')).not.toExist();
-        expect(editor.isModified());
-      });
-    });
-  });
-
   describe('when the text editor is saved', function() {
     it('should build when buildOnSave is true', function() {
       atom.config.set('build.buildOnSave', true);
@@ -739,181 +579,6 @@ describe('Build', function() {
     });
   });
 
-  describe('when output is captured to show editor on error', function () {
-    it('should place the line and column on error in correct file', function () {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(2);
-        expect(bufferPosition.column).toEqual(7);
-      });
-    });
-
-    it('should open just the file if line and column is not available', function () {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchNLCAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-      });
-    });
-
-    it('should cycle through the file if multiple error occurred', function () {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(2);
-        expect(bufferPosition.column).toEqual(7);
-        atom.workspace.getActivePane().destroyActiveItem();
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(1);
-        expect(bufferPosition.column).toEqual(4);
-        atom.workspace.getActivePane().destroyActiveItem();
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(2);
-        expect(bufferPosition.column).toEqual(7);
-      });
-    });
-
-    it('should jump to first error', function () {
-      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
-
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiFirstAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match-first');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(2);
-        expect(bufferPosition.column).toEqual(7);
-        atom.workspace.getActivePane().destroyActiveItem();
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(1);
-        expect(bufferPosition.column).toEqual(4);
-        atom.workspace.getActivePane().destroyActiveItem();
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:error-match-first');
-      });
-
-      waitsFor(function() {
-        return atom.workspace.getActiveTextEditor();
-      });
-
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
-        var bufferPosition = editor.getCursorBufferPosition();
-        expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(2);
-        expect(bufferPosition.column).toEqual(7);
-      });
-    });
-  });
-
   describe('when multiple project roots are open', function () {
     it('should run the second root if a file there is active', function () {
       var directory2 = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
@@ -939,6 +604,16 @@ describe('Build', function() {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
       });
+    });
+  });
+
+  describe('when build panel is toggled and it is not visible', function() {
+    it('should show the build panel', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
+
+      expect(workspaceElement.querySelector('.build')).toExist();
     });
   });
 });
