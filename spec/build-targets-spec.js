@@ -135,7 +135,7 @@ describe('Build', function() {
       });
     });
 
-    it('it should run the selected build', function () {
+    it('should run the selected build', function () {
       waitsForPromise(function () {
         var file = __dirname + '/fixture/.atom-build.targets.json';
         return fs.copyAsync(file, directory + '/.atom-build.json');
@@ -163,7 +163,7 @@ describe('Build', function() {
       });
     });
 
-    it('it should run the default target if no selection has been made', function () {
+    it('should run the default target if no selection has been made', function () {
       waitsForPromise(function () {
         var file = __dirname + '/fixture/.atom-build.targets.json';
         return fs.copyAsync(file, directory + '/.atom-build.json');
