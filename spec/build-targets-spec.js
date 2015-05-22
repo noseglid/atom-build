@@ -35,7 +35,7 @@ describe('Build', function() {
   });
 
   afterEach(function() {
-    return fs.removeAsync(directory);
+    fs.removeAsync(directory);
   });
 
   describe('when multiple targets exists', function () {

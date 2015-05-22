@@ -18,8 +18,9 @@ module.exports = {
       return Promise.all([
         fs.unlinkAsync(binGrunt),
         fs.chmodAsync(realGrunt, parseInt('0700', 8)),
-        fs.symlinkAsync(realGrunt, binGrunt)
-      ]);
+      ]).then(function () {
+        return fs.symlinkAsync(realGrunt, binGrunt);
+      });
     };
   },
 
@@ -30,8 +31,9 @@ module.exports = {
       return Promise.all([
         fs.unlinkAsync(binGulp),
         fs.chmodAsync(realGulp, parseInt('0700', 8)),
-        fs.symlinkAsync(realGulp, binGulp)
-      ]);
+      ]).then(function () {
+        return fs.symlinkAsync(realGulp, binGulp);
+      });
     };
   }
 };

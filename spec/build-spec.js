@@ -1,6 +1,7 @@
-var fs = require('fs-plus');
-var path = require('path');
-var temp = require('temp');
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs-extra'));
+var temp = Promise.promisifyAll(require('temp'));
+var specHelpers = require('./spec-helpers');
 
 describe('Build', function() {
   'use strict';
@@ -28,45 +29,35 @@ describe('Build', function() {
   temp.track();
 
   beforeEach(function() {
-    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
-    atom.project.setPaths([ directory ]);
-
     atom.config.set('build.buildOnSave', false);
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
 
-    // Set up dependencies
-    fs.copySync(path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
-
-    // Set up grunt
-    var binGrunt = path.join(directory, 'node_modules', '.bin', 'grunt');
-    var realGrunt = path.join(directory, 'node_modules', 'grunt-cli', 'bin', 'grunt');
-    fs.unlinkSync(binGrunt);
-    fs.chmodSync(realGrunt, parseInt('0700', 8));
-    fs.symlinkSync(realGrunt, binGrunt);
-
-    // Set up gulp
-    var binGulp = path.join(directory, 'node_modules', '.bin', 'gulp');
-    var realGulp = path.join(directory, 'node_modules', 'gulp', 'bin', 'gulp.js');
-    fs.unlinkSync(binGulp);
-    fs.chmodSync(realGulp, parseInt('0700', 8));
-    fs.symlinkSync(realGulp, binGulp);
-
+    workspaceElement = atom.views.getView(atom.workspace);
+    jasmine.attachToDOM(workspaceElement);
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
 
-    runs(function() {
-      workspaceElement = atom.views.getView(atom.workspace);
-      jasmine.attachToDOM(workspaceElement);
-    });
-
     waitsForPromise(function() {
-      return atom.packages.activatePackage('build');
+      return temp.mkdirAsync({ prefix: 'atom-build-spec-' }).then(function (dir) {
+        return fs.realpathAsync(dir);
+      }).then(function (dir) {
+        directory = dir + '/';
+        atom.project.setPaths([ directory ]);
+        return specHelpers.setupNodeModules(directory)();
+      }).then(function () {
+        return Promise.all([
+          specHelpers.setupGrunt(directory)(),
+          specHelpers.setupGulp(directory)()
+        ]);
+      }).then(function () {
+        return atom.packages.activatePackage('build');
+      });
     });
   });
 
   afterEach(function() {
-    fs.removeSync(directory);
+    fs.removeAsync(directory);
   });
 
   describe('when panel visibility is set to show on error', function() {
@@ -122,9 +113,8 @@ describe('Build', function() {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
+      /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
+      waits(200);
 
       runs(function() {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
@@ -137,6 +127,9 @@ describe('Build', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
+      waits(200);
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).not.toExist();
