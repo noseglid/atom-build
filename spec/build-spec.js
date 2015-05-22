@@ -44,13 +44,6 @@ describe('Build', function() {
       }).then(function (dir) {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
-        return specHelpers.setupNodeModules(directory)();
-      }).then(function () {
-        return Promise.all([
-          specHelpers.setupGrunt(directory)(),
-          specHelpers.setupGulp(directory)()
-        ]);
-      }).then(function () {
         return atom.packages.activatePackage('build');
       });
     });
@@ -204,8 +197,16 @@ describe('Build', function() {
     it('should show the build window', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(function () {
+        return Promise.resolve()
+          .then(specHelpers.setupNodeModules(directory))
+          .then(specHelpers.setupGrunt(directory));
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -381,8 +382,16 @@ describe('Build', function() {
     it('should show the build window', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(function () {
+        return Promise.resolve()
+          .then(specHelpers.setupNodeModules(directory))
+          .then(specHelpers.setupGulp(directory));
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -418,9 +427,17 @@ describe('Build', function() {
     it('should prioritise grunt over make', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(function () {
+        return Promise.resolve()
+          .then(specHelpers.setupNodeModules(directory))
+          .then(specHelpers.setupGrunt(directory));
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -436,9 +453,17 @@ describe('Build', function() {
     it('should prioritise node over grunt', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(function () {
+        return Promise.resolve()
+          .then(specHelpers.setupNodeModules(directory))
+          .then(specHelpers.setupGrunt(directory));
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+        fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -457,9 +482,17 @@ describe('Build', function() {
       }
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(function () {
+        return Promise.resolve()
+          .then(specHelpers.setupNodeModules(directory))
+          .then(specHelpers.setupGrunt(directory));
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+        fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
