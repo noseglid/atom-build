@@ -13,7 +13,6 @@
     "bluebird": "^2.9.25",
     "ansi-to-html": "^0.3.0",
     "temp": "^0.8.1",
-    "fs-plus": "^2.4.0",
     "fs-extra": "^0.18.3",
     "atom-space-pen-views": "^2.0.3",
     "xregexp": "^2.0.0",

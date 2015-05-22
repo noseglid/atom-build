@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var fs = require('fs-plus');
+var fs = require('fs-extra');
 var temp = require('temp');
 
 describe('Build', function() {
