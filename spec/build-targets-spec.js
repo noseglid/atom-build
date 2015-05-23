@@ -84,7 +84,7 @@ describe('Build', function() {
         var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
           return el.textContent;
         });
-        expect(targets).toEqual([ 'Grunt: default', 'Grunt: other task', 'Grunt: dev task' ]);
+        expect(targets).toEqual([ 'Grunt: default', 'Grunt: dev task', 'Grunt: other task', ]);
       });
     });
 
