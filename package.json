@@ -1,7 +1,7 @@
 {
   "name": "build",
   "main": "./lib/build",
-  "version": "0.30.0",
+  "version": "0.34.0",
   "description": "Build your current project, directly from Atom",
   "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
@@ -14,7 +14,9 @@
     "temp": "^0.8.1",
     "fs-plus": "^2.4.0",
     "atom-space-pen-views": "^2.0.3",
-    "xregexp": "^2.0.0"
+    "xregexp": "^2.0.0",
+    "node-uuid": "^1.4.3",
+    "getmac": "^1.0.7"
   },
   "devDependencies": {
     "jshint": "^2.5.11",
