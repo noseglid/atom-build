@@ -19,7 +19,9 @@ Supported build tools:
   1. [NodeJS](http://nodejs.org) (runs `npm install`) - if `package.json` exists where `engines['node']` is set
   1. [Atom](http://atom.io) (runs `apm install`) - if `package.json` exists where `engines['atom']` is set
   1. [Grunt](http://gruntjs.com/) - if `Gruntfile.js` exists
+    * Extract targets
   1. [Gulp](http://gulpjs.com/) - if `gulpfile.js` exists
+    * Extract targets
   1. [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
   1. [Elixir](http://elixir-lang.org/) - if `mix.exs` exists
   1. [Cargo](http://doc.crates.io) - if `Cargo.toml` exists
@@ -41,6 +43,7 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
 
     {
       "cmd": "<command to execute>",
+      "name": "<name of target>",
       "args": [ "<argument1>", "<argument2>", ... ],
       "sh": true,
       "cwd": "<current working directory for `cmd`>",
@@ -49,7 +52,13 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
         "VARIABLE2": "VALUE2",
         ...
       },
-      "errorMatch": "^regexp$"
+      "errorMatch": "^regexp$",
+      "targets": {
+        "<name of target>": {
+          "cmd": "<command to execute>",
+          ... (all previous options are viable here except `targets`)
+        }
+      }
     }
 
 Note that if `sh` is false `cmd` must only be the executable - no arguments here. If the
@@ -61,11 +70,13 @@ systems).
 ### Configuration options
 
   * `cmd` - **[required]** The executable command
+  * `name` - **[optional]** The name of the targets. Viewed in the targets list (toggled by `build:select-active-target`).
   * `args` - **[optional]** An array of arguments for the command
   * `sh` - **[optional]** If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
   * `cwd` - **[optional]** The working directory for the command. E.g. what `.` resolves to.
   * `env` - **[optional]** An array of environment variables and their values to set
   * `errorMatch` - **[optional]** A regular expression to match output to a file, row and col. See [Error matching](#error-match) for details.
+  * `targets`- **[optional]** Additional targets which can be used to build variations of your project.
 
 ### Replacements
 
