@@ -1,15 +1,17 @@
 {
-  ".platform-darwin": {
+  ".platform-darwin atom-workspace": {
     "cmd-alt-b": "build:trigger",
     "cmd-alt-v": "build:toggle-panel",
     "cmd-alt-g": "build:error-match",
-    "cmd-alt-h": "build:error-match-first"
+    "cmd-alt-h": "build:error-match-first",
+    "cmd-alt-t": "build:select-active-target"
   },
-  ".platform-linux, .platform-win32": {
+  ".platform-linux atom-workspace, .platform-win32 atom-workspace": {
     "ctrl-alt-b": "build:trigger",
     "ctrl-alt-v": "build:toggle-panel",
     "ctrl-alt-g": "build:error-match",
-    "ctrl-alt-h": "build:error-match-first"
+    "ctrl-alt-h": "build:error-match-first",
+    "ctrl-alt-t": "build:select-active-target"
   },
   ".build": {
     "escape": "build:stop"
