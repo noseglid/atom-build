@@ -220,7 +220,7 @@ describe('Build', function() {
       });
     });
 
-    it('should tell the user that Grunt is not installed if it is not', function () {
+    it('should run default target if grunt is not installed', function () {
       fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
@@ -230,8 +230,7 @@ describe('Build', function() {
       });
 
       runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toEqual('Grunt is not installed.');
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: grunt/);
       });
     });
   });
@@ -420,7 +419,7 @@ describe('Build', function() {
       });
     });
 
-    it('should tell the user that gulp is not installed if it is not', function () {
+    it('should run default target if gulp is not installed', function () {
       fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
@@ -430,8 +429,7 @@ describe('Build', function() {
       });
 
       runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toEqual('Gulp is not installed.');
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: gulp/);
       });
     });
   });
