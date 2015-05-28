@@ -1,0 +1,6 @@
+env.Clean("distclean",
+    [
+        ".sconsign.dblite",
+        ".sconf_temp",
+        "config.log",
+    ])
