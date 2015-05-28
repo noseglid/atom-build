@@ -219,6 +219,21 @@ describe('Build', function() {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time. But not so, as the time of passing/);
       });
     });
+
+    it('should tell the user that Grunt is not installed if it is not', function () {
+      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toEqual('Grunt is not installed.');
+      });
+    });
   });
 
   describe('when build is triggered with package.json file', function() {
@@ -402,6 +417,21 @@ describe('Build', function() {
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/gulp built/);
+      });
+    });
+
+    it('should tell the user that gulp is not installed if it is not', function () {
+      fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toEqual('Gulp is not installed.');
       });
     });
   });
