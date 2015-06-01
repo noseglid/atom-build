@@ -391,6 +391,49 @@ describe('Build', function() {
         expect(workspaceElement.querySelector('.build .title').textContent).toBe('You have a syntax error in your build file.');
       });
     });
+
+    it('should not cache the contents of the build file', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo first'
+      }));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsFor(function () {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function () {
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/first/);
+      });
+
+      waitsFor(function () {
+        return !workspaceElement.querySelector('.build .title');
+      });
+
+      runs(function () {
+        fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+          cmd: 'echo second'
+        }));
+      });
+
+      waits(100);
+
+      runs(function () {
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function () {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(function () {
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/second/);
+      });
+    });
   });
 
   describe('when build is triggered with gulp file', function() {
