@@ -16,12 +16,14 @@ Automatically build your project inside your new favorite editor, Atom.
 Supported build tools:
 
   1. Custom by [specifying your own build command](#custom-build-command)
+    * Supports multiple targets.
+    * Supports error matching.
   1. [NodeJS](http://nodejs.org) (runs `npm install`) - if `package.json` exists where `engines['node']` is set
   1. [Atom](http://atom.io) (runs `apm install`) - if `package.json` exists where `engines['atom']` is set
   1. [Grunt](http://gruntjs.com/) - if `Gruntfile.js` exists
-    * Extract targets
+    * Supports multiple targets.
   1. [Gulp](http://gulpjs.com/) - if `gulpfile.js` exists
-    * Extract targets
+    * Supports multiple targets.
   1. [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
   1. [Elixir](http://elixir-lang.org/) - if `mix.exs` exists
   1. [Cargo](http://doc.crates.io) - if `Cargo.toml` exists
