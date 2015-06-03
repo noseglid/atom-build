@@ -85,7 +85,7 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').textContent === 'Error matching failed:';
+        return workspaceElement.querySelector('.build .title').textContent === 'Error matching failed!';
       });
 
       runs(function() {
