@@ -142,6 +142,7 @@ package is most important and what parts can be removed.
 The data is fully anonymous and can not be tracked back to you in any way.
 This is what is collected
 
+  * Version of package used.
   * Build triggered, succeeded or failed.
   * Which build tool was used.
   * Visibility of UI components.
