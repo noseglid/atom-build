@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var fs = require('fs-plus');
+var fs = require('fs-extra');
 var temp = require('temp');
 
 describe('Build', function() {
@@ -41,28 +41,23 @@ describe('Build', function() {
     it('should show the save confirmation', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      // console.log('writing makefile');
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
 
       waitsForPromise(function() {
-        // console.log('testing if makefile is open');
         return atom.workspace.open('Makefile');
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        // console.log('adding text');
         editor.insertText('hello kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waitsFor(function() {
-        // console.log('checking for focused element');
         return workspaceElement.querySelector(':focus');
       });
 
       runs(function() {
-        // console.log('verifying that success is the focuesed element');
         expect(workspaceElement.querySelector('.btn-success:focus')).toExist();
       });
     });
@@ -114,7 +109,8 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
@@ -147,7 +143,8 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {
@@ -182,7 +179,8 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').classList.contains('success');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(function() {

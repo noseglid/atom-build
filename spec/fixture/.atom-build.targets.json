@@ -1,0 +1,9 @@
+{
+  "name": "The default build",
+  "cmd": "echo default",
+  "targets": {
+    "Some customized build": {
+      "cmd": "echo customized"
+    }
+  }
+}
