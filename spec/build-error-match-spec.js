@@ -293,8 +293,6 @@ describe('Build', function() {
         expect(bufferPosition.row).toEqual(2);
         expect(bufferPosition.column).toEqual(7);
       });
-
-      atom.config.set('build.scrollOnError', false);
     });
   });
 });
