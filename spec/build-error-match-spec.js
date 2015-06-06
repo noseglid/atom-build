@@ -22,6 +22,7 @@ describe('Build', function() {
     atom.config.set('build.buildOnSave', false);
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
+    atom.config.set('build.scrollOnError', false);
 
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
@@ -293,7 +294,7 @@ describe('Build', function() {
         expect(bufferPosition.column).toEqual(7);
       });
 
-      atom.config.set('build.scrollOnError', true);
+      atom.config.set('build.scrollOnError', false);
     });
   });
 });
