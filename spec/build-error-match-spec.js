@@ -267,7 +267,33 @@ describe('Build', function() {
         var editor = atom.workspace.getActiveTextEditor();
         expect(editor.getPath()).toEqual(directory + '.atom-build.json');
       });
+    });
 
+    it('should auto match error on failed build when config is set', function () {
+      atom.config.set('build.scrollOnError', true);
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      waitsFor(function () {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        var bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(7);
+      });
+
+      atom.config.set('build.scrollOnError', true);
     });
   });
 });
