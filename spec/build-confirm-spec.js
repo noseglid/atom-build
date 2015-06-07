@@ -224,4 +224,35 @@ describe('Build', function() {
     });
   });
 
+  describe('when build is triggered without answering confirm dialog', function () {
+    it('should only keep at maximum 1 dialog open', function () {
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+
+      waitsForPromise(function() {
+        return atom.workspace.open('Makefile');
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        editor.insertText('hello kansas');
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build-confirm');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:trigger');
+      });
+
+      waits(200); // Everything is the same so we can't know when second build:trigger has been handled
+
+      runs(function () {
+        expect(workspaceElement.querySelectorAll('.build-confirm').length).toEqual(1);
+      });
+    });
+  });
 });
