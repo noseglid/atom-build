@@ -1,5 +1,5 @@
 
-describe('Build', function() {
+describe('Visible', function() {
   'use strict';
 
   var workspaceElement = null;

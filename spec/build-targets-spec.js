@@ -4,7 +4,7 @@ var fs = Promise.promisifyAll(require('fs-extra'));
 var temp = Promise.promisifyAll(require('temp'));
 var specHelpers = require('./spec-helpers');
 
-describe('Build', function() {
+describe('Target', function() {
   'use strict';
 
   var directory = null;

@@ -2,7 +2,7 @@ var _ = require('lodash');
 var fs = require('fs-extra');
 var temp = require('temp');
 
-describe('Build', function() {
+describe('Confirm', function() {
   'use strict';
 
   var goodMakefile = __dirname + '/fixture/Makefile.good';

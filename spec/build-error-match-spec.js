@@ -1,7 +1,7 @@
 var fs = require('fs-extra');
 var temp = require('temp');
 
-describe('Build', function() {
+describe('Error Match', function() {
   'use strict';
 
   var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
