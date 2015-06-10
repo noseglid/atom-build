@@ -23,6 +23,7 @@ describe('Build', function() {
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.scrollOnError', false);
+    atom.notifications.clear();
 
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
@@ -86,11 +87,13 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title').textContent === 'Error matching failed!';
+        return atom.notifications.getNotifications().length > 0;
       });
 
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Matched file does not exist: .+black-hole/);
+        var notification = atom.notifications.getNotifications()[0];
+        expect(notification.getType()).toEqual('error');
+        expect(notification.getMessage()).toEqual('Error matching failed!');
       });
     });
 

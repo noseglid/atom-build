@@ -33,6 +33,7 @@ describe('Build', function() {
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.stealFocus', true);
+    atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
     jasmine.attachToDOM(workspaceElement);
@@ -381,14 +382,14 @@ describe('Build', function() {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
+        return atom.notifications.getNotifications().length > 0;
       });
 
       runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Unexpected token t/);
-        expect(workspaceElement.querySelector('.build .title').textContent).toBe('You have a syntax error in your build file.');
+        var notification = atom.notifications.getNotifications()[0];
+        expect(notification.getType()).toEqual('error');
+        expect(notification.getMessage()).toEqual('Invalid build file.');
+        expect(notification.options.detail).toMatch(/Unexpected token t/);
       });
     });
 
