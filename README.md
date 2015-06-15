@@ -116,8 +116,7 @@ and has the syntax for named groups: `(?<name> RE )` where `name` would be the n
 matched by the regular expression `RE`.
 
 The following named groups can be matched from the output:
-  * `file` - **[required if not `absFile` is set]** the file to open. `(?<file> RE)`.
-  * `absFile` - **[required if not `file` is set]** the absolute path to file. `(?<absFile> RE)`.
+  * `file` - **[required]** the file to open. May be relative `cwd` or absolute. `(?<file> RE)`.
   * `line` - **[optional]** the line the error resides on. `(?<line> RE)`.
   * `col` - **[optional]** the column the error resides on. `(?<col> RE)`.
 

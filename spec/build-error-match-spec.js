@@ -246,10 +246,10 @@ describe('Error Match', function() {
       });
     });
 
-    it('should open the absolute file if absFile is set', function () {
+    it('should open the the file even if tool gives absolute path', function () {
       var atomBuild = {
         cmd: 'echo __' + directory + '.atom-build.json__ && return 1',
-        errorMatch: '__(?<absFile>.+)__'
+        errorMatch: '__(?<file>.+)__'
       };
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify(atomBuild));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
