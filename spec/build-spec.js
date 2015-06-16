@@ -773,4 +773,21 @@ describe('Build', function() {
       });
     });
   });
+
+  describe('when no build tools are available', function () {
+    it('should show an error', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return atom.notifications.getNotifications().length > 0;
+      });
+
+      runs(function() {
+        var notification = atom.notifications.getNotifications()[0];
+        expect(notification.getType()).toEqual('error');
+        expect(notification.getMessage()).toEqual('No eligible build tool.');
+      });
+    });
+  });
 });
