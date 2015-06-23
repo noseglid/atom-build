@@ -55,35 +55,6 @@ describe('Build', function() {
     fs.removeAsync(directory);
   });
 
-  describe('when panel visibility is set to show on error', function() {
-    it('should only show an the build panel if a build fails', function () {
-      atom.config.set('build.panelVisibility', 'Show on Error');
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      /* Give it some reasonable time to show itself if there is a bug */
-      waits(1000);
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).not.toExist();
-      });
-
-      runs(function () {
-        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(badMakefile));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
-      });
-    });
-  });
-
   describe('when package is activated', function() {
     it('should not show build window if panelVisibility is Toggle ', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
