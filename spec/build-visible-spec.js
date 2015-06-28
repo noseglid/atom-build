@@ -45,8 +45,8 @@ describe('Visible', function() {
       });
     });
 
-    it('should show build window', function() {
-      expect(workspaceElement.querySelector('.build')).toExist();
+    it('should not show build window', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
     });
   });
 
@@ -60,10 +60,7 @@ describe('Visible', function() {
 
     describe('when build panel is toggled and it is visible', function() {
       beforeEach(function () {
-        atom.config.set('build.panelVisibility', 'Keep Visible');
-        waitsForPromise(function () {
-          return atom.packages.activatePackage('build');
-        });
+        atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
       it('should hide the build panel', function() {
