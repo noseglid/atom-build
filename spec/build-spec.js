@@ -65,7 +65,7 @@ describe('Build', function() {
     it('should not leave multiple panels behind', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      atom.config.set('build.panelVisibility', 'Keep Visible');
+      atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
 
       fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
