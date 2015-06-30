@@ -8,6 +8,13 @@
   "engines": {
     "atom": ">=0.50.0"
   },
+  "consumedServices": {
+    "linter-plus-self": {
+      "versions": {
+        "0.1.0": "consumeLinter"
+      }
+    }
+  },
   "dependencies": {
     "lodash": "^3.8.0",
     "bluebird": "^2.9.25",
