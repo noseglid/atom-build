@@ -669,6 +669,25 @@ describe('Build', function() {
         expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
+
+    it('should not attempt to build if buildOnSave is true and no build tool exists', function () {
+      atom.config.set('build.buildOnSave', true);
+
+      waitsForPromise(function() {
+        return atom.workspace.open('dummy');
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        editor.save();
+      });
+
+      waits(200);
+
+      runs(function() {
+        expect(atom.notifications.getNotifications().length).toEqual(0);
+      });
+    });
   });
 
   describe('when multiple project roots are open', function () {
