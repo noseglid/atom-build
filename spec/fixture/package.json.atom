@@ -4,5 +4,8 @@
   "private": true,
   "engines": {
     "atom": ">=0.50.0"
+  },
+  "scripts": {
+    "custom script": "echo 'custom script'"
   }
 }

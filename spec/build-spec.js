@@ -1,11 +1,12 @@
+'use strict';
+
+var _ = require('lodash');
 var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs-extra'));
 var temp = Promise.promisifyAll(require('temp'));
 var specHelpers = require('./spec-helpers');
 
 describe('Build', function() {
-  'use strict';
-
   var goodMakefile = __dirname + '/fixture/Makefile.good';
   var badMakefile = __dirname + '/fixture/Makefile.bad';
   var longMakefile = __dirname + '/fixture/Makefile.long';
@@ -256,6 +257,48 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).not.toExist();
+      });
+    });
+
+    it('should list scripts as build targets', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
+      runs(function () {
+        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
+      });
+
+      waitsFor(function () {
+        console.log('active targets');
+        return workspaceElement.querySelector('.select-list li.build-target');
+      });
+
+      runs(function () {
+        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
+          return el.textContent;
+        });
+        expect(targets).toEqual([ 'npm: default', 'npm: custom script' ]);
+      });
+    });
+
+    it('should list package.json files with engine atom scripts as run by NPM', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
+      runs(function () {
+        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
+      });
+
+      waitsFor(function () {
+        console.log('active targets');
+        return workspaceElement.querySelector('.select-list li.build-target');
+      });
+
+      runs(function () {
+        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
+          return el.textContent;
+        });
+        expect(targets).toEqual([ 'apm: default', 'npm: custom script' ]);
       });
     });
   });
