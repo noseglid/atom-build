@@ -269,7 +269,6 @@ describe('Build', function() {
       });
 
       waitsFor(function () {
-        console.log('active targets');
         return workspaceElement.querySelector('.select-list li.build-target');
       });
 
@@ -290,7 +289,6 @@ describe('Build', function() {
       });
 
       waitsFor(function () {
-        console.log('active targets');
         return workspaceElement.querySelector('.select-list li.build-target');
       });
 
