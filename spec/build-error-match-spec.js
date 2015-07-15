@@ -297,5 +297,29 @@ describe('Error Match', function() {
         expect(bufferPosition.column).toEqual(7);
       });
     });
+
+    it('should show an error if regex is invalid', function () {
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'return 1',
+        errorMatch: '(invalidRegex'
+      }));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(atom.notifications.getNotifications().length).toEqual(1);
+
+        var notification = atom.notifications.getNotifications()[0];
+        expect(notification.getType()).toEqual('error');
+        expect(notification.getMessage()).toEqual('Error matching failed!');
+        expect(notification.options.detail).toMatch(/Unterminated group/);
+      });
+    });
   });
 });
