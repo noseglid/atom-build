@@ -8,6 +8,13 @@
   "engines": {
     "atom": ">=0.50.0"
   },
+  "consumedServices": {
+    "linter-plus-self": {
+      "versions": {
+        "0.1.0": "consumeLinter"
+      }
+    }
+  },
   "dependencies": {
     "ansi-to-html": "^0.3.0",
     "atom-space-pen-views": "^2.0.3",
