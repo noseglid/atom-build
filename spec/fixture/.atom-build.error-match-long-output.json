@@ -1,0 +1,7 @@
+{
+	"cmd": "echo \"\n\n\n\n\n\nfile:$FILE,line:3,column:8\n\n\n\n\n\nfile:$FILE,line:2,column:5; exit 1",
+	"env": {
+		"FILE": ".atom-build.json"
+	},
+	"errorMatch": "file:(?<file>[^$,]+),line:(?<line>\\d+),column:(?<col>\\d+)"
+}

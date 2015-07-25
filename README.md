@@ -134,6 +134,47 @@ to cycle through the errors (in the order they appear, first on stderr then on s
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
 
+## Service API (for package developers)
+
+Another package may provide build information to the `build`-package by implementing its service API.
+The package should integrate via the service API. This is typically done in `package.json`:
+
+```json
+{
+  <other stuff>
+  "providedServices": {
+    "builder": {
+      "description": "Description of the build configurations this package gives",
+      "versions": {
+        "1.0.0": "providingFunction"
+      }
+    }
+  }
+},
+```
+
+The `build`-package will then call `providingFunction` when activated and expects an
+object in return:
+```javascript
+{
+  niceName: 'string',
+  isEligable: function (path) {},
+  settings: function (path) {}
+}
+```
+
+The `niceName` is esthetic only and should be a `string` which is a human readable
+description of the build configuration is provided.
+
+`isEligable` should be a function which must return synchronously. It will get one
+argument, `path`, which is the root folder of the currently active project in Atom.
+It should return `true` or `false` indicating if it can build that folder into something
+sensible. Typically look for the existence of a build file such as `gulpfile.js` or `Makefile`.
+
+`settings` must return a promise. It is called when it is time to build the project.
+It can provide anything which is allowed by the [custom build configuration](#custom-build-config).
+This includes the command, `cmd`, to execute, any arguments, `args`, and so on.
+
 ## Analytics
 
 The `atom-build` package uses google analytics to keep track of which features are in use
