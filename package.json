@@ -11,8 +11,7 @@
   "dependencies": {
     "ansi-to-html": "^0.3.0",
     "atom-space-pen-views": "^2.0.3",
-    "bluebird": "^2.9.25",
-    "fs-extra": "^0.18.3",
+    "fs-extra": "^0.23.0",
     "getmac": "^1.0.7",
     "lodash": "^3.8.0",
     "node-uuid": "^1.4.3",

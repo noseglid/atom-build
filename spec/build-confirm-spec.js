@@ -1,10 +1,11 @@
+'use babel';
+'use strict';
+
 var _ = require('lodash');
 var fs = require('fs-extra');
 var temp = require('temp');
 
 describe('Confirm', function() {
-  'use strict';
-
   var goodMakefile = __dirname + '/fixture/Makefile.good';
 
   var directory = null;

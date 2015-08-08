@@ -1,9 +1,10 @@
+'use babel';
+'use strict';
+
 var fs = require('fs-extra');
 var temp = require('temp');
 
 describe('Error Match', function() {
-  'use strict';
-
   var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
   var errorMatchNoFileBuildFile = __dirname + '/fixture/.atom-build.error-match-no-file.json';
   var errorMatchNLCAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-no-line-col.json';

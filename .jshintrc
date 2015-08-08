@@ -14,6 +14,7 @@
   "expr":       true,       // Allow expressions where normally you would expect to see assignments or function calls.
   "onecase":    true,       // Allow switches with only one case (not counting default)
   "sub":        true,       // Allow using [] notation when it can also be expressed in dot notation: person['name'] vs. person.name.
+  "esnext":     true,
 
   // Environment
   "node":       true,       // Define common browser globals: require, nodule, etc.
@@ -33,6 +34,7 @@
     "afterEach":       false,
     "describe":        false,
     "it":              false,
+    "xit":             false,
     "waits":           false,
     "waitsFor":        false,
     "waitsForPromise": false,
