@@ -9,6 +9,7 @@ describe('Error Match', function() {
   var errorMatchNLCAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-no-line-col.json';
   var errorMatchMultiAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple.json';
   var errorMatchMultiFirstAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-first.json';
+  var errorMatchMultiMatcherAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-errorMatch.json';
 
   var directory = null;
   var workspaceElement = null;
@@ -319,6 +320,68 @@ describe('Error Match', function() {
         expect(notification.getType()).toEqual('error');
         expect(notification.getMessage()).toEqual('Error matching failed!');
         expect(notification.options.detail).toMatch(/Unterminated group/);
+      });
+    });
+
+    it('should match multiple regexes in the correct order', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiMatcherAtomBuildFile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(function() {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        var bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(7);
+        atom.workspace.getActivePane().destroyActiveItem();
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(function() {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        var bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(0);
+        expect(bufferPosition.column).toEqual(1);
+        atom.workspace.getActivePane().destroyActiveItem();
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(function() {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        var bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(1);
+        expect(bufferPosition.column).toEqual(4);
       });
     });
   });
