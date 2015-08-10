@@ -806,7 +806,7 @@ describe('Build', function() {
   });
 
   describe('when no build tools are available', function () {
-    it('should show an error', function () {
+    it('should show a warning', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
@@ -816,7 +816,7 @@ describe('Build', function() {
 
       runs(function() {
         var notification = atom.notifications.getNotifications()[0];
-        expect(notification.getType()).toEqual('error');
+        expect(notification.getType()).toEqual('warning');
         expect(notification.getMessage()).toEqual('No eligible build tool.');
       });
     });
