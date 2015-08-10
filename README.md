@@ -105,14 +105,14 @@ regular expressions, which capture the output of your build command and open the
 correct file, row and column of the error. For instance:
 
 ```bash
-a.c:4:26: error: expected ';' after expression
+../foo/bar/a.c:4:26: error: expected ';' after expression
   printf("hello world\n")
                          ^
                          ;
 1 error generated.
 ```
 
-Would be matched with the regular expression: `^(?<file>[^\\.]+.c):(?<line>\\d+):(?<col>\\d+)`.
+Would be matched with the regular expression: `\n(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+)`.
 After the build has failed, pressing `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows), `a.c` would be
 opened and the cursor would be placed at row 4, column 26.
 

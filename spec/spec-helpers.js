@@ -1,14 +1,14 @@
+'use babel';
 'use strict';
 
 var path = require('path');
-var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs-extra'));
+var fs = require('fs-extra');
 
 module.exports = {
   setupNodeModules: function (directory) {
     return function () {
-      return fs.copyAsync(path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
-    };
+      return this.vouch(fs.copy, path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
+    }.bind(this);
   },
 
   setupGrunt: function (directory) {
@@ -16,12 +16,12 @@ module.exports = {
     var realGrunt = path.join(directory, 'node_modules', 'grunt-cli', 'bin', 'grunt');
     return function () {
       return Promise.all([
-        fs.unlinkAsync(binGrunt),
-        fs.chmodAsync(realGrunt, parseInt('0700', 8)),
+        this.vouch(fs.unlink, binGrunt),
+        this.vouch(fs.chmod, realGrunt, parseInt('0700', 8))
       ]).then(function () {
-        return fs.symlinkAsync(realGrunt, binGrunt);
-      });
-    };
+        return this.vouch(fs.symlink, realGrunt, binGrunt);
+      }.bind(this));
+    }.bind(this);
   },
 
   setupGulp: function (directory) {
@@ -29,12 +29,12 @@ module.exports = {
     var realGulp = path.join(directory, 'node_modules', 'gulp', 'bin', 'gulp.js');
     return function () {
       return Promise.all([
-        fs.unlinkAsync(binGulp),
-        fs.chmodAsync(realGulp, parseInt('0700', 8)),
+        this.vouch(fs.unlink, binGulp),
+        this.vouch(fs.chmod, realGulp, parseInt('0700', 8))
       ]).then(function () {
-        return fs.symlinkAsync(realGulp, binGulp);
-      });
-    };
+        return this.vouch(fs.symlink, realGulp, binGulp);
+      }.bind(this));
+    }.bind(this);
   },
 
   _dispatchKeyboardEvent: function (type, element, key, ctrl, alt, shift, meta) {
@@ -70,5 +70,18 @@ module.exports = {
     this.dispatchKeyboardEvent(element, 'keydown', eventArgs);
     this.dispatchKeyboardEvent(element, 'keypress', eventArgs);
     this.dispatchKeyboardEvent(element, 'keyup', eventArgs);
+  },
+
+  vouch: function vouch(fn /* args... */) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function(resolve, reject) {
+      args.push(function(err, result) {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+      fn.apply(null, args);
+    });
   }
 };

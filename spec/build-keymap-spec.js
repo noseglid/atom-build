@@ -1,10 +1,11 @@
+'use babel';
+'use strict';
+
 var fs = require('fs-extra');
 var temp = require('temp');
 var specHelpers = require('./spec-helpers');
 
 describe('Keymap', function() {
-  'use strict';
-
   var directory = null;
   var workspaceElement = null;
 
