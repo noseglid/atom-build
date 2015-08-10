@@ -54,7 +54,10 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
         "VARIABLE2": "VALUE2",
         ...
       },
-      "errorMatch": "^regexp$",
+      "errorMatch": [
+        "^regexp1$",
+        "^regexp2$"
+        ]
       "keymap": "<keymap string>",
       "targets": {
         "<name of target>": {
@@ -78,7 +81,7 @@ systems).
   * `sh` - **[optional]** If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
   * `cwd` - **[optional]** The working directory for the command. E.g. what `.` resolves to.
   * `env` - **[optional]** An object of environment variables and their values to set
-  * `errorMatch` - **[optional]** A regular expression to match output to a file, row and col. See [Error matching](#error-match) for details.
+  * `errorMatch` - **[optional]** A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
   * `keymap` - **[optional]** A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
   * `targets`- **[optional]** Additional targets which can be used to build variations of your project.
 
@@ -97,9 +100,9 @@ values of `env`. They should all be enclosed in curly brackets `{}`
 <a name="error-match"></a>
 ## Error matching
 
-Error matching let's you specify a regular expression which captures
-the output of your build command and opens the correct file, row and column of
-the error. For instance:
+Error matching let's you specify a single regular expression or a list of
+regular expressions, which capture the output of your build command and open the
+correct file, row and column of the error. For instance:
 
 ```bash
 a.c:4:26: error: expected ';' after expression
@@ -122,7 +125,7 @@ The following named groups can be matched from the output:
   * `line` - **[optional]** the line the error resides on. `(?<line> RE)`.
   * `col` - **[optional]** the column the error resides on. `(?<col> RE)`.
 
-Since the regular expression is written in a JSON file, backslashes must be escaped.
+Since the regular expressions are written in a JSON file, backslashes must be escaped.
 
 The `file` should be relative the `cwd` specified. If no `cwd` has been specified, then
 the `file` should be relative the project root (e.g. the top most directory shown in the
