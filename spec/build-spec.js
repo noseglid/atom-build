@@ -10,7 +10,6 @@ describe('Build', function() {
   var goodMakefile = __dirname + '/fixture/Makefile.good';
   var badMakefile = __dirname + '/fixture/Makefile.bad';
   var longMakefile = __dirname + '/fixture/Makefile.long';
-  var escapeMakefile = __dirname + '/fixture/Makefile.escape';
   var goodGruntfile = __dirname + '/fixture/Gruntfile.js';
   var goodGulpfile = __dirname + '/fixture/gulpfile.js';
   var goodNodefile = __dirname + '/fixture/package.json.node';
@@ -643,25 +642,6 @@ describe('Build', function() {
         expect(output.indexOf('FROM_PROCESS_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME=.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME_BASE=.atom-build')).not.toBe(-1);
-      });
-    });
-  });
-
-  describe('when output from build contains HTML characters', function() {
-    it('should escape those properly so the output is not garbled or missing', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(escapeMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/);
       });
     });
   });
