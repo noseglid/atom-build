@@ -161,7 +161,7 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return (workspaceElement.querySelector('.build .title').textContent == 'Aborted!');
+        return (workspaceElement.querySelector('.build .title .title-text').textContent == 'Aborted!');
       });
     });
   });
