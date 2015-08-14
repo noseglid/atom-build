@@ -113,4 +113,25 @@ describe('Visible', function() {
       });
     });
   });
+
+  describe('when a build is triggered', function () {
+    it('should include a timer of the build', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.long'));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      // Let build run for 1.2 second. This should set the timer at "at least" 1.2
+      // which is expected below. If this waits longer than 2000 ms, we're in trouble.
+      waits(1200);
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build-timer').textContent).toMatch(/1.\d/);
+
+        // stop twice to abort the build
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+    });
+  });
 });
