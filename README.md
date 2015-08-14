@@ -75,15 +75,17 @@ systems).
 <a name="custom-build-config"></a>
 ### Configuration options
 
-  * `cmd` - **[required]** The executable command
-  * `name` - *[optional]* The name of the targets. Viewed in the targets list (toggled by `build:select-active-target`).
-  * `args` - *[optional]* An array of arguments for the command
-  * `sh` - *[optional]* If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
-  * `cwd` - *[optional]* The working directory for the command. E.g. what `.` resolves to.
-  * `env` - *[optional]* An object of environment variables and their values to set
-  * `errorMatch` - *[optional]* A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
-  * `keymap` - *[optional]* A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
-  * `targets`- *[optional]* Additional targets which can be used to build variations of your project.
+Option       | Required       | Description
+-------------|----------------|-----------------------
+`cmd`        | **[required]** | The executable command
+`name`       | *[optional]*   | The name of the targets. Viewed in the targets list (toggled by `build:select-active-target`).
+`args`       | *[optional]*   | An array of arguments for the command
+`sh`         | *[optional]*   | If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
+`cwd`        | *[optional]*   | The working directory for the command. E.g. what `.` resolves to.
+`env`        | *[optional]*   | An object of environment variables and their values to set
+`errorMatch` | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
+`keymap`     | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
+`targets`    | *[optional]*   | Additional targets which can be used to build variations of your project.
 
 ### Replacements
 
