@@ -1,19 +1,29 @@
 @import "ui-variables";
 
 .build {
-  h1.error {
+  .title {
+    transition: background-color 0.2s ease-in;
+  }
+
+  .build-timer {
+    display: inline-block;
+    width: 5em;
+    margin-right: 10px;
+  }
+
+  .title.error {
     color: white;
     background-image: none;
     background-color: @background-color-error;
   }
 
-  h1.success {
+  .title.success {
     color: white;
     background-image: none;
     background-color: @background-color-success;
   }
 
-  h1.warning {
+  .title.warning {
     color: white;
     background-image:none;
     background-color: @background-color-warning;
