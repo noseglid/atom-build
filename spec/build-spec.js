@@ -1,16 +1,15 @@
+'use babel';
 'use strict';
 
 var _ = require('lodash');
-var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs-extra'));
-var temp = Promise.promisifyAll(require('temp'));
+var fs = require('fs-extra');
+var temp = require('temp');
 var specHelpers = require('./spec-helpers');
 
 describe('Build', function() {
   var goodMakefile = __dirname + '/fixture/Makefile.good';
   var badMakefile = __dirname + '/fixture/Makefile.bad';
   var longMakefile = __dirname + '/fixture/Makefile.long';
-  var escapeMakefile = __dirname + '/fixture/Makefile.escape';
   var goodGruntfile = __dirname + '/fixture/Gruntfile.js';
   var goodGulpfile = __dirname + '/fixture/gulpfile.js';
   var goodNodefile = __dirname + '/fixture/package.json.node';
@@ -42,8 +41,8 @@ describe('Build', function() {
     jasmine.unspy(window, 'clearTimeout');
 
     waitsForPromise(function() {
-      return temp.mkdirAsync({ prefix: 'atom-build-spec-' }).then(function (dir) {
-        return fs.realpathAsync(dir);
+      return specHelpers.vouch(temp.mkdir, 'atom-build-spec-').then(function (dir) {
+        return specHelpers.vouch(fs.realpath, dir);
       }).then(function (dir) {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
@@ -53,7 +52,7 @@ describe('Build', function() {
   });
 
   afterEach(function() {
-    fs.removeAsync(directory);
+    fs.removeSync(directory);
   });
 
   describe('when package is activated', function() {
@@ -162,7 +161,7 @@ describe('Build', function() {
       });
 
       waitsFor(function() {
-        return (workspaceElement.querySelector('.build .title').textContent == 'Aborted!');
+        return (workspaceElement.querySelector('.build .title .title-text').textContent == 'Aborted!');
       });
     });
   });
@@ -647,25 +646,6 @@ describe('Build', function() {
     });
   });
 
-  describe('when output from build contains HTML characters', function() {
-    it('should escape those properly so the output is not garbled or missing', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(escapeMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/);
-      });
-    });
-  });
-
   describe('when the text editor is saved', function() {
     it('should build when buildOnSave is true', function() {
       atom.config.set('build.buildOnSave', true);
@@ -806,7 +786,7 @@ describe('Build', function() {
   });
 
   describe('when no build tools are available', function () {
-    it('should show an error', function () {
+    it('should show a warning', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
@@ -816,7 +796,7 @@ describe('Build', function() {
 
       runs(function() {
         var notification = atom.notifications.getNotifications()[0];
-        expect(notification.getType()).toEqual('error');
+        expect(notification.getType()).toEqual('warning');
         expect(notification.getMessage()).toEqual('No eligible build tool.');
       });
     });

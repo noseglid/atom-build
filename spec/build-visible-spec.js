@@ -1,9 +1,11 @@
-var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs-extra'));
-var temp = Promise.promisifyAll(require('temp'));
+'use babel';
+'use strict';
+
+var fs = require('fs-extra');
+var temp = require('temp');
+var specHelpers = require('./spec-helpers');
 
 describe('Visible', function() {
-  'use strict';
 
   var directory = null;
   var workspaceElement = null;
@@ -28,13 +30,17 @@ describe('Visible', function() {
     });
 
     waitsForPromise(function() {
-      return temp.mkdirAsync({ prefix: 'atom-build-spec-' }).then(function (dir) {
-        return fs.realpathAsync(dir);
+      return specHelpers.vouch(temp.mkdir, { prefix: 'atom-build-spec-' }).then(function (dir) {
+        return specHelpers.vouch(fs.realpath, dir);
       }).then(function (dir) {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
       });
     });
+  });
+
+  afterEach(function () {
+    fs.removeSync(directory);
   });
 
   describe('when package is activated with panel visibility set to Keep Visible', function() {
