@@ -89,10 +89,12 @@ describe('Visible', function() {
       });
 
       runs(function () {
-        /* Now we expect one line for the 'Executing...' row. And one for the actual output. */
         var el = workspaceElement.querySelector('.build .output');
-        expect(el.childElementCount).toEqual(2);
-        expect(el.querySelector('li:nth-child(2)').textContent).toEqual('same line\n');
+        expect(el.childElementCount).toEqual(1);
+        /* Now we expect one line for the 'Executing...' row, one for the actual output and an empty one at the end. */
+        var lines = el.querySelector('li').textContent.split('\n');
+        expect(lines.length).toEqual(3);
+        expect(lines[1]).toEqual('same line');
       });
     });
 
