@@ -88,7 +88,7 @@ describe('Target', function() {
       });
     });
 
-    xit('should list those targets in a SelectListView (from gulpfile.js)', function () {
+    it('should list those targets in a SelectListView (from gulpfile.js)', function () {
       waitsForPromise(function () {
         return Promise.resolve()
           .then(function () {
