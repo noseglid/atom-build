@@ -73,7 +73,7 @@ describe('Visible', function() {
       });
 
       runs(function () {
-        expect(workspaceElement.querySelector('.build ol.output > li > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
+        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
       });
     });
 
