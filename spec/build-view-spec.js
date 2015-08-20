@@ -57,7 +57,7 @@ describe('Visible', function() {
       });
 
       runs(function () {
-        expect(workspaceElement.querySelector('.build ol.output > li > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
+        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
       });
     });
 
@@ -90,9 +90,8 @@ describe('Visible', function() {
 
       runs(function () {
         var el = workspaceElement.querySelector('.build .output');
-        expect(el.childElementCount).toEqual(1);
         /* Now we expect one line for the 'Executing...' row, one for the actual output and an empty one at the end. */
-        var lines = el.querySelector('li').textContent.split('\n');
+        var lines = el.textContent.split('\n');
         expect(lines.length).toEqual(3);
         expect(lines[1]).toEqual('same line');
       });
