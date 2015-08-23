@@ -29,5 +29,6 @@
   "excludeFiles": [
     "node_modules/**",
     "spec/fixture/node_modules/**"
-  ]
+  ],
+  "esnext": true
 }
