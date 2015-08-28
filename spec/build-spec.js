@@ -7,7 +7,6 @@ var temp = require('temp');
 var specHelpers = require('./spec-helpers');
 
 describe('Build', function() {
-  var goodGruntfile = __dirname + '/fixture/Gruntfile.js';
   var goodNodefile = __dirname + '/fixture/package.json.node';
   var goodAtomfile = __dirname + '/fixture/package.json.atom';
   var badPackageJsonfile = __dirname + '/fixture/package.json.noengine';
@@ -147,47 +146,6 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
-      });
-    });
-  });
-
-  describe('when build is triggered with grunt file', function() {
-    it('should show the build window', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGrunt(directory));
-      });
-
-      runs(function () {
-        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time. But not so, as the time of passing/);
-      });
-    });
-
-    it('should run default target if grunt is not installed', function () {
-      fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: grunt/);
       });
     });
   });

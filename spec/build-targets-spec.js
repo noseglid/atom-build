@@ -62,32 +62,6 @@ describe('Target', function() {
       });
     });
 
-    it('should list those targets in a SelectListView (from Gruntfile.js)', function () {
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(function () {
-            return specHelpers.vouch(fs.copy, __dirname + '/fixture/Gruntfile.js', directory + '/Gruntfile.js');
-          })
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGrunt(directory));
-      });
-
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
-      });
-
-      waitsFor(function () {
-        return workspaceElement.querySelector('.select-list li.build-target');
-      });
-
-      runs(function () {
-        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
-          return el.textContent;
-        });
-        expect(targets).toEqual([ 'Grunt: default', 'Grunt: dev task', 'Grunt: other task', ]);
-      });
-    });
-
     it('should mark the first target as active', function () {
       waitsForPromise(function () {
         var file = __dirname + '/fixture/.atom-build.targets.json';
@@ -208,30 +182,6 @@ describe('Target', function() {
 
       runs(function () {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
-      });
-    });
-  });
-
-  describe('when a tool is unable to extract targets', function () {
-    it('should still list the default target for Grunt', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/Gruntfile.js';
-        return specHelpers.vouch(fs.copy, file, directory + '/Gruntfile.js');
-      });
-
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
-      });
-
-      waitsFor(function () {
-        return workspaceElement.querySelector('.select-list li.build-target');
-      });
-
-      runs(function () {
-        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
-          return el.textContent;
-        });
-        expect(targets).toEqual([ 'Grunt: default' ]);
       });
     });
   });

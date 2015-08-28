@@ -1,29 +1,7 @@
 'use babel';
 'use strict';
 
-var path = require('path');
-var fs = require('fs-extra');
-
 module.exports = {
-  setupNodeModules: function (directory) {
-    return function () {
-      return this.vouch(fs.copy, path.join(__dirname, 'fixture', 'node_modules'), path.join(directory, 'node_modules'));
-    }.bind(this);
-  },
-
-  setupGrunt: function (directory) {
-    var binGrunt = path.join(directory, 'node_modules', '.bin', 'grunt');
-    var realGrunt = path.join(directory, 'node_modules', 'grunt-cli', 'bin', 'grunt');
-    return function () {
-      return Promise.all([
-        this.vouch(fs.unlink, binGrunt),
-        this.vouch(fs.chmod, realGrunt, parseInt('0700', 8))
-      ]).then(function () {
-        return this.vouch(fs.symlink, realGrunt, binGrunt);
-      }.bind(this));
-    }.bind(this);
-  },
-
   _dispatchKeyboardEvent: function (type, element, key, ctrl, alt, shift, meta) {
     var charCode = key.charCodeAt(0);
     var unicode = 'U+00' + charCode.toString(16).toUpperCase();
