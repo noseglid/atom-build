@@ -8,7 +8,6 @@ var specHelpers = require('./spec-helpers');
 
 describe('Build', function() {
   var goodGruntfile = __dirname + '/fixture/Gruntfile.js';
-  var goodGulpfile = __dirname + '/fixture/gulpfile.js';
   var goodNodefile = __dirname + '/fixture/package.json.node';
   var goodAtomfile = __dirname + '/fixture/package.json.atom';
   var badPackageJsonfile = __dirname + '/fixture/package.json.noengine';

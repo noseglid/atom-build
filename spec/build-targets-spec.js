@@ -88,32 +88,6 @@ describe('Target', function() {
       });
     });
 
-    it('should list those targets in a SelectListView (from gulpfile.js)', function () {
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(function () {
-            return specHelpers.vouch(fs.copy, __dirname + '/fixture/gulpfile.js', directory + '/gulpfile.js');
-          })
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGulp(directory));
-      });
-
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
-      });
-
-      waitsFor(function () {
-        return workspaceElement.querySelector('.select-list li.build-target');
-      });
-
-      runs(function () {
-        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
-          return el.textContent;
-        });
-        expect(targets).toEqual([ 'Gulp: default', 'Gulp: dev build', 'Gulp: watch' ]);
-      });
-    });
-
     it('should mark the first target as active', function () {
       waitsForPromise(function () {
         var file = __dirname + '/fixture/.atom-build.targets.json';
@@ -239,28 +213,6 @@ describe('Target', function() {
   });
 
   describe('when a tool is unable to extract targets', function () {
-    it('should still list the default target for gulp', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/gulpfile.js';
-        return specHelpers.vouch(fs.copy, file, directory + '/gulpfile.js');
-      });
-
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
-      });
-
-      waitsFor(function () {
-        return workspaceElement.querySelector('.select-list li.build-target');
-      });
-
-      runs(function () {
-        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), function (el) {
-          return el.textContent;
-        });
-        expect(targets).toEqual([ 'Gulp: default' ]);
-      });
-    });
-
     it('should still list the default target for Grunt', function () {
       waitsForPromise(function () {
         var file = __dirname + '/fixture/Gruntfile.js';

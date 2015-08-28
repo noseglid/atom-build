@@ -24,19 +24,6 @@ module.exports = {
     }.bind(this);
   },
 
-  setupGulp: function (directory) {
-    var binGulp = path.join(directory, 'node_modules', '.bin', 'gulp');
-    var realGulp = path.join(directory, 'node_modules', 'gulp', 'bin', 'gulp.js');
-    return function () {
-      return Promise.all([
-        this.vouch(fs.unlink, binGulp),
-        this.vouch(fs.chmod, realGulp, parseInt('0700', 8))
-      ]).then(function () {
-        return this.vouch(fs.symlink, realGulp, binGulp);
-      }.bind(this));
-    }.bind(this);
-  },
-
   _dispatchKeyboardEvent: function (type, element, key, ctrl, alt, shift, meta) {
     var charCode = key.charCodeAt(0);
     var unicode = 'U+00' + charCode.toString(16).toUpperCase();
