@@ -4,7 +4,7 @@
 var _ = require('lodash');
 var fs = require('fs-extra');
 var temp = require('temp');
-var specHelpers = require('./spec-helpers');
+var specHelpers = require('atom-build-spec-helpers');
 
 describe('Build', function() {
   var goodNodefile = __dirname + '/fixture/package.json.node';

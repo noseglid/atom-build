@@ -4,7 +4,7 @@
 var _ = require('lodash');
 var fs = require('fs-extra');
 var temp = require('temp');
-var specHelpers = require('./spec-helpers');
+var specHelpers = require('atom-build-spec-helpers');
 
 describe('Target', function() {
   var directory = null;
