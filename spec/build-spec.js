@@ -57,6 +57,71 @@ describe('Build', function() {
     });
   });
 
+  describe('when building', function () {
+    it('should show build failed if build fails', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Very bad... && exit 1'
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
+      });
+    });
+
+    it('should cancel build when stopping it, and remove when stopping again', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "Building, this will take some time..." && sleep 30 && echo "Done!"'
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      // Let build run for one second before we terminate it
+      waits(1000);
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+
+      waitsFor(function() {
+        return (workspaceElement.querySelector('.build .title .title-text').textContent == 'Aborted!');
+      });
+    });
+
+    it('should not show the build panel if no build file exists', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
+      waits(200);
+
+      runs(function() {
+        expect(workspaceElement.querySelector('.build')).not.toExist();
+      });
+    });
+  });
+
   describe('when build is triggered twice', function() {
     it('should not leave multiple panels behind', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
