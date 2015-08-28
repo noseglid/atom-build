@@ -7,9 +7,6 @@ var temp = require('temp');
 var specHelpers = require('./spec-helpers');
 
 describe('Build', function() {
-  var goodMakefile = __dirname + '/fixture/Makefile.good';
-  var badMakefile = __dirname + '/fixture/Makefile.bad';
-  var longMakefile = __dirname + '/fixture/Makefile.long';
   var goodGruntfile = __dirname + '/fixture/Gruntfile.js';
   var goodGulpfile = __dirname + '/fixture/gulpfile.js';
   var goodNodefile = __dirname + '/fixture/package.json.node';
@@ -67,7 +64,9 @@ describe('Build', function() {
 
       atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo hello world'
+      }));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
@@ -84,84 +83,6 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
-      });
-    });
-  });
-
-  describe('when build is triggered with Makefile', function() {
-    it('should not show the build window if no buildfile exists', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
-      waits(200);
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).not.toExist();
-      });
-    });
-
-    it('should show the build window if buildfile exists', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
-      });
-    });
-
-    it('should show build failed if build fails', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(badMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
-      });
-    });
-
-    it('should cancel build when stopping it, and remove when stopping again', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(longMakefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      // Let build run for one second before we terminate it
-      waits(1000);
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
-        atom.commands.dispatch(workspaceElement, 'build:stop');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        atom.commands.dispatch(workspaceElement, 'build:stop');
-      });
-
-      waitsFor(function() {
-        return (workspaceElement.querySelector('.build .title .title-text').textContent == 'Aborted!');
       });
     });
   });
@@ -448,169 +369,6 @@ describe('Build', function() {
     });
   });
 
-  describe('when build is triggered with gulp file', function() {
-    it('should show the build window', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGulp(directory));
-      });
-
-      runs(function () {
-        fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/gulp built/);
-      });
-    });
-
-    it('should run default target if gulp is not installed', function () {
-      fs.writeFileSync(directory + 'gulpfile.js', fs.readFileSync(goodGulpfile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: gulp/);
-      });
-    });
-  });
-
-  describe('when multiple build options are available', function() {
-    it('should prioritise .atom-build.json over node', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
-      fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
-      });
-    });
-
-    it('should prioritise grunt over make', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGrunt(directory));
-      });
-
-      runs(function () {
-        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Running "default" task/);
-      });
-    });
-
-    it('should prioritise node over grunt', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGrunt(directory));
-      });
-
-      runs(function () {
-        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-        fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodNodefile));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: npm/);
-      });
-    });
-
-    it('should prioritise atom over grunt', function() {
-      if (process.env.TRAVIS) {
-        return;
-      }
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      waitsForPromise(function () {
-        return Promise.resolve()
-          .then(specHelpers.setupNodeModules(directory))
-          .then(specHelpers.setupGrunt(directory));
-      });
-
-      runs(function () {
-        fs.writeFileSync(directory + 'Gruntfile.js', fs.readFileSync(goodGruntfile));
-        fs.writeFileSync(directory + 'package.json', fs.readFileSync(goodAtomfile));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      }, 'build to be successful', 10000);
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/^Executing: apm/);
-      });
-    });
-  });
-
-  describe('when package.json exists, but without engines and Makefile is present', function() {
-    it('(Issue#3) should run Makefile without any npm arguments', function() {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + 'package.json', fs.readFileSync(badPackageJsonfile));
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
-
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(function() {
-        expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
-      });
-    });
-  });
-
   describe('when replacements are specified in the atom-build.json file', function() {
     it('should replace those with their dynamic value', function() {
 
@@ -650,7 +408,9 @@ describe('Build', function() {
     it('should build when buildOnSave is true', function() {
       atom.config.set('build.buildOnSave', true);
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
         return atom.workspace.open('dummy');
@@ -668,14 +428,16 @@ describe('Build', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
       });
     });
 
     it('should not build when buildOnSave is false', function() {
       atom.config.set('build.buildOnSave', false);
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', {
+        cmd: 'echo "hello, world"'
+      });
 
       waitsForPromise(function() {
         return atom.workspace.open('dummy');

@@ -79,10 +79,12 @@ describe('Visible', function() {
     });
 
     describe('when panel visibility is set to Show on Error', function() {
-      it('should only show an the build panel if a build fails', function () {
+      it('should only show the build panel if a build fails', function () {
         atom.config.set('build.panelVisibility', 'Show on Error');
 
-        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.good'));
+        fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+          cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
 
         /* Give it some reasonable time to show itself if there is a bug */
@@ -93,7 +95,15 @@ describe('Visible', function() {
         });
 
         runs(function () {
-          fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.bad'));
+          fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+            cmd: 'echo "Very bad..." && exit 2'
+          }));
+        });
+
+        // .atom-build.json is updated asynchronously... give it some time
+        waits(200);
+
+        runs(function () {
           atom.commands.dispatch(workspaceElement, 'build:trigger');
         });
 
@@ -111,7 +121,9 @@ describe('Visible', function() {
       it('should not show the build panel if build succeeeds', function () {
         atom.config.set('build.panelVisibility', 'Hidden');
 
-        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.good'));
+        fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+          cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
 
         /* Give it some reasonable time to show itself if there is a bug */
@@ -125,7 +137,9 @@ describe('Visible', function() {
       it('should not show the build panel if build fails', function () {
         atom.config.set('build.panelVisibility', 'Hidden');
 
-        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.bad'));
+        fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+          cmd: 'echo "Very bad..." && exit 2'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
 
         /* Give it some reasonable time to show itself if there is a bug */
@@ -139,7 +153,9 @@ describe('Visible', function() {
       it('should show the build panel if it is toggled',  function () {
         atom.config.set('build.panelVisibility', 'Hidden');
 
-        fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.good'));
+        fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+          cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
 
         waits(200); // Let build finish. Since UI component is not visible yet, there's nothing to poll.
@@ -154,7 +170,7 @@ describe('Visible', function() {
         });
 
         runs(function() {
-          expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+          expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
         });
       });
     });
