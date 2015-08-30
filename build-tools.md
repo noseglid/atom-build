@@ -2,16 +2,17 @@
 
 | Tool           |  Plugin                   |
 |----------------|---------------------------|
-| [GNU Make](1)  | [atom-build-make](2)      |
-| [gulp](3)      | [atom-build-gulp](4)      |
-| [grunt](5)     | [atom-build-grunt](6)     |
-| [npm](7)       | [atom-build-npm-apm](8)   |
-| [apm](9)       | [atom-build-npm-apm](8)   |
-| [Cargo](10)    | [atom-build-cargo](11)    |
-| [Elixir](12)   | [atom-build-elixir](13)   |
-| [Markdown](14) | [atom-build-markdown](15) |
+| [GNU Make][1]  | [atom-build-make][2]      |
+| [gulp][3]      | [atom-build-gulp][4]      |
+| [grunt][5]     | [atom-build-grunt][6]     |
+| [npm][7]       | [atom-build-npm-apm][8]   |
+| [apm][9]       | [atom-build-npm-apm][8]   |
+| [Cargo][10]    | [atom-build-cargo][11]    |
+| [Elixir][12]   | [atom-build-elixir][13]   |
+| [Markdown][14] | [atom-build-markdown][15] |
 
-Have you created a build plugin and want it displayed here? Create a PR modifying this list!
+Have you created a build plugin and want it displayed here?
+Create a PR modifying this list.
 
 [1]: https://www.gnu.org/software/make/
 [2]: https://atom.io/packages/build-make
