@@ -61,6 +61,22 @@ describe('Visible', function() {
       });
     });
 
+    it('should color output according to ansi escape codes after parsing', function () {
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'printf "\\033[31mHello\\e[0m World"; exit 1'
+      }));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsFor(function () {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function () {
+        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
+      });
+    });
+
     it('should output data even if no line break exists', function () {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'printf "data without linebreak"'
