@@ -7,6 +7,7 @@ var temp = require('temp');
 describe('Error Match', function() {
   var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
   var errorMatchNoFileBuildFile = __dirname + '/fixture/.atom-build.error-match-no-file.json';
+  var errorMatchErrorFileBuildFile = __dirname + '/fixture/.atom-build.error-match-errorFile.json';
   var errorMatchNLCAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-no-line-col.json';
   var errorMatchMultiAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple.json';
   var errorMatchMultiFirstAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-first.json';
@@ -97,6 +98,34 @@ describe('Error Match', function() {
         var notification = atom.notifications.getNotifications()[0];
         expect(notification.getType()).toEqual('error');
         expect(notification.getMessage()).toEqual('Error matching failed!');
+      });
+    });
+
+    it('should try to fallback to errorFile if no file is available in match', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchErrorFileBuildFile));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(function() {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function() {
+        var editor = atom.workspace.getActiveTextEditor();
+        var bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(3);
+        expect(bufferPosition.column).toEqual(8);
       });
     });
 
