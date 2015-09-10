@@ -1,0 +1,5 @@
+{
+	"cmd": "echo 'line:3,column:8' && return 1",
+	"errorMatch": "line:(?<line>\\d+),column:(?<col>\\d+)",
+  "errorFile": ".atom-build.json"
+}
