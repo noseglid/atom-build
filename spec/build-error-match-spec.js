@@ -7,7 +7,6 @@ var temp = require('temp');
 describe('Error Match', function() {
   var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
   var errorMatchNoFileBuildFile = __dirname + '/fixture/.atom-build.error-match-no-file.json';
-  var errorMatchErrorFileBuildFile = __dirname + '/fixture/.atom-build.error-match-errorFile.json';
   var errorMatchNLCAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-no-line-col.json';
   var errorMatchMultiAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple.json';
   var errorMatchMultiFirstAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-first.json';
@@ -104,7 +103,11 @@ describe('Error Match', function() {
     it('should try to fallback to errorFile if no file is available in match', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchErrorFileBuildFile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "line:3,column:8" && return 1',
+        errorMatch: 'line:(?<line>\\d+),column:(?<col>\\d+)',
+        errorFile: '.atom-build.json'
+      }));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {

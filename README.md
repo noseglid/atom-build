@@ -84,12 +84,13 @@ Option       | Required       | Description
 `cwd`        | *[optional]*   | The working directory for the command. E.g. what `.` resolves to.
 `env`        | *[optional]*   | An object of environment variables and their values to set
 `errorMatch` | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
+`errorFile`  | *[optional]*   | A file path string for errors/matches that do not contain a file path.
 `keymap`     | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
 `targets`    | *[optional]*   | Additional targets which can be used to build variations of your project.
 
 ### Replacements
 
-The following parameters will be replaced in `cmd`, any entry in `args`, `cwd` and
+The following parameters will be replaced in `cmd`, any entry in `args`, `cwd`, `errorFile`, and
 values of `env`. They should all be enclosed in curly brackets `{}`
 
   * `{FILE_ACTIVE}` - Full path to the currently active file in Atom. E.g. `/home/noseglid/github/atom-build/lib/build.js`
@@ -126,6 +127,8 @@ The following named groups can be matched from the output:
   * `file` - **[required]** the file to open. May be relative `cwd` or absolute. `(?<file> RE)`.
   * `line` - *[optional]* the line the error resides on. `(?<line> RE)`.
   * `col` - *[optional]* the column the error resides on. `(?<col> RE)`.
+
+> `file` is not required **if** you provide `errorFile` in your config and then all error matches will be directed to the specified file.
 
 Since the regular expressions are written in a JSON file, backslashes must be escaped.
 
