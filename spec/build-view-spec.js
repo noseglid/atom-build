@@ -57,7 +57,7 @@ describe('Visible', function() {
       });
 
       runs(function () {
-        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
+        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '187', '0', '0' ]);
       });
     });
 
@@ -132,6 +132,31 @@ describe('Visible', function() {
         // stop twice to abort the build
         atom.commands.dispatch(workspaceElement, 'build:stop');
         atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+    });
+  });
+
+  describe('when links are added', function () {
+    it('should only add one link per text, even if multiple is requested', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo match1 match1 match1 && exit 1',
+        errorMatch: 'match1'
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var output = workspaceElement.querySelector('.build .output');
+        expect(output.children.length).toEqual(6);
+        for (var i = 0; i < output.children.length; i++) {
+          expect(output.children[i].id).toEqual('error-match-0-0');
+        }
       });
     });
   });

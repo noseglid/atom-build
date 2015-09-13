@@ -45,6 +45,32 @@ describe('Error Match', function() {
     fs.removeSync(directory);
   });
 
+  describe('when error matcher is configured incorrectly', function () {
+    it('should show an error if regex is invalid', function () {
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'return 1',
+        errorMatch: '(invalidRegex'
+      }));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(atom.notifications.getNotifications().length).toEqual(1);
+
+        var notification = atom.notifications.getNotifications()[0];
+        expect(notification.getType()).toEqual('error');
+        expect(notification.getMessage()).toEqual('Error matching failed!');
+        expect(notification.options.detail).toMatch(/Unterminated group/);
+      });
+    });
+  });
+
   describe('when output is captured to show editor on error', function () {
     it('should place the line and column on error in correct file', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -298,30 +324,6 @@ describe('Error Match', function() {
         expect(editor.getTitle()).toEqual('.atom-build.json');
         expect(bufferPosition.row).toEqual(2);
         expect(bufferPosition.column).toEqual(7);
-      });
-    });
-
-    it('should show an error if regex is invalid', function () {
-
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'return 1',
-        errorMatch: '(invalidRegex'
-      }));
-
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        expect(atom.notifications.getNotifications().length).toEqual(1);
-
-        var notification = atom.notifications.getNotifications()[0];
-        expect(notification.getType()).toEqual('error');
-        expect(notification.getMessage()).toEqual('Error matching failed!');
-        expect(notification.options.detail).toMatch(/Unterminated group/);
       });
     });
 
