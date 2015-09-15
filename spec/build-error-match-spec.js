@@ -1,4 +1,3 @@
-'use babel';
 'use strict';
 
 var fs = require('fs-extra');
