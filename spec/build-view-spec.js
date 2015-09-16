@@ -5,7 +5,7 @@ var fs = require('fs-extra');
 var temp = require('temp');
 var specHelpers = require('./spec-helpers');
 
-describe('Visible', function() {
+describe('BuildView', function() {
 
   var directory = null;
   var workspaceElement = null;
