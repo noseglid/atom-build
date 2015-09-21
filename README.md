@@ -57,7 +57,7 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
       "errorMatch": [
         "^regexp1$",
         "^regexp2$"
-        ]
+      ],
       "keymap": "<keymap string>",
       "targets": {
         "<name of target>": {
