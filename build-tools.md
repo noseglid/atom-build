@@ -2,15 +2,15 @@
 
 | Tool           |  Plugin                   |
 |----------------|---------------------------|
-| [GNU Make][1]  | [atom-build-make][2]      |
-| [gulp][3]      | [atom-build-gulp][4]      |
-| [grunt][5]     | [atom-build-grunt][6]     |
-| [npm][7]       | [atom-build-npm-apm][8]   |
-| [apm][9]       | [atom-build-npm-apm][8]   |
-| [Cargo][10]    | [atom-build-cargo][11]    |
-| [Elixir][12]   | [atom-build-elixir][13]   |
-| [Markdown][14] | [atom-build-markdown][15] |
-| [Gradle][16]   | [atom-build-gradle][17]   |
+| [GNU Make][1]  | [build-make][2]      |
+| [gulp][3]      | [build-gulp][4]      |
+| [grunt][5]     | [build-grunt][6]     |
+| [npm][7]       | [build-npm-apm][8]   |
+| [apm][9]       | [build-npm-apm][8]   |
+| [Cargo][10]    | [build-cargo][11]    |
+| [Elixir][12]   | [build-elixir][13]   |
+| [Markdown][14] | [build-markdown][15] |
+| [Gradle][16]   | [build-gradle][17]   |
 | [JPM][18]      | [build-jpm][19]           |
 
 Have you created a build plugin and want it displayed here?
