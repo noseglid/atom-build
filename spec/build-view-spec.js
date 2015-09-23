@@ -5,7 +5,7 @@ var fs = require('fs-extra');
 var temp = require('temp');
 var specHelpers = require('./spec-helpers');
 
-describe('Visible', function() {
+describe('BuildView', function() {
 
   var directory = null;
   var workspaceElement = null;
@@ -157,6 +157,92 @@ describe('Visible', function() {
         for (var i = 0; i < output.children.length; i++) {
           expect(output.children[i].id).toEqual('error-match-0-0');
         }
+      });
+    });
+  });
+
+  describe('when panel orientation is altered', function () {
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Bottom');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var bottomPanels = atom.workspace.getBottomPanels();
+        expect(bottomPanels.length).toEqual(1);
+        expect(bottomPanels[0].item.constructor.name).toEqual('BuildView');
+      });
+    });
+
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Left');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var panels = atom.workspace.getLeftPanels();
+        expect(panels.length).toEqual(1);
+        expect(panels[0].item.constructor.name).toEqual('BuildView');
+      });
+    });
+
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Top');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var panels = atom.workspace.getTopPanels();
+        expect(panels.length).toEqual(1);
+        expect(panels[0].item.constructor.name).toEqual('BuildView');
+      });
+    });
+
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Right');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var panels = atom.workspace.getRightPanels();
+        expect(panels.length).toEqual(1);
+        expect(panels[0].item.constructor.name).toEqual('BuildView');
       });
     });
   });
