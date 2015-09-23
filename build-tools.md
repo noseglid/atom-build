@@ -11,6 +11,7 @@
 | [Elixir][12]   | [atom-build-elixir][13]   |
 | [Markdown][14] | [atom-build-markdown][15] |
 | [Gradle][16]   | [atom-build-gradle][17]   |
+| [JPM][18]      | [build-jpm][19]           |
 
 Have you created a build plugin and want it displayed here?
 Create a PR modifying this list.
@@ -32,3 +33,5 @@ Create a PR modifying this list.
 [15]: https://atom.io/packages/build-markdown
 [16]: https://gradle.org/
 [17]: https://atom.io/packages/build-gradle
+[18]: https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm
+[19]: https://atom.io/packages/build-jpm
