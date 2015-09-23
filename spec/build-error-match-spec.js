@@ -348,7 +348,7 @@ describe('Error Match', function() {
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(135);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(168);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
@@ -381,7 +381,7 @@ describe('Error Match', function() {
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(135);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(168);
         atom.commands.dispatch(workspaceElement, 'build:error-match-first');
       });
 
