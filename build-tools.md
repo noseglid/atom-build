@@ -14,7 +14,7 @@
 | [JPM][18]      | [build-jpm][19]           |
 
 Have you created a build plugin and want it displayed here?
-Create a PR modifying this list.
+Create a pull request modifying this list.
 
 [1]: https://www.gnu.org/software/make/
 [2]: https://atom.io/packages/build-make
