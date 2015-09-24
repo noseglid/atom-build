@@ -6,8 +6,6 @@ var fs = require('fs-extra');
 var temp = require('temp');
 
 describe('Confirm', function() {
-  var goodMakefile = __dirname + '/fixture/Makefile.good';
-
   var directory = null;
   var workspaceElement = null;
 
@@ -42,10 +40,12 @@ describe('Confirm', function() {
     it('should show the save confirmation', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       runs(function() {
@@ -66,10 +66,12 @@ describe('Confirm', function() {
     it('should cancel the confirm window when pressing escape', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       runs(function() {
@@ -91,10 +93,12 @@ describe('Confirm', function() {
     it('should not confirm if a TextEditor edits an unsaved file', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       waitsForPromise(function() {
@@ -116,22 +120,26 @@ describe('Confirm', function() {
 
       runs(function() {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time\nbut not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
       });
     });
 
     it('should save and build when selecting save and build', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('dummy:\n\techo kansas\n');
+        editor.setText(JSON.stringify({
+          cmd: 'echo kansas'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
@@ -159,15 +167,19 @@ describe('Confirm', function() {
     it('should build but not save when opting so', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('dummy:\n\techo kansas\n');
+        editor.setText(JSON.stringify({
+          cmd: 'echo kansas'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
@@ -195,15 +207,19 @@ describe('Confirm', function() {
     it('should do nothing when cancelling', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('dummy:\n\techo kansas\n');
+        editor.setText(JSON.stringify({
+          cmd: 'echo kansas'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
@@ -229,15 +245,19 @@ describe('Confirm', function() {
     it('should only keep at maximum 1 dialog open', function () {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(goodMakefile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+      }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('Makefile');
+        return atom.workspace.open('.atom-build.json');
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.insertText('hello kansas');
+        editor.setText(JSON.stringify({
+          cmd: 'echo kansas'
+        }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 

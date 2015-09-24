@@ -3,7 +3,7 @@
 
 var fs = require('fs-extra');
 var temp = require('temp');
-var specHelpers = require('./spec-helpers');
+var specHelpers = require('atom-build-spec-helpers');
 
 describe('BuildView', function() {
 
@@ -100,7 +100,9 @@ describe('BuildView', function() {
     it('should escape HTML chars so the output is not garbled or missing', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.escape'));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "<script type=\"text/javascript\">alert(\'XSS!\')</script>"'
+      }));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
@@ -119,7 +121,9 @@ describe('BuildView', function() {
     it('should include a timer of the build', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.long'));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "Building, this will take some time..." && sleep 30 && echo "Done!"'
+      }));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       // Let build run for 1.2 second. This should set the timer at "at least" 1.2
