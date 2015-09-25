@@ -1,4 +1,3 @@
-'use babel';
 'use strict';
 
 var fs = require('fs-extra');
@@ -43,6 +42,32 @@ describe('Error Match', function() {
 
   afterEach(function() {
     fs.removeSync(directory);
+  });
+
+  describe('when error matcher is configured incorrectly', function () {
+    it('should show an error if regex is invalid', function () {
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'return 1',
+        errorMatch: '(invalidRegex'
+      }));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        expect(atom.notifications.getNotifications().length).toEqual(1);
+
+        var notification = atom.notifications.getNotifications()[0];
+        expect(notification.getType()).toEqual('error');
+        expect(notification.getMessage()).toEqual('Error matching failed!');
+        expect(notification.options.detail).toMatch(/Unterminated group/);
+      });
+    });
   });
 
   describe('when output is captured to show editor on error', function () {
@@ -333,30 +358,6 @@ describe('Error Match', function() {
       });
     });
 
-    it('should show an error if regex is invalid', function () {
-
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'return 1',
-        errorMatch: '(invalidRegex'
-      }));
-
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
-
-      waitsFor(function() {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(function() {
-        expect(atom.notifications.getNotifications().length).toEqual(1);
-
-        var notification = atom.notifications.getNotifications()[0];
-        expect(notification.getType()).toEqual('error');
-        expect(notification.getMessage()).toEqual('Error matching failed!');
-        expect(notification.options.detail).toMatch(/Unterminated group/);
-      });
-    });
-
     it('should scroll the build panel to the text of the error', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchLongOutputAtomBuildFile));
@@ -379,7 +380,7 @@ describe('Error Match', function() {
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(135);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(168);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
@@ -412,7 +413,7 @@ describe('Error Match', function() {
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(135);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(168);
         atom.commands.dispatch(workspaceElement, 'build:error-match-first');
       });
 

@@ -1,6 +1,10 @@
 @import "ui-variables";
+@status-panel-height: 3em;
 
 .build {
+
+  height: 100%;
+
   .title {
     transition: background-color 0.2s ease-in;
   }
@@ -30,14 +34,29 @@
   }
 
   .output {
-    transition: height 0.5s ease-in-out;
-    padding: 10px 0 0 10px;
+    transition: 0.5s ease-in-out;
+    transition-property: width, height;
+    padding: 10px 0 @status-panel-height 10px;
     min-height: 100px;
-    overflow-y: auto;
+    overflow: auto;
     word-wrap: break-word;
     white-space: pre-wrap;
-    list-style: none;
     font-family: monospace;
+  }
+
+  .status {
+    position: absolute;
+    bottom: 0;
+    height: @status-panel-height;
+    width: 100%;
+
+    h1 {
+      height: 100%;
+    }
+  }
+
+  a {
+    text-decoration: underline;
   }
 }
 
