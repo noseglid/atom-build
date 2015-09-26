@@ -154,9 +154,13 @@ argument, `path`, which is the root folder of the currently active project in At
 It should return `true` or `false` indicating if it can build that folder into something
 sensible. Typically look for the existence of a build file such as `gulpfile.js` or `Makefile`.
 
-`settings` must return a promise. It is called when it is time to build the project.
+`settings` can return a Promise or an object.. It is called when it is time to build the project.
 It can provide anything which is allowed by the [custom build configuration](#custom-build-config).
 This includes the command, `cmd`, to execute, any arguments, `args`, and so on.
+
+`isEligable` and `settings` will be called with the same value for `this` (which is an empty object at first). If you have to make
+any time consuming computation is `isEligable` it may be wise to store that in `this` and
+reuse it in `settings`.
 
 ## Analytics
 
