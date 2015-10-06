@@ -1,36 +1,179 @@
 @import "ui-variables";
+
 @status-panel-height: 3em;
+@build-view-resizer-size: 0.3rem;
 
-.build {
+// default for resize handles is no display at all
+.build-view-resize-handle {
+  display: none;
+}
 
+// use flex display for build, containing
+// resize-handle and build-view-container-outer
+atom-panel .build {
+  display: flex;
+
+  > .build-view-container-outer {
+    width: 100%;
+    height: 100%;
+
+    flex: 99;
+    display: flex;
+    flex-direction: column;
+
+    // > div {
+    //   width: 100%;
+    // }
+
+    // build-view-container-inner, containing button container
+    // and output
+    > .build-view-container-inner {
+      flex: 99;
+      display: flex;
+
+      > .output {
+        flex: 99;
+      }
+
+      > .btn-container {
+        display: flex;
+      }
+    }
+  }
+}
+
+// if panel is horizontically aligned
+atom-panel.right, atom-panel.left {
+  .build .build-view-container-outer > div {
+    width: 100%;
+  }
+  .build {
+    flex-direction: row;
+  }
+
+  // build-view-container-inner is a column
+  .build .build-view-container-inner {
+    flex-direction: column;
+
+    .btn-container {
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+atom-panel.right {
+  .build-view-resize-handle:first-child {
+    width: @build-view-resizer-size;
+    cursor: col-resize;
+    display: block;
+    height: 100%;
+  }
+}
+
+atom-panel.left {
+  .build-view-resize-handle:last-child {
+    width: @build-view-resizer-size;
+    cursor: col-resize;
+    display: block;
+    height: 100%;
+  }
+}
+
+atom-panel.top, atom-panel.bottom {
+  .build {
+    flex-direction: column;
+  }
+
+  // build-view-container-inner is a row
+  .build .build-view-container-inner {
+    flex-direction: row-reverse;
+
+    .btn-container {
+      justify-content: flex-start;
+      max-width: 7.5rem;
+      flex-wrap: wrap;
+      height: 1px;
+    }
+  }
+
+
+  // .build > div.build-view-container {
+  //   flex: 99;
+  //   display: flex;
+  //   flex-direction: column;
+  //   > div {
+  //     width: 100%;
+  //   }
+  //   .output {
+  //     flex: 99;
+  //   }
+  //
+  //   .btn-container {
+  //     display: flex;
+  //     justify-content: flex-end;
+  //   }
+  // }
+}
+
+atom-panel.top {
+  .build-view-resize-handle:last-child {
+    height: @build-view-resizer-size;
+    cursor: row-resize;
+    display: block;
+    width: 100%;
+  }
+}
+
+atom-panel.bottom {
+  .build-view-resize-handle:first-child {
+    height: @build-view-resizer-size;
+    cursor: row-resize;
+    display: block;
+    width: 100%;
+  }
+}
+
+atom-panel .build {
   height: 100%;
 
-  .title {
-    transition: background-color 0.2s ease-in;
-  }
+  .status {
+//    position: absolute;
+    bottom: 0;
+    height: @status-panel-height;
+    width: 100%;
 
-  .build-timer {
-    display: inline-block;
-    width: 5em;
-    margin-right: 10px;
-  }
+    h1 {
+      height: 100%;
+    }
 
-  .title.error {
-    color: white;
-    background-image: none;
-    background-color: @background-color-error;
-  }
+    .title {
+      transition: background-color 0.2s ease-in;
+    }
 
-  .title.success {
-    color: white;
-    background-image: none;
-    background-color: @background-color-success;
-  }
+    .build-timer {
+      display: inline-block;
+      width: 5em;
+      margin-right: 10px;
+    }
 
-  .title.warning {
-    color: white;
-    background-image:none;
-    background-color: @background-color-warning;
+    .title.error {
+      color: white;
+      background-image: none;
+      background-color: @background-color-error;
+    }
+
+    .title.success {
+      color: white;
+      background-image: none;
+      background-color: @background-color-success;
+    }
+
+    .title.warning {
+      color: white;
+      background-image:none;
+      background-color: @background-color-warning;
+    }
   }
 
   .output {
@@ -44,34 +187,25 @@
     font-family: monospace;
   }
 
-  .status {
-    position: absolute;
-    bottom: 0;
-    height: @status-panel-height;
-    width: 100%;
+  .btn-container {
+    display: flex;
 
-    h1 {
-      height: 100%;
+    .btn {
+      padding-left: 0.8rem;
+      padding-right: 0.8rem;
+      margin: 0.2rem;
     }
+
+    .icon::before {
+       margin: 0;
+    }
+
+
   }
+
 
   a {
     text-decoration: underline;
   }
-}
 
-.btn-container {
-  .btn {
-    float: right;
-    margin: 10px 10px 0 0;
-    color: @text-color-info;
-  }
-
-  .icon::before {
-    margin: 0;
-  }
-
-  .new-row {
-    clear: both;
-  }
 }
