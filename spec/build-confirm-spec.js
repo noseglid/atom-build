@@ -90,6 +90,11 @@ describe('Confirm', function() {
       });
     });
 
+    it('should not do anything if issuing no-confirm whithout the dialog', function () {
+      expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
+      atom.commands.dispatch(workspaceElement, 'build:no-confirm');
+    });
+
     it('should not confirm if a TextEditor edits an unsaved file', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
