@@ -122,9 +122,9 @@ To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux
 Another package may provide build information to the `build`-package by implementing its service API.
 The package should integrate via the service API. This is typically done in `package.json`:
 
-```json
+```javascript
 {
-  <other stuff>
+  // <other stuff>
   "providedServices": {
     "builder": {
       "description": "Description of the build configurations this package gives",
@@ -142,7 +142,9 @@ object in return:
 {
   niceName: 'string',
   isEligable: function (path) {},
-  settings: function (path) {}
+  settings: function (path) {},
+  on: function (ev, callback) {}, //optional
+  off: function (ev), //optional
 }
 ```
 
@@ -158,8 +160,17 @@ sensible. Typically look for the existence of a build file such as `gulpfile.js`
 It can provide anything which is allowed by the [custom build configuration](#custom-build-config).
 This includes the command, `cmd`, to execute, any arguments, `args`, and so on.
 
-`isEligable` and `settings` will be called with the same value for `this` (which is an empty object at first). If you have to make
-any time consuming computation is `isEligable` it may be wise to store that in `this` and
+_[optional]_ `on` will be called with a string which is the name of an event the build tool provider can emit. The build
+tool provider should call the `callback` when the specified event occurs. Events `build` may ask for include:
+  * `refresh` - call the callback if you want to force `build` to refresh all targets.
+    this is common after the build file has been altered.
+
+_[optional]_ `off` will be called when `build` is no longer interested in that event. It may be because
+`build` is being deactivated, or refreshing its state. `build` will never call `off` for an event unless it has
+previoused registered a listener via `on` first.
+
+All functions will be called with the same value for `this` (which is an empty object at first). If you have to make
+any time consuming computation in for instance `isEligable` it may be wise to store the result in `this` and
 reuse it in `settings`.
 
 ## Analytics
