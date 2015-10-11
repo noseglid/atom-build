@@ -13,35 +13,13 @@ Automatically build your project inside your new favorite editor, Atom.
 
 ![work work](https://noseglid.github.io/atom-build.gif)
 
-Supported build tools:
+<a name="build-command"></a>
+## Specifying a build command
+You can check out [the plugins list](build-tools.md) for common build tools. Install them as
+you would any other package!
 
-  1. Custom by [specifying your own build command](#custom-build-command)
-    * Supports multiple targets.
-    * Supports error matching.
-  1. [NodeJS](http://nodejs.org) (runs `npm install`) - if `package.json` exists where `engines['node']` is set
-  1. [Atom](http://atom.io) (runs `apm install`) - if `package.json` exists where `engines['atom']` is set
-  1. [Grunt](http://gruntjs.com/) - if `Gruntfile.js` exists
-    * Supports multiple targets.
-  1. [Gulp](http://gulpjs.com/) - if `gulpfile.js` exists
-    * Supports multiple targets.
-  1. [GNU Make](https://www.gnu.org/software/make/) - if `Makefile` exists
-  1. [Elixir](http://elixir-lang.org/) - if `mix.exs` exists
-  1. [Cargo](http://doc.crates.io) - if `Cargo.toml` exists
-    * Supports error matching.
-
-If multiple viable build options are found, `atom-build` will
-prioritise according to the list above. For instance, if `package.json` and
-`Gruntfile.js` are both available in the root folder, `npm install` will be
-executed by `atom-build`.
-
-If you need to run `grunt`, `gulp` or other tool to build your project, then you can utilize the [postinstall-script](https://www.npmjs.org/doc/misc/npm-scripts.html) of package.json. This will also help you if grunt is run as a node module since it
-will be downloaded (via `npm install`) prior.
-
-<a name="custom-build-command"></a>
-## Specifying a custom build command
-
-If the built-in defaults are not enough to suit your needs, you can specify
-exactly what to execute. Create a file named `.atom-build.json` in your project root:
+If no build tool is enough to suit your needs, you can create a file named `.atom-build.json`
+in your project root, and specify exactly how your project is built:
 
     {
       "cmd": "<command to execute>",
@@ -57,7 +35,7 @@ exactly what to execute. Create a file named `.atom-build.json` in your project 
       "errorMatch": [
         "^regexp1$",
         "^regexp2$"
-        ]
+      ],
       "keymap": "<keymap string>",
       "targets": {
         "<name of target>": {
@@ -176,9 +154,13 @@ argument, `path`, which is the root folder of the currently active project in At
 It should return `true` or `false` indicating if it can build that folder into something
 sensible. Typically look for the existence of a build file such as `gulpfile.js` or `Makefile`.
 
-`settings` must return a promise. It is called when it is time to build the project.
+`settings` can return a Promise or an object.. It is called when it is time to build the project.
 It can provide anything which is allowed by the [custom build configuration](#custom-build-config).
 This includes the command, `cmd`, to execute, any arguments, `args`, and so on.
+
+`isEligable` and `settings` will be called with the same value for `this` (which is an empty object at first). If you have to make
+any time consuming computation is `isEligable` it may be wise to store that in `this` and
+reuse it in `settings`.
 
 ## Analytics
 

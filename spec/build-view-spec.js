@@ -3,9 +3,9 @@
 
 var fs = require('fs-extra');
 var temp = require('temp');
-var specHelpers = require('./spec-helpers');
+var specHelpers = require('atom-build-spec-helpers');
 
-describe('Visible', function() {
+describe('BuildView', function() {
 
   var directory = null;
   var workspaceElement = null;
@@ -57,7 +57,7 @@ describe('Visible', function() {
       });
 
       runs(function () {
-        expect(workspaceElement.querySelector('.build ol.output > li > span').style.color.match(/\d+/g)).toEqual([ '170', '0', '0' ]);
+        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '187', '0', '0' ]);
       });
     });
 
@@ -89,17 +89,20 @@ describe('Visible', function() {
       });
 
       runs(function () {
-        /* Now we expect one line for the 'Executing...' row. And one for the actual output. */
         var el = workspaceElement.querySelector('.build .output');
-        expect(el.childElementCount).toEqual(2);
-        expect(el.querySelector('li:nth-child(2)').textContent).toEqual('same line\n');
+        /* Now we expect one line for the 'Executing...' row, one for the actual output and an empty one at the end. */
+        var lines = el.textContent.split('\n');
+        expect(lines.length).toEqual(3);
+        expect(lines[1]).toEqual('same line');
       });
     });
 
     it('should escape HTML chars so the output is not garbled or missing', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.escape'));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "<script type=\"text/javascript\">alert(\'XSS!\')</script>"'
+      }));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(function() {
@@ -118,7 +121,9 @@ describe('Visible', function() {
     it('should include a timer of the build', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + 'Makefile', fs.readFileSync(__dirname + '/fixture/Makefile.long'));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "Building, this will take some time..." && sleep 30 && echo "Done!"'
+      }));
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       // Let build run for 1.2 second. This should set the timer at "at least" 1.2
@@ -131,6 +136,117 @@ describe('Visible', function() {
         // stop twice to abort the build
         atom.commands.dispatch(workspaceElement, 'build:stop');
         atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+    });
+  });
+
+  describe('when links are added', function () {
+    it('should only add one link per text, even if multiple is requested', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo match1 match1 match1 && exit 1',
+        errorMatch: 'match1'
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var output = workspaceElement.querySelector('.build .output');
+        expect(output.children.length).toEqual(6);
+        for (var i = 0; i < output.children.length; i++) {
+          expect(output.children[i].id).toEqual('error-match-0-0');
+        }
+      });
+    });
+  });
+
+  describe('when panel orientation is altered', function () {
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Bottom');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var bottomPanels = atom.workspace.getBottomPanels();
+        expect(bottomPanels.length).toEqual(1);
+        expect(bottomPanels[0].item.constructor.name).toEqual('BuildView');
+      });
+    });
+
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Left');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var panels = atom.workspace.getLeftPanels();
+        expect(panels.length).toEqual(1);
+        expect(panels[0].item.constructor.name).toEqual('BuildView');
+      });
+    });
+
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Top');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var panels = atom.workspace.getTopPanels();
+        expect(panels.length).toEqual(1);
+        expect(panels[0].item.constructor.name).toEqual('BuildView');
+      });
+    });
+
+    it('should show the panel at the bottom spot', function () {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.panelOrientation', 'Right');
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo this will fail && exit 1',
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function() {
+        var panels = atom.workspace.getRightPanels();
+        expect(panels.length).toEqual(1);
+        expect(panels[0].item.constructor.name).toEqual('BuildView');
       });
     });
   });
