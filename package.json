@@ -15,7 +15,8 @@
     "lodash": "^3.8.0",
     "node-uuid": "^1.4.3",
     "tree-kill": "^0.1.1",
-    "xregexp": "^2.0.0"
+    "xregexp": "^2.0.0",
+    "cson-parser": "^1.2.0"
   },
   "devDependencies": {
     "fs-extra": "^0.23.0",

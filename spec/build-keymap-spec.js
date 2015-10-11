@@ -200,7 +200,7 @@ describe('Keymap', function() {
         }));
       });
 
-      waits(300); // .atom-build.json is reloaded automatically
+      waits(300); // Custom file is reloaded automatically
 
       runs(function () {
         specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
