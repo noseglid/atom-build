@@ -301,6 +301,51 @@ describe('Error Match', function() {
       });
     });
 
+    it('should prepend `cwd` to the relative matched file if set', function () {
+      var atomBuild = {
+        cmd: 'echo __.atom-build.json__ && exit 1',
+        cwd: directory,
+        errorMatch: '__(?<file>.+)__'
+      };
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify(atomBuild));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function () {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(function () {
+        return atom.commands.dispatch(workspaceElement, 'build:error-match-first');
+      });
+
+      waitsFor(function () {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function () {
+        // Error match one more time to make sure `cwd` isn't prepended multiple times
+        atom.workspace.getActivePaneItem().destroy();
+      });
+
+      waitsFor(function () {
+        return !atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function () {
+        return atom.commands.dispatch(workspaceElement, 'build:error-match-first');
+      });
+
+      waitsFor(function () {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(function () {
+        var editor = atom.workspace.getActiveTextEditor();
+        expect(editor.getPath()).toEqual(directory + '.atom-build.json');
+      });
+    });
+
     it('should auto match error on failed build when config is set', function () {
       atom.config.set('build.scrollOnError', true);
 
