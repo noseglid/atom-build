@@ -72,6 +72,21 @@ describe('Build', function() {
       });
     });
 
+    it('should fail build, if errors are matched', function() {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo __ERROR__ && exit 0',
+        errorMatch: 'ERROR'
+      }));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(function() {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+    });
+
     it('should cancel build when stopping it, and remove when stopping again', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
