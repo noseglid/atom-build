@@ -32,6 +32,13 @@
       }
     }
   },
+  "providedServices": {
+    "linter-plus-self": {
+      "versions": {
+        "^0.1.0": "provideLinter"
+      }
+    }
+  },
   "scripts": {
     "test": "./node_modules/.bin/jscs lib/*.js spec/*.js && ./node_modules/.bin/jshint lib/*.js spec/*.js"
   },
