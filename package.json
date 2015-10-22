@@ -30,12 +30,10 @@
       "versions": {
         "^1.0.0": "consumeBuilder"
       }
-    }
-  },
-  "providedServices": {
+    },
     "linter-plus-self": {
       "versions": {
-        "0.1.0": "provideLinter"
+        "0.1.0": "consumeLinter"
       }
     }
   },
