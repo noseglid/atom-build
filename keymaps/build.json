@@ -13,6 +13,13 @@
     "ctrl-alt-h": "build:error-match-first",
     "ctrl-alt-t": "build:select-active-target"
   },
+  "atom-workspace, atom-text-editor": {
+    "f9": "build:trigger",
+    "f8": "build:toggle-panel",
+    "f4": "build:error-match",
+    "shift-f4": "build:error-match-first",
+    "f7": "build:select-active-target"
+  },
   ".build": {
     "escape": "build:stop"
   },
