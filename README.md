@@ -4,11 +4,11 @@
 
 Automatically build your project inside your new favorite editor, Atom.
 
-  * `cmd-alt-b` / `ctrl-alt-b` builds your project.
-  * `cmd-alt-g` / `ctrl-alt-g` cycles through causes of build error. See [Error Matching](#error-match).
-  * `cmd-alt-h` / `ctrl-alt-h` goes to the first build error. See [Error Matching](#error-match).
-  * `cmd-alt-v` / `ctrl-alt-v` Toggles the build panel.
-  * `cmd-alt-t` / `ctrl-alt-t` Displays the available build targets.
+  * `cmd-alt-b` / `ctrl-alt-b` / `f9` builds your project.
+  * `cmd-alt-g` / `ctrl-alt-g` / `f4` cycles through causes of build error. See [Error Matching](#error-match).
+  * `cmd-alt-h` / `ctrl-alt-h` / `shift-f4` goes to the first build error. See [Error Matching](#error-match).
+  * `cmd-alt-v` / `ctrl-alt-v` / `f8` Toggles the build panel.
+  * `cmd-alt-t` / `ctrl-alt-t` / `f7` Displays the available build targets.
   * `escape` terminates build / closes the build window.
 
 ![work work](https://noseglid.github.io/atom-build.gif)
@@ -93,7 +93,7 @@ correct file, row and column of the error. For instance:
 ```
 
 Would be matched with the regular expression: `\n(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+)`.
-After the build has failed, pressing `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows), `a.c` would be
+After the build has failed, pressing `cmd-alt-g` (OS X) or `f4` (Linux/Windows), `a.c` would be
 opened and the cursor would be placed at row 4, column 26.
 
 Note the syntax for match groups. This is from the [XRegExp](http://xregexp.com/) package
@@ -115,7 +115,7 @@ If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (O
 to cycle through the errors (in the order they appear, first on stderr then on stdout).
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
-To jump to the first error you can use `cmd-alt-h` (OS X) or `ctrl-alt-h` (Linux/Windows) at any point to go to the first error.
+To jump to the first error you can use `cmd-alt-h` (OS X) or `shift-f4` (Linux/Windows) at any point to go to the first error.
 
 ## Service API (for package developers)
 
