@@ -12,6 +12,7 @@
 | [Markdown][14] | [build-markdown][15] |
 | [Gradle][16]   | [build-gradle][17]   |
 | [JPM][18]      | [build-jpm][19]           |
+| [sbt][20]      | [build-sbt][21]      |
 
 Have you created a build plugin and want it displayed here?
 Create a pull request modifying this list.
@@ -35,3 +36,5 @@ Create a pull request modifying this list.
 [17]: https://atom.io/packages/build-gradle
 [18]: https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm
 [19]: https://atom.io/packages/build-jpm
+[20]: https://scala-sbt.org
+[21]: https://atom.io/packages/build-sbt
