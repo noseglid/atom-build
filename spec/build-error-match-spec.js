@@ -2,6 +2,7 @@
 
 var fs = require('fs-extra');
 var temp = require('temp');
+var specHelpers = require('atom-build-spec-helpers');
 
 describe('Error Match', function() {
   var errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
@@ -52,7 +53,9 @@ describe('Error Match', function() {
         errorMatch: '(invalidRegex'
       }));
 
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -75,7 +78,10 @@ describe('Error Match', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -103,7 +109,10 @@ describe('Error Match', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchNoFileBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -129,7 +138,10 @@ describe('Error Match', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchNLCAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -154,7 +166,10 @@ describe('Error Match', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -216,7 +231,10 @@ describe('Error Match', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiFirstAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -275,12 +293,14 @@ describe('Error Match', function() {
     });
 
     it('should open the the file even if tool gives absolute path', function () {
-      var atomBuild = {
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo __' + directory + '.atom-build.json__ && return 1',
         errorMatch: '__(?<file>.+)__'
-      };
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify(atomBuild));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      }));
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -308,7 +328,10 @@ describe('Error Match', function() {
         errorMatch: '__(?<file>.+)__'
       };
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify(atomBuild));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
@@ -351,7 +374,9 @@ describe('Error Match', function() {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
 
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -374,7 +399,10 @@ describe('Error Match', function() {
     it('should scroll the build panel to the text of the error', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchLongOutputAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -386,28 +414,32 @@ describe('Error Match', function() {
       });
 
       waits(100);
+      let firstScrollTop;
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(101);
+        firstScrollTop = workspaceElement.querySelector('.build .output').scrollTop;
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(168);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toBeGreaterThan(firstScrollTop);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
       waits(100);
       runs(function() {
         /* Should wrap around to first match */
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(101);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(firstScrollTop);
       });
     });
 
     it('match-first should scroll the build panel', function () {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchLongOutputAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -419,20 +451,21 @@ describe('Error Match', function() {
       });
 
       waits(100);
+      let firstScrollTop;
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(101);
+        firstScrollTop = workspaceElement.querySelector('.build .output').scrollTop;
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(168);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toBeGreaterThan(firstScrollTop);
         atom.commands.dispatch(workspaceElement, 'build:error-match-first');
       });
 
       waits(100);
       runs(function() {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(101);
+        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(firstScrollTop);
       });
     });
 
@@ -440,7 +473,10 @@ describe('Error Match', function() {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiMatcherAtomBuildFile));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&

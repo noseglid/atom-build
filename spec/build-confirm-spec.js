@@ -4,6 +4,7 @@
 var _ = require('lodash');
 var fs = require('fs-extra');
 var temp = require('temp');
+var specHelpers = require('atom-build-spec-helpers');
 
 describe('Confirm', function() {
   var directory = null;
@@ -103,11 +104,11 @@ describe('Confirm', function() {
       }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('.atom-build.json');
-      });
-
-      waitsForPromise(function() {
-        return atom.workspace.open();
+        return Promise.all([
+          specHelpers.refreshAwaitTargets(),
+          atom.workspace.open('.atom-build.json'),
+          atom.workspace.open()
+        ]);
       });
 
       runs(function() {
@@ -132,29 +133,27 @@ describe('Confirm', function() {
     it('should save and build when selecting save and build', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
+      fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+        cmd: 'cat catme'
       }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('.atom-build.json');
+        return Promise.all([
+          specHelpers.refreshAwaitTargets(),
+          atom.workspace.open('catme')
+        ]);
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.setText(JSON.stringify({
-          cmd: 'echo kansas'
-        }));
+        editor.setText('kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
-        return workspaceElement.querySelector(':focus');
-      });
+      waitsFor(() => workspaceElement.querySelector(':focus'));
 
-      runs(function() {
-        workspaceElement.querySelector(':focus').click();
-      });
+      runs(() => workspaceElement.querySelector(':focus').click());
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -172,19 +171,21 @@ describe('Confirm', function() {
     it('should build but not save when opting so', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
+      fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+        cmd: 'cat catme'
       }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('.atom-build.json');
+        return Promise.all([
+          specHelpers.refreshAwaitTargets(),
+          atom.workspace.open('catme')
+        ]);
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.setText(JSON.stringify({
-          cmd: 'echo kansas'
-        }));
+        editor.setText('catme');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
@@ -212,19 +213,21 @@ describe('Confirm', function() {
     it('should do nothing when cancelling', function() {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
+      fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
+        cmd: 'cat catme'
       }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('.atom-build.json');
+        return Promise.all([
+          specHelpers.refreshAwaitTargets(),
+          atom.workspace.open('catme')
+        ]);
       });
 
       runs(function() {
         var editor = atom.workspace.getActiveTextEditor();
-        editor.setText(JSON.stringify({
-          cmd: 'echo kansas'
-        }));
+        editor.setText('kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
@@ -255,7 +258,10 @@ describe('Confirm', function() {
       }));
 
       waitsForPromise(function() {
-        return atom.workspace.open('.atom-build.json');
+        return Promise.all([
+          specHelpers.refreshAwaitTargets(),
+          atom.workspace.open('.atom-build.json')
+        ]);
       });
 
       runs(function() {
