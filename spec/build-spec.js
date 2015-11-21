@@ -52,7 +52,7 @@ describe('Build', () => {
   });
 
   describe('when building', () => {
-    fit('should show build failed if build fails', () => {
+    it('should show build failed if build fails', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
