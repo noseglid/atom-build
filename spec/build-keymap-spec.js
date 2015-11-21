@@ -1,5 +1,4 @@
 'use babel';
-'use strict';
 
 var fs = require('fs-extra');
 var temp = require('temp');

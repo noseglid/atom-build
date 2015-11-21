@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "rules": {
+    "strict": [ 2, "never" ],
+    "indent": [ 2, 2, { "SwitchCase": 1 } ],
+    "quotes": [ 2, "single" ],
+    "linebreak-style": [ 2, "unix" ],
+    "semi": [ 2, "always" ],
+    "no-unused-vars": [ 2, { "vars": "all", "args": "none" } ]
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true,
+    "jasmine": true
+  },
+  "globals": {
+    "atom": true,
+    "waitsForPromise": true
+  },
+  "extends": "eslint:recommended"
+}

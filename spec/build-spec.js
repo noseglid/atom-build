@@ -1,5 +1,4 @@
 'use babel';
-'use strict';
 
 var fs = require('fs-extra');
 var temp = require('temp');
@@ -463,7 +462,7 @@ describe('Build', function() {
       waitsForPromise(function () {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
-          atom.workspace.open(directory2 + '/main.c'),
+          atom.workspace.open(directory2 + '/main.c')
         ]);
       });
 

@@ -1,5 +1,4 @@
 'use babel';
-'use strict';
 
 var fs = require('fs-extra');
 var temp = require('temp');
@@ -189,7 +188,7 @@ describe('BuildView', function() {
       atom.config.set('build.panelOrientation', 'Bottom');
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo this will fail && exit 1',
+        cmd: 'echo this will fail && exit 1'
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -213,7 +212,7 @@ describe('BuildView', function() {
       atom.config.set('build.panelOrientation', 'Left');
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo this will fail && exit 1',
+        cmd: 'echo this will fail && exit 1'
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -237,7 +236,7 @@ describe('BuildView', function() {
       atom.config.set('build.panelOrientation', 'Top');
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo this will fail && exit 1',
+        cmd: 'echo this will fail && exit 1'
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -261,7 +260,7 @@ describe('BuildView', function() {
       atom.config.set('build.panelOrientation', 'Right');
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo this will fail && exit 1',
+        cmd: 'echo this will fail && exit 1'
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());

@@ -1,5 +1,4 @@
 'use babel';
-'use strict';
 
 var _ = require('lodash');
 var fs = require('fs-extra');
