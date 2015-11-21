@@ -85,7 +85,10 @@ describe('Visible', function() {
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
         }));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+        waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+        runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
         waits(200);
@@ -124,7 +127,10 @@ describe('Visible', function() {
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
         }));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+        waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+        runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
         waits(200);
@@ -140,7 +146,10 @@ describe('Visible', function() {
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           cmd: 'echo "Very bad..." && exit 2'
         }));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+        waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+        runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
         waits(200);
@@ -156,7 +165,10 @@ describe('Visible', function() {
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
         }));
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+        waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+        runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         waits(200); // Let build finish. Since UI component is not visible yet, there's nothing to poll.
 

@@ -50,7 +50,10 @@ describe('BuildView', function() {
         cmd: 'printf "\\033[31mHello\\e[0m World"'
       }));
 
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
@@ -66,7 +69,10 @@ describe('BuildView', function() {
         cmd: 'printf "data without linebreak"'
       }));
 
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
@@ -82,7 +88,10 @@ describe('BuildView', function() {
         cmd: 'node -e \'process.stdout.write("same"); setTimeout(function () { process.stdout.write(" line\\n") }, 200);\''
       }));
 
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
@@ -103,7 +112,10 @@ describe('BuildView', function() {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo "<script type=\"text/javascript\">alert(\'XSS!\')</script>"'
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -124,7 +136,10 @@ describe('BuildView', function() {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo "Building, this will take some time..." && sleep 30 && echo "Done!"'
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       // Let build run for 1.2 second. This should set the timer at "at least" 1.2
       // which is expected below. If this waits longer than 2000 ms, we're in trouble.
@@ -148,7 +163,10 @@ describe('BuildView', function() {
         cmd: 'echo match1 match1 match1 && exit 1',
         errorMatch: 'match1'
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -173,7 +191,10 @@ describe('BuildView', function() {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo this will fail && exit 1',
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -194,7 +215,10 @@ describe('BuildView', function() {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo this will fail && exit 1',
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -215,7 +239,10 @@ describe('BuildView', function() {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo this will fail && exit 1',
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&
@@ -236,7 +263,10 @@ describe('BuildView', function() {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo this will fail && exit 1',
       }));
-      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function() {
         return workspaceElement.querySelector('.build .title') &&

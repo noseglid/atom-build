@@ -50,9 +50,9 @@ describe('Keymap', function() {
         }
       }));
 
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
@@ -95,9 +95,9 @@ describe('Keymap', function() {
         }
       }));
 
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
@@ -158,9 +158,9 @@ describe('Keymap', function() {
         }
       }));
 
-      runs(function () {
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(function () {
         return workspaceElement.querySelector('.build .title') &&
@@ -200,7 +200,11 @@ describe('Keymap', function() {
         }));
       });
 
-      waits(300); // Custom file is reloaded automatically
+      waitsForPromise(() => specHelpers.awaitTargets());
+
+      waitsFor(function() {
+        return !workspaceElement.querySelector('.build .title');
+      });
 
       runs(function () {
         specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
