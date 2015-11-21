@@ -1,8 +1,8 @@
 'use babel';
 
-const fs = require('fs-extra');
-const temp = require('temp');
-const specHelpers = require('atom-build-spec-helpers');
+import fs from 'fs-extra';
+import temp from 'temp';
+import specHelpers from 'atom-build-spec-helpers';
 
 describe('Visible', () => {
   let directory = null;

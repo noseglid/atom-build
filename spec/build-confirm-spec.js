@@ -1,9 +1,9 @@
 'use babel';
 
-const _ = require('lodash');
-const fs = require('fs-extra');
-const temp = require('temp');
-const specHelpers = require('atom-build-spec-helpers');
+import _ from 'lodash';
+import fs from 'fs-extra';
+import temp from 'temp';
+import specHelpers from 'atom-build-spec-helpers';
 
 describe('Confirm', () => {
   let directory = null;
