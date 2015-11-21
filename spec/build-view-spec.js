@@ -83,7 +83,7 @@ describe('BuildView', () => {
 
     it('should only break the line when an actual newline character appears', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'node -e \'process.stdout.write("same"); setTimeout(() => { process.stdout.write(" line\\n") }, 200);\''
+        cmd: 'node -e \'process.stdout.write("same"); setTimeout(function() { process.stdout.write(" line\\n") }, 200);\''
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
