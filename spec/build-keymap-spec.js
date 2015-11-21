@@ -1,16 +1,16 @@
 'use babel';
 
-var fs = require('fs-extra');
-var temp = require('temp');
-var specHelpers = require('atom-build-spec-helpers');
+const fs = require('fs-extra');
+const temp = require('temp');
+const specHelpers = require('atom-build-spec-helpers');
 
-describe('Keymap', function() {
-  var directory = null;
-  var workspaceElement = null;
+describe('Keymap', () => {
+  let directory = null;
+  let workspaceElement = null;
 
   temp.track();
 
-  beforeEach(function() {
+  beforeEach(() => {
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
@@ -21,23 +21,22 @@ describe('Keymap', function() {
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
 
-    runs(function() {
+    runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
       jasmine.attachToDOM(workspaceElement);
     });
 
-    waitsForPromise(function() {
+    waitsForPromise(() => {
       return atom.packages.activatePackage('build');
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     fs.removeSync(directory);
   });
 
-  describe('when custom keymap is defined in .atom-build.json', function () {
-    it('should trigger the build when that key combination is pressed', function () {
-
+  describe('when custom keymap is defined in .atom-build.json', () => {
+    it('should trigger the build when that key combination is pressed', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         name: 'The default build',
         cmd: 'echo default',
@@ -53,36 +52,35 @@ describe('Keymap', function() {
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return !workspaceElement.querySelector('.build .title');
       });
 
-      runs(function () {
+      runs(() => {
         specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/keymapped/);
       });
     });
 
-    it('should not changed the set active build', function () {
-
+    it('should not changed the set active build', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         name: 'The default build',
         cmd: 'echo default',
@@ -98,54 +96,54 @@ describe('Keymap', function() {
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return !workspaceElement.querySelector('.build .title');
       });
 
-      runs(function () {
+      runs(() => {
         specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/keymapped/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return !workspaceElement.querySelector('.build .title');
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
     });
 
-    it('should dispose keymap when reloading targets', function () {
+    it('should dispose keymap when reloading targets', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         name: 'The default build',
         cmd: 'echo default',
@@ -161,30 +159,30 @@ describe('Keymap', function() {
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return !workspaceElement.querySelector('.build .title');
       });
 
-      runs(function () {
+      runs(() => {
         specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/keymapped/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
@@ -201,27 +199,27 @@ describe('Keymap', function() {
 
       waitsForPromise(() => specHelpers.awaitTargets());
 
-      waitsFor(function() {
+      waitsFor(() => {
         return !workspaceElement.querySelector('.build .title');
       });
 
-      runs(function () {
+      runs(() => {
         specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
       });
 
       waits(300);
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build')).not.toExist();
         specHelpers.keydown('x', { ctrl: true, element: workspaceElement });
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
             workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/ctrl-x new file/);
       });
     });

@@ -1,12 +1,16 @@
 {
   "parser": "babel-eslint",
   "rules": {
-    "strict": [ 2, "never" ],
+    "comma-dangle": 0,
+    "default-case": 0,
+    "func-names": 0,
     "indent": [ 2, 2, { "SwitchCase": 1 } ],
-    "quotes": [ 2, "single" ],
-    "linebreak-style": [ 2, "unix" ],
-    "semi": [ 2, "always" ],
-    "no-unused-vars": [ 2, { "vars": "all", "args": "none" } ]
+    "new-cap": [ 2, { "capIsNewExceptions": [ "XRegExp" ] } ],
+    "no-param-reassign": 0,
+    "no-unused-expressions": [ 2, { "allowTernary": true, "allowShortCircuit": true } ],
+    "no-unused-vars": [ 2, { "args": "none" } ],
+    "space-before-function-paren": [ 2, { "anonymous": "always", "named": "never" } ],
+    "yoda": 0
   },
   "env": {
     "es6": true,
@@ -16,7 +20,9 @@
   },
   "globals": {
     "atom": true,
-    "waitsForPromise": true
+    "waitsForPromise": true,
+    "fit": false,
+    "fdescribe": false
   },
-  "extends": "eslint:recommended"
+  "extends": "airbnb"
 }
