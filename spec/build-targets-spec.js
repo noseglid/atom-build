@@ -1,18 +1,17 @@
 'use babel';
-'use strict';
 
-var _ = require('lodash');
-var fs = require('fs-extra');
-var temp = require('temp');
-var specHelpers = require('atom-build-spec-helpers');
+import _ from 'lodash';
+import fs from 'fs-extra';
+import temp from 'temp';
+import specHelpers from 'atom-build-spec-helpers';
 
-describe('Target', function() {
-  var directory = null;
-  var workspaceElement = null;
+describe('Target', () => {
+  let directory = null;
+  let workspaceElement = null;
 
   temp.track();
 
-  beforeEach(function() {
+  beforeEach(() => {
     workspaceElement = atom.views.getView(atom.workspace);
 
     atom.config.set('build.buildOnSave', false);
@@ -23,10 +22,10 @@ describe('Target', function() {
     jasmine.unspy(window, 'clearTimeout');
     jasmine.attachToDOM(workspaceElement);
 
-    waitsForPromise(function() {
-      return specHelpers.vouch(temp.mkdir, { prefix: 'atom-build-spec-' }).then(function (dir) {
+    waitsForPromise(() => {
+      return specHelpers.vouch(temp.mkdir, { prefix: 'atom-build-spec-' }).then((dir) => {
         return specHelpers.vouch(fs.realpath, dir);
-      }).then(function (dir) {
+      }).then((dir) => {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
         return atom.packages.activatePackage('build');
@@ -34,158 +33,157 @@ describe('Target', function() {
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     fs.removeSync(directory);
   });
 
-  describe('when multiple targets exists', function () {
-
-    it('should list those targets in a SelectListView (from .atom-build.json)', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/.atom-build.targets.json';
+  describe('when multiple targets exists', () => {
+    it('should list those targets in a SelectListView (from .atom-build.json)', () => {
+      waitsForPromise(() => {
+        const file = __dirname + '/fixture/.atom-build.targets.json';
         return specHelpers.vouch(fs.copy, file, directory + '/.atom-build.json')
           .then(() => specHelpers.refreshAwaitTargets());
       });
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:select-active-target');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.select-list li.build-target');
       });
 
-      runs(function () {
-        var targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), el => el.textContent);
+      runs(() => {
+        const targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), el => el.textContent);
         expect(targets).toEqual([ 'Custom: The default build', 'Custom: Some customized build' ]);
       });
     });
 
-    it('should mark the first target as active', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/.atom-build.targets.json';
+    it('should mark the first target as active', () => {
+      waitsForPromise(() => {
+        const file = __dirname + '/fixture/.atom-build.targets.json';
         return specHelpers.vouch(fs.copy, file, directory + '/.atom-build.json')
           .then(() => specHelpers.refreshAwaitTargets());
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:select-active-target');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.select-list li.build-target');
       });
 
-      runs(function () {
-        var el = workspaceElement.querySelector('.select-list li.build-target'); // querySelector selects the first element
+      runs(() => {
+        const el = workspaceElement.querySelector('.select-list li.build-target'); // querySelector selects the first element
         expect(el).toHaveClass('selected');
         expect(el).toHaveClass('active');
       });
     });
 
-    it('should run the selected build', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/.atom-build.targets.json';
+    it('should run the selected build', () => {
+      waitsForPromise(() => {
+        const file = __dirname + '/fixture/.atom-build.targets.json';
         return specHelpers.vouch(fs.copy, file, directory + '/.atom-build.json')
           .then(() => specHelpers.refreshAwaitTargets());
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:select-active-target');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.select-list li.build-target');
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement.querySelector('.select-list'), 'core:confirm');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
       });
     });
 
-    it('should run the default target if no selection has been made', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/.atom-build.targets.json';
+    it('should run the default target if no selection has been made', () => {
+      waitsForPromise(() => {
+        const file = __dirname + '/fixture/.atom-build.targets.json';
         return specHelpers.vouch(fs.copy, file, directory + '/.atom-build.json')
           .then(() => specHelpers.refreshAwaitTargets());
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
       });
     });
 
-    it('run the selected target if selection has changed, and subsequent build should run that target', function () {
-      waitsForPromise(function () {
-        var file = __dirname + '/fixture/.atom-build.targets.json';
+    it('run the selected target if selection has changed, and subsequent build should run that target', () => {
+      waitsForPromise(() => {
+        const file = __dirname + '/fixture/.atom-build.targets.json';
         return specHelpers.vouch(fs.copy, file, directory + '/.atom-build.json')
           .then(() => specHelpers.refreshAwaitTargets());
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:select-active-target');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.select-list li.build-target');
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement.querySelector('.select-list'), 'core:move-down');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.select-list li.selected').textContent === 'Custom: Some customized build';
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement.querySelector('.select-list'), 'core:confirm');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
         atom.commands.dispatch(workspaceElement.querySelector('.build'), 'build:stop');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return !workspaceElement.querySelector('.build');
       });
 
-      runs(function () {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function () {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
       });
     });

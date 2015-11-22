@@ -1,18 +1,17 @@
 'use babel';
-'use strict';
 
-var _ = require('lodash');
-var fs = require('fs-extra');
-var temp = require('temp');
-var specHelpers = require('atom-build-spec-helpers');
+import _ from 'lodash';
+import fs from 'fs-extra';
+import temp from 'temp';
+import specHelpers from 'atom-build-spec-helpers';
 
-describe('Confirm', function() {
-  var directory = null;
-  var workspaceElement = null;
+describe('Confirm', () => {
+  let directory = null;
+  let workspaceElement = null;
 
   temp.track();
 
-  beforeEach(function() {
+  beforeEach(() => {
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
@@ -23,87 +22,87 @@ describe('Confirm', function() {
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
 
-    runs(function() {
+    runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
       jasmine.attachToDOM(workspaceElement);
     });
 
-    waitsForPromise(function() {
+    waitsForPromise(() => {
       return atom.packages.activatePackage('build');
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     fs.removeSync(directory);
   });
 
-  describe('when the text editor is modified', function() {
-    it('should show the save confirmation', function() {
+  describe('when the text editor is modified', () => {
+    it('should show the save confirmation', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return atom.workspace.open('.atom-build.json');
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         editor.insertText('hello kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector(':focus');
       });
 
-      runs(function() {
+      runs(() => {
         expect(workspaceElement.querySelector('.btn-success:focus')).toExist();
       });
     });
 
-    it('should cancel the confirm window when pressing escape', function() {
+    it('should cancel the confirm window when pressing escape', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return atom.workspace.open('.atom-build.json');
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         editor.insertText('hello kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector(':focus');
       });
 
-      runs(function() {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:no-confirm');
         expect(workspaceElement.querySelector('.btn-success:focus')).not.toExist();
       });
     });
 
-    it('should not do anything if issuing no-confirm whithout the dialog', function () {
+    it('should not do anything if issuing no-confirm whithout the dialog', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
       atom.commands.dispatch(workspaceElement, 'build:no-confirm');
     });
 
-    it('should not confirm if a TextEditor edits an unsaved file', function() {
+    it('should not confirm if a TextEditor edits an unsaved file', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
           atom.workspace.open('.atom-build.json'),
@@ -111,26 +110,26 @@ describe('Confirm', function() {
         ]);
       });
 
-      runs(function() {
-        var editor = _.find(atom.workspace.getTextEditors(), function(textEditor) {
+      runs(() => {
+        const editor = _.find(atom.workspace.getTextEditors(), (textEditor) => {
           return ('untitled' === textEditor.getTitle());
         });
         editor.insertText('Just some temporary place to write stuff');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function() {
+      runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
       });
     });
 
-    it('should save and build when selecting save and build', function() {
+    it('should save and build when selecting save and build', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
@@ -138,15 +137,15 @@ describe('Confirm', function() {
         cmd: 'cat catme'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
           atom.workspace.open('catme')
         ]);
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         editor.setText('kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
@@ -155,20 +154,20 @@ describe('Confirm', function() {
 
       runs(() => workspaceElement.querySelector(':focus').click());
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/kansas/);
         expect(!editor.isModified());
       });
     });
 
-    it('should build but not save when opting so', function() {
+    it('should build but not save when opting so', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
@@ -176,41 +175,41 @@ describe('Confirm', function() {
         cmd: 'cat catme'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
           atom.workspace.open('catme')
         ]);
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         editor.setText('catme');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector(':focus');
       });
 
-      runs(function() {
+      runs(() => {
         workspaceElement.querySelector('button[click="confirmWithoutSave"]').click();
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').innerHTML).not.toMatch(/kansas/);
         expect(editor.isModified());
       });
     });
 
-    it('should do nothing when cancelling', function() {
+    it('should do nothing when cancelling', () => {
       expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
@@ -218,31 +217,31 @@ describe('Confirm', function() {
         cmd: 'cat catme'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
           atom.workspace.open('catme')
         ]);
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         editor.setText('kansas');
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector(':focus');
       });
 
-      runs(function() {
+      runs(() => {
         workspaceElement.querySelector('button[click="cancel"]').click();
       });
 
       waits(2);
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         expect(workspaceElement.querySelector('.build')).not.toExist();
         expect(editor.isModified());
       });
@@ -257,32 +256,32 @@ describe('Confirm', function() {
         cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
       }));
 
-      waitsForPromise(function() {
+      waitsForPromise(() => {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
           atom.workspace.open('.atom-build.json')
         ]);
       });
 
-      runs(function() {
-        var editor = atom.workspace.getActiveTextEditor();
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
         editor.setText(JSON.stringify({
           cmd: 'echo kansas'
         }));
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(function() {
+      waitsFor(() => {
         return workspaceElement.querySelector('.build-confirm');
       });
 
-      runs(function() {
+      runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
       waits(200); // Everything is the same so we can't know when second build:trigger has been handled
 
-      runs(function () {
+      runs(() => {
         expect(workspaceElement.querySelectorAll('.build-confirm').length).toEqual(1);
       });
     });
