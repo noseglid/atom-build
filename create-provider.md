@@ -1,7 +1,27 @@
 # Creating a build provider
 
+## Service API
+
+Another package may provide build information to the `build`-package by implementing its service API.
+The package should integrate via the service API. This is typically done in `package.json`:
+
+```javascript
+{
+  "providedServices": {
+    "builder": {
+      "description": "Description of the build configurations this package gives",
+      "versions": {
+        "2.0.0": "providingFunction"
+      }
+    }
+  }
+},
+```
+
 The `build`-package will then call `providingFunction` when activated and expects an
-ES6 class in return
+ES6 class in return.
+
+## The provider implementation.
 ```javascript
 class MyBuildProvider {
 

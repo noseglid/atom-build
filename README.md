@@ -29,6 +29,10 @@ All available build providers are available on the [AtomBuild homepage](https://
 Build providers are available in Atoms package manager and installed as
 any other package.
 
+### Creating a build provider
+Creating a build provider require very little code in the easiest case, and can
+be as complicated as necessary to achieve the correct functionality.
+Read more about building your own provider in [the create provider documentation](create-provider.md).
 
 <a name="build-command"></a>
 ### Specifying a custom build command
@@ -131,30 +135,6 @@ to cycle through the errors (in the order they appear, first on stderr then on s
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use `cmd-alt-h` (OS X) or `shift-f4` (Linux/Windows) at any point to go to the first error.
-
-## Service API (for package developers)
-
-Another package may provide build information to the `build`-package by implementing its service API.
-The package should integrate via the service API. This is typically done in `package.json`:
-
-```javascript
-{
-  // <other stuff>
-  "providedServices": {
-    "builder": {
-      "description": "Description of the build configurations this package gives",
-      "versions": {
-        "1.0.0": "providingFunction"
-      }
-    }
-  }
-},
-```
-
-Creating a build provider require very little code in the easiest case, and can
-be as complicated as necessary to achieve the correct functionality.
-
-Read more about building your own provider in [the create provider documentation](create-provider.md).
 
 ## Analytics
 
