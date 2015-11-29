@@ -21,10 +21,17 @@ Automatically build your project inside your new favorite editor, Atom.
 
 ![work work](https://noseglid.github.io/atom-build.gif)
 
+## Build providers
+The best way to use this `build` packages is via a build provider.
+Build providers are plugins to `build` which enables specific build tools (such as `GNU Make`, `gradle` or `gulp`).
+All available build providers are available on the [AtomBuild homepage](https://atombuild.github.io).
+
+Build providers are available in Atoms package manager and installed as
+any other package.
+
+
 <a name="build-command"></a>
-## Specifying a build command
-You can check out [the plugins list](build-tools.md) for common build tools. Install them as
-you would any other package!
+### Specifying a custom build command
 
 If no build tool is enough to suit your needs, you can create a file named `.atom-build.json`
 in your project root, and specify exactly how your project is built:
@@ -59,7 +66,7 @@ in you environment (e.g. by setting the `PATH` var appropriately on UNIX-like
 systems).
 
 <a name="custom-build-config"></a>
-### Configuration options
+#### Configuration options
 
 Option       | Required       | Description
 -------------|----------------|-----------------------
@@ -73,7 +80,7 @@ Option       | Required       | Description
 `keymap`     | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
 `targets`    | *[optional]*   | Additional targets which can be used to build variations of your project.
 
-### Replacements
+#### Replacements
 
 The following parameters will be replaced in `cmd`, any entry in `args`, `cwd` and
 values of `env`. They should all be enclosed in curly brackets `{}`
@@ -144,42 +151,10 @@ The package should integrate via the service API. This is typically done in `pac
 },
 ```
 
-The `build`-package will then call `providingFunction` when activated and expects an
-object in return:
-```javascript
-{
-  niceName: 'string',
-  isEligable: function (path) {},
-  settings: function (path) {},
-  on: function (ev, callback) {}, //optional
-  off: function (ev), //optional
-}
-```
+Creating a build provider require very little code in the easiest case, and can
+be as complicated as necessary to achieve the correct functionality.
 
-The `niceName` is esthetic only and should be a `string` which is a human readable
-description of the build configuration is provided.
-
-`isEligable` should be a function which must return synchronously. It will get one
-argument, `path`, which is the root folder of the currently active project in Atom.
-It should return `true` or `false` indicating if it can build that folder into something
-sensible. Typically look for the existence of a build file such as `gulpfile.js` or `Makefile`.
-
-`settings` can return a Promise or an object.. It is called when it is time to build the project.
-It can provide anything which is allowed by the [custom build configuration](#custom-build-config).
-This includes the command, `cmd`, to execute, any arguments, `args`, and so on.
-
-_[optional]_ `on` will be called with a string which is the name of an event the build tool provider can emit. The build
-tool provider should call the `callback` when the specified event occurs. Events `build` may ask for include:
-  * `refresh` - call the callback if you want to force `build` to refresh all targets.
-    this is common after the build file has been altered.
-
-_[optional]_ `off` will be called when `build` is no longer interested in that event. It may be because
-`build` is being deactivated, or refreshing its state. `build` will never call `off` for an event unless it has
-previoused registered a listener via `on` first.
-
-All functions will be called with the same value for `this` (which is an empty object at first). If you have to make
-any time consuming computation in for instance `isEligable` it may be wise to store the result in `this` and
-reuse it in `settings`.
+Read more about building your own provider in [the create provider documentation](create-provider.md).
 
 ## Analytics
 
