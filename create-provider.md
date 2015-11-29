@@ -19,9 +19,10 @@ The package should integrate via the service API. This is typically done in `pac
 ```
 
 The `build`-package will then call `providingFunction` when activated and expects an
-ES6 class in return.
+ES6 class in return. The next section describes in detail how that class is
+expected to operate.
 
-## The provider implementation.
+## The provider implementation
 ```javascript
 class MyBuildProvider {
 
@@ -66,8 +67,6 @@ class MyBuildProvider {
 }
 ```
 
----
-
 `constructor` _[optional]_ - is used in ES6 classes to initialize the class. The path
 where this instance of the build provider will operate is provided.
 Please note that the build provider will be instanced once per project folder.
@@ -79,14 +78,15 @@ to release any resources claimed.
 
 ---
 
-The `getNiceName` - method is esthetic only and should be a `string` which is a human readable
+`getNiceName` - aesthetic only and should be a `string` which is a human readable
 description of the build configuration is provided.
 
 ---
 
 `isEligible` - should be a function which must return synchronously.
-It should return `true` or `false` indicating if it can build the folder specified in the constructor into something
-sensible. Typically look for the existence of a build file such as `gulpfile.js` or `Makefile`.
+It should return `true` or `false` indicating if it can build the folder specified
+in the constructor into something sensible. Typically look for the existence of a
+build file such as `gulpfile.js` or `Makefile`.
 
 ---
 
@@ -102,6 +102,7 @@ The easiest way to use this is to extends [NodeJS's event emitter](https://nodej
 Events `build` may ask for include:
   * `refresh` - call the callback if you want `build` to refresh all targets.
     this is common after the build file has been altered.
+
 Note: If you extend `EventEmitter` you don't need to implement this method.
 
 ---
@@ -111,8 +112,6 @@ Note: If you extend `EventEmitter` you don't need to implement this method.
 previously registered a listener via `on` first.
 
 Note: If you extend `EventEmitter` you don't need to implement this method.
-
----
 
 ## Operations
 
