@@ -16,7 +16,8 @@
     "node-uuid": "^1.4.3",
     "tree-kill": "^0.1.1",
     "xregexp": "^2.0.0",
-    "cson-parser": "^1.2.0"
+    "cson-parser": "^1.2.0",
+    "grim": "^2.0.0"
   },
   "devDependencies": {
     "eslint-config-atom-build": "^1.0.0",
@@ -29,7 +30,8 @@
   "consumedServices": {
     "builder": {
       "versions": {
-        "^1.0.0": "consumeBuilder"
+        "^1.0.0": "consumeBuilderLegacy",
+        "^2.0.0": "consumeBuilder"
       }
     }
   },
