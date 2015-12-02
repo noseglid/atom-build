@@ -24,9 +24,10 @@ Automatically build your project inside your new favorite editor, Atom.
 ## Build providers
 The best way to use this `build` packages is via a build provider.
 Build providers are plugins to `build` which enables specific build tools (such as `GNU Make`, `gradle` or `gulp`).
-All available build providers are available on the [AtomBuild homepage](https://atombuild.github.io).
 
-Build providers are available in Atoms package manager and installed as
+[AtomBuilds homepage](https://atombuild.github.io) for a list of build providers.
+
+Build providers can be downloaded via Atoms package manager and installed as
 any other package.
 
 ### Creating a build provider
