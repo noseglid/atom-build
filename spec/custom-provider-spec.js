@@ -43,4 +43,25 @@ describe('custom provider', () => {
       });
     });
   });
+
+  describe('when .atom-build.json exists', () => {
+    it('it should be eligible targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.json`));
+      expect(builder.isEligible()).toEqual(true);
+    });
+
+    it('it should provide targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.json`));
+      expect(builder.isEligible()).toEqual(true);
+
+      waitsForPromise(() => {
+        return Promise.resolve(builder.settings()).then(settings => {
+          const s = settings[0];
+          expect(s.exec).toEqual('dd');
+          expect(s.args).toEqual([ 'if=.atom-build.json' ]);
+          expect(s.name).toEqual('Custom: Fly to moon');
+        });
+      });
+    });
+  });
 });
