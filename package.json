@@ -1,7 +1,7 @@
 {
   "name": "build",
   "main": "./lib/build",
-  "version": "0.49.2",
+  "version": "0.50.0",
   "description": "Build your current project, directly from Atom",
   "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
@@ -16,21 +16,22 @@
     "node-uuid": "^1.4.3",
     "tree-kill": "^0.1.1",
     "xregexp": "^2.0.0",
-    "cson-parser": "^1.2.0"
+    "cson-parser": "^1.2.0",
+    "grim": "^2.0.0"
   },
   "devDependencies": {
+    "eslint-config-atom-build": "^1.0.0",
     "atom-build-spec-helpers": "^0.3.0",
     "babel-eslint": "^4.1.5",
     "eslint": "^1.10.1",
-    "eslint-config-airbnb": "^1.0.0",
-    "eslint-plugin-react": "^3.10.0",
     "fs-extra": "^0.23.0",
     "temp": "^0.8.1"
   },
   "consumedServices": {
     "builder": {
       "versions": {
-        "^1.0.0": "consumeBuilder"
+        "^1.0.0": "consumeBuilderLegacy",
+        "^2.0.0": "consumeBuilder"
       }
     },
     "linter-indie": {
