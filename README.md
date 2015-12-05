@@ -39,6 +39,8 @@ Read more about building your own provider in [the create provider documentation
 ### Specifying a custom build command
 
 If no build tool is enough to suit your needs, you can create a file named `.atom-build.json`
+(it may also be `.atom-build.cson` if [CoffeeScript Object Notation](https://github.com/bevry/cson) is
+your cup of tea).
 in your project root, and specify exactly how your project is built:
 
     {
