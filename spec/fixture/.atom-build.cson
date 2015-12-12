@@ -1,0 +1,6 @@
+cmd: "echo"
+args: ["arg1", "arg2"]
+cwd: "/some/directory"
+sh: false
+name: "Compose masterpiece"
+errorMatch: "(?<file>\\w+.js):(?<row>\\d+)"
