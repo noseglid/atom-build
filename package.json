@@ -33,6 +33,11 @@
         "^1.0.0": "consumeBuilderLegacy",
         "^2.0.0": "consumeBuilder"
       }
+    },
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
     }
   },
   "scripts": {
