@@ -166,7 +166,6 @@ describe('Keymap', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
-        atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
       waitsFor(() => {
