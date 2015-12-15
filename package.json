@@ -34,6 +34,11 @@
         "^1.0.0": "consumeBuilderLegacy",
         "^2.0.0": "consumeBuilder"
       }
+    },
+    "linter-indie": {
+      "versions": {
+        "1.0.0": "consumeLinter"
+      }
     }
   },
   "scripts": {
