@@ -64,4 +64,25 @@ describe('custom provider', () => {
       });
     });
   });
+
+  describe('when .atom-build.yml exists', () => {
+    it('it should be eligible targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.yml`, fs.readFileSync(`${__dirname}/fixture/.atom-build.yml`));
+      expect(builder.isEligible()).toEqual(true);
+    });
+
+    it('it should provide targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.yml`, fs.readFileSync(`${__dirname}/fixture/.atom-build.yml`));
+      expect(builder.isEligible()).toEqual(true);
+
+      waitsForPromise(() => {
+        return Promise.resolve(builder.settings()).then(settings => {
+          const s = settings[0];
+          expect(s.exec).toEqual('echo');
+          expect(s.args).toEqual([ 'hello', 'world', 'from', 'yaml' ]);
+          expect(s.name).toEqual('Custom: yaml conf');
+        });
+      });
+    });
+  });
 });
