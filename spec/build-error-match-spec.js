@@ -134,7 +134,7 @@ describe('Error Match', () => {
     });
 
     it('should fallback to errorFile if no file is available in match', () => {
-      expect(workspaceElement.querySelector('.build')).not.toExit();
+      expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo "line:3,column:8" && return 1',
