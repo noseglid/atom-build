@@ -137,10 +137,10 @@ describe('Error Match', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo "line:3,column:8" && return 1',
+        cmd: 'echo "line:3,column:8" && exit 1',
         errorMatch: 'line:(?<line>\\d+),column:(?<col>\\d+)',
         errorFile: '.atom-build.json'
-      }));
+      }, null, ' '));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
@@ -163,8 +163,8 @@ describe('Error Match', () => {
         const editor = atom.workspace.getActiveTextEditor();
         const bufferPosition = editor.getCursorBufferPosition();
         expect(editor.getTitle()).toEqual('.atom-build.json');
-        expect(bufferPosition.row).toEqual(3);
-        expect(bufferPosition.column).toEqual(8);
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(7);
       });
     });
 
