@@ -133,6 +133,41 @@ describe('Error Match', () => {
       });
     });
 
+    it('should fallback to errorFile if no file is available in match', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "line:3,column:8" && exit 1',
+        errorMatch: 'line:(?<line>\\d+),column:(?<col>\\d+)',
+        errorFile: '.atom-build.json'
+      }, null, ' '));
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(7);
+      });
+    });
+
     it('should open just the file if line and column is not available', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
