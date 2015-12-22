@@ -434,6 +434,8 @@ describe('Build', () => {
     it('should not attempt to build if buildOnSave is true and no build tool exists', () => {
       atom.config.set('build.buildOnSave', true);
 
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
       waitsForPromise(() => {
         return atom.workspace.open('dummy');
       });
