@@ -86,6 +86,7 @@ Option       | Required       | Description
 `errorMatch` | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
 `keymap`     | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
 `targets`    | *[optional]*   | Additional targets which can be used to build variations of your project.
+`active`     | *[optional]*   | If you want current target to be the default active one, set this to be `true`. You should only specify one active target.
 
 #### Replacements
 
