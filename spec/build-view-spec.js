@@ -279,4 +279,28 @@ describe('BuildView', () => {
       });
     });
   });
+
+  describe('when build fails', () => {
+    it('should keep the build scrolled to bottom', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo "a\nb\nc\nd\ne\nf\ng\nh\ni\nj" && exit 1'
+      }));
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        const el = workspaceElement.querySelector('.build .output');
+        expect(el.scrollTop).toBeGreaterThan(0);
+      });
+    });
+  });
 });
