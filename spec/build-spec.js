@@ -23,6 +23,7 @@ describe('Build', () => {
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.stealFocus', true);
+    atom.config.set('build.notificationOnRefresh', true);
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);

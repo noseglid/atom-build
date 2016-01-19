@@ -17,6 +17,7 @@ describe('Keymap', () => {
     atom.config.set('build.buildOnSave', false);
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
+    atom.config.set('build.notificationOnRefresh', true);
 
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');

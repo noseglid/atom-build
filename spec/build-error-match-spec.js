@@ -26,6 +26,7 @@ describe('Error Match', () => {
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.scrollOnError', false);
+    atom.config.set('build.notificationOnRefresh', true);
     atom.notifications.clear();
 
     jasmine.unspy(window, 'setTimeout');
