@@ -110,6 +110,7 @@ describe('Build', () => {
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
+        expect(workspaceElement.querySelector('.build .title .icon-gear').classList.contains('spin')).toBe(true);
         atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
@@ -123,7 +124,7 @@ describe('Build', () => {
       });
 
       waitsFor(() => {
-        return (workspaceElement.querySelector('.build .title .title-text').textContent === 'Aborted!');
+        return (!workspaceElement.querySelector('.build .title .icon-gear'));
       });
     });
 
