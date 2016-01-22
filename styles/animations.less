@@ -1,0 +1,97 @@
+@-webkit-keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 2.5s linear infinite;
+}
+
+@-webkit-keyframes flash {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@-webkit-keyframes flash-background-success {
+  0% {
+    background-color: rgba(
+      red(@background-color-success),
+      green(@background-color-success),
+      blue(@background-color-success),
+      0
+    );
+  }
+  20% {
+    background-color: rgba(
+      red(@background-color-success),
+      green(@background-color-success),
+      blue(@background-color-success),
+      0.3
+    );
+  }
+  80% {
+    background-color: rgba(
+      red(@background-color-success),
+      green(@background-color-success),
+      blue(@background-color-success),
+      0.3
+    );
+  }
+  100% {
+    background-color: rgba(
+      red(@background-color-success),
+      green(@background-color-success),
+      blue(@background-color-success),
+      0
+    );
+  }
+}
+
+@-webkit-keyframes flash-background-error {
+  0% {
+    background-color: rgba(
+      red(@background-color-error),
+      green(@background-color-error),
+      blue(@background-color-error),
+      0
+    );
+  }
+  20% {
+    background-color: rgba(
+      red(@background-color-error),
+      green(@background-color-error),
+      blue(@background-color-error),
+      0.3
+    );
+  }
+  80% {
+    background-color: rgba(
+      red(@background-color-error),
+      green(@background-color-error),
+      blue(@background-color-error),
+      0.3
+    );
+  }
+  100% {
+    background-color: rgba(
+      red(@background-color-error),
+      green(@background-color-error),
+      blue(@background-color-error),
+      0
+    );
+  }
+}
+.spin-flash {
+  animation: flash 0.5s linear infinite, spin 2.5s linear infinite;
+}
