@@ -102,7 +102,7 @@ values of `env`. They should all be enclosed in curly brackets `{}`
 <a name="error-match"></a>
 ## Error matching
 
-Error matching let's you specify a single regular expression or a list of
+Error matching lets you specify a single regular expression or a list of
 regular expressions, which capture the output of your build command and open the
 correct file, row and column of the error. For instance:
 
