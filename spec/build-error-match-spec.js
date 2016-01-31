@@ -1,6 +1,7 @@
 'use babel';
 
 import fs from 'fs-extra';
+import path from 'path';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 
@@ -19,7 +20,7 @@ describe('Error Match', () => {
   temp.track();
 
   beforeEach(() => {
-    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
+    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + path.sep;
     atom.project.setPaths([ directory ]);
 
     atom.config.set('build.buildOnSave', false);

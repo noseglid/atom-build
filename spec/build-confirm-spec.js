@@ -8,6 +8,7 @@ import specHelpers from 'atom-build-spec-helpers';
 describe('Confirm', () => {
   let directory = null;
   let workspaceElement = null;
+  const cat = process.platform === 'win32' ? 'type' : 'cat';
 
   temp.track();
 
@@ -135,7 +136,7 @@ describe('Confirm', () => {
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'cat catme'
+        cmd: `${cat} catme`
       }));
 
       waitsForPromise(() => {
@@ -173,7 +174,7 @@ describe('Confirm', () => {
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'cat catme'
+        cmd: `${cat} catme`
       }));
 
       waitsForPromise(() => {
@@ -215,7 +216,7 @@ describe('Confirm', () => {
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'cat catme'
+        cmd: `${cat} catme`
       }));
 
       waitsForPromise(() => {
