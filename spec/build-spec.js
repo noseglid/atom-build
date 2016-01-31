@@ -18,6 +18,7 @@ describe('Build', () => {
   let workspaceElement = null;
   const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
   const cat = () => process.platform === 'win32' ? 'type' : 'cat';
+  const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
 
@@ -137,7 +138,7 @@ describe('Build', () => {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
-      waits(200);
+      waits(waitTime);
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -163,13 +164,14 @@ describe('Build', () => {
         return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
+      waits(50);
+
       runs(() => {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
-      waits(200);
+      waits(50);
 
       runs(() => {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
@@ -334,7 +336,7 @@ describe('Build', () => {
         }));
       });
 
-      waits(100);
+      waits(waitTime);
 
       runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
@@ -454,7 +456,7 @@ describe('Build', () => {
         editor.save();
       });
 
-      waits(200);
+      waits(waitTime);
 
       runs(() => {
         expect(atom.notifications.getNotifications().length).toEqual(0);
@@ -503,12 +505,11 @@ describe('Build', () => {
         args: [ '.atom-build.json' ]
       }));
 
-      atom.project.addPath(directory2);
+      waitsForPromise(() => atom.workspace.open(directory2 + '/main.c'));
 
-      waitsForPromise(() => Promise.all([
-        atom.workspace.open(directory2 + '/main.c'),
-        specHelpers.awaitTargets()
-      ]));
+      runs(() => atom.project.addPath(directory2));
+
+      waitsForPromise(() => specHelpers.awaitTargets());
 
       runs(() => {
         atom.workspace.getActiveTextEditor().save();

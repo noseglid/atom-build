@@ -147,9 +147,9 @@ describe('BuildView', () => {
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
-      // Let build run for 1.2 second. This should set the timer at "at least" 1.2
+      // Let build run for 1.5 second. This should set the timer at "at least" 1.5
       // which is expected below. If this waits longer than 2000 ms, we're in trouble.
-      waits(1200);
+      waits(1500);
 
       runs(() => {
         expect(workspaceElement.querySelector('.build-timer').textContent).toMatch(/1.\d/);
