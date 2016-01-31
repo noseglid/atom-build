@@ -1,21 +1,19 @@
-version: "{build}"
-os: Windows Server 2012 R2
-
 environment:
   nodejs_version: "5"
+
+version: "{build}"
+os: Windows Server 2012 R2
 
 test: off
 deploy: off
 
-init:
-  - cmd: rd /s /q %CHOCOLATEYINSTALL%
-  - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-
 install:
-  - cinst atom -y
-  - cd %APPVEYOR_BUILD_FOLDER%
-  - "%LOCALAPPDATA%/atom/bin/apm install"
+  - appveyor DownloadFile https://atom.io/download/windows -FileName AtomSetup.exe
+  - AtomSetup.exe /silent
 
 build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
-  - "%LOCALAPPDATA%/atom/bin/apm test --path %LOCALAPPDATA%/atom/bin/atom.cmd"
+  - SET PATH=%LOCALAPPDATA%\atom\bin;%PATH%
+  - apm clean
+  - apm install
+  - apm test
