@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 
-fdescribe('AtomCommandName', () => {
+describe('AtomCommandName', () => {
   let directory = null;
   let workspaceElement = null;
 
