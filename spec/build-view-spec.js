@@ -1,7 +1,6 @@
 'use babel';
 
 import fs from 'fs-extra';
-import os from 'os';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 

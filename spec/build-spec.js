@@ -17,7 +17,7 @@ describe('Build', () => {
   let directory = null;
   let workspaceElement = null;
   const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
-  const cat = () => process.platform === 'win32' ? 'type' : 'cat'
+  const cat = () => process.platform === 'win32' ? 'type' : 'cat';
 
   temp.track();
 
