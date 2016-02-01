@@ -21,7 +21,14 @@ Automatically build your project inside your new favorite editor, Atom.
   * `cmd-alt-t` / `ctrl-alt-t` / `f7` Displays the available build targets.
   * `escape` terminates build / closes the build window.
 
-![work work](https://noseglid.github.io/atom-build.gif)
+#### Builds your project - configure it your way
+![work work](https://noseglid.github.io/build.gif)
+
+#### Extract targets - here used with [build-gulp](https://github.com/AtomBuild/atom-build-gulp).
+![targets](https://noseglid.github.io/targets.gif)
+
+#### Match errors and go directly to offending code
+![error matching](https://noseglid.github.io/error-match.gif)
 
 ## Build providers
 The best way to use this `build` packages is via a build provider.
