@@ -1,4 +1,7 @@
 # Atom Build package
+
+[Release notes](https://github.com/noseglid/atom-build/releases)
+
 [![Plugin installs](https://img.shields.io/apm/dm/build.svg?style=flat-square)](https://atom.io/packages/build)
 [![Package version](https://img.shields.io/apm/v/build.svg?style=flat-square)](https://atom.io/packages/build)
 
