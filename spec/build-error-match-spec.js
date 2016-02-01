@@ -1,6 +1,7 @@
 'use babel';
 
 import fs from 'fs-extra';
+import path from 'path';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 
@@ -15,11 +16,12 @@ describe('Error Match', () => {
 
   let directory = null;
   let workspaceElement = null;
+  const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
 
   beforeEach(() => {
-    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
+    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + path.sep;
     atom.project.setPaths([ directory ]);
 
     atom.config.set('build.buildOnSave', false);
@@ -413,20 +415,20 @@ describe('Error Match', () => {
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
-      waits(100);
+      waits(waitTime);
       let firstScrollTop;
       runs(() => {
         firstScrollTop = workspaceElement.querySelector('.build .output').scrollTop;
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
-      waits(100);
+      waits(waitTime);
       runs(() => {
         expect(workspaceElement.querySelector('.build .output').scrollTop).toBeGreaterThan(firstScrollTop);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
-      waits(100);
+      waits(waitTime);
       runs(() => {
         /* Should wrap around to first match */
         expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(firstScrollTop);
@@ -450,20 +452,20 @@ describe('Error Match', () => {
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
-      waits(100);
+      waits(waitTime);
       let firstScrollTop;
       runs(() => {
         firstScrollTop = workspaceElement.querySelector('.build .output').scrollTop;
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
-      waits(100);
+      waits(waitTime);
       runs(() => {
         expect(workspaceElement.querySelector('.build .output').scrollTop).toBeGreaterThan(firstScrollTop);
         atom.commands.dispatch(workspaceElement, 'build:error-match-first');
       });
 
-      waits(100);
+      waits(waitTime);
       runs(() => {
         expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(firstScrollTop);
       });

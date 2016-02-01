@@ -8,6 +8,8 @@ import specHelpers from 'atom-build-spec-helpers';
 describe('Confirm', () => {
   let directory = null;
   let workspaceElement = null;
+  const cat = process.platform === 'win32' ? 'type' : 'cat';
+  const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
 
@@ -135,7 +137,7 @@ describe('Confirm', () => {
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'cat catme'
+        cmd: `${cat} catme`
       }));
 
       waitsForPromise(() => {
@@ -173,7 +175,7 @@ describe('Confirm', () => {
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'cat catme'
+        cmd: `${cat} catme`
       }));
 
       waitsForPromise(() => {
@@ -215,7 +217,7 @@ describe('Confirm', () => {
 
       fs.writeFileSync(directory + 'catme', 'Surprising is the passing of time but not so, as the time of passing.');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'cat catme'
+        cmd: `${cat} catme`
       }));
 
       waitsForPromise(() => {
@@ -239,7 +241,7 @@ describe('Confirm', () => {
         workspaceElement.querySelector('button[click="cancel"]').click();
       });
 
-      waits(2);
+      waits(waitTime);
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();
@@ -280,7 +282,7 @@ describe('Confirm', () => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waits(200); // Everything is the same so we can't know when second build:trigger has been handled
+      waits(waitTime); // Everything is the same so we can't know when second build:trigger has been handled
 
       runs(() => {
         expect(workspaceElement.querySelectorAll('.build-confirm').length).toEqual(1);

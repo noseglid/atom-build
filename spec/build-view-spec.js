@@ -7,6 +7,7 @@ import specHelpers from 'atom-build-spec-helpers';
 describe('BuildView', () => {
   let directory = null;
   let workspaceElement = null;
+  const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
 
   temp.track();
 
@@ -45,6 +46,8 @@ describe('BuildView', () => {
 
   describe('when output from build command should be viewed', () => {
     it('should color output according to ansi escape codes', () => {
+      if (process.platform === 'win32') return;
+
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'printf "\\033[31mHello\\e[0m World"'
       }));
@@ -65,7 +68,9 @@ describe('BuildView', () => {
 
     it('should output data even if no line break exists', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'printf "data without linebreak"'
+        cmd: 'node',
+        args: [ '-e', 'process.stdout.write(\'data without linebreak\');' ],
+        sh: false
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -84,7 +89,9 @@ describe('BuildView', () => {
 
     it('should only break the line when an actual newline character appears', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'node -e \'process.stdout.write("same"); setTimeout(function() { process.stdout.write(" line\\n") }, 200);\''
+        cmd: 'node',
+        args: [ '-e', 'process.stdout.write(\'same\'); setTimeout(function() { process.stdout.write(\' line\\n\') }, 200);' ],
+        sh: false
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -133,16 +140,16 @@ describe('BuildView', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo "Building, this will take some time..." && sleep 30 && echo "Done!"'
+        cmd: `echo "Building, this will take some time..." && ${sleep(30)} && echo "Done!"`
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
-      // Let build run for 1.2 second. This should set the timer at "at least" 1.2
+      // Let build run for 1.5 second. This should set the timer at "at least" 1.5
       // which is expected below. If this waits longer than 2000 ms, we're in trouble.
-      waits(1200);
+      waits(1500);
 
       runs(() => {
         expect(workspaceElement.querySelector('.build-timer').textContent).toMatch(/1.\d/);
@@ -284,8 +291,9 @@ describe('BuildView', () => {
     it('should keep the build scrolled to bottom', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
+      const args = Array(50).join('All work and no play');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo "a\nb\nc\nd\ne\nf\ng\nh\ni\nj" && exit 1'
+        cmd: `echo "${args}" && exit 1`
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
