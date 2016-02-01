@@ -1,7 +1,7 @@
 {
   "name": "build",
   "main": "./lib/build",
-  "version": "0.53.0",
+  "version": "0.54.0",
   "description": "Build your current project, directly from Atom",
   "repository": "https://github.com/noseglid/atom-build",
   "license": "MIT",
