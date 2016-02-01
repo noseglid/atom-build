@@ -3,8 +3,7 @@
 [![Package version](https://img.shields.io/apm/v/build.svg?style=flat-square)](https://atom.io/packages/build)
 
 [![Travis.ci Shield](https://img.shields.io/travis/noseglid/atom-build/master.svg?style=flat-square&label=travis%20ci)](https://travis-ci.org/noseglid/atom-build)
-[![AppVeyor Shield](https://img.shields.io/appveyor/ci/noseglid/atom-build/master.svg?style=flat-square&label=appveyor
-)](https://ci.appveyor.com/project/noseglid/atom-build)
+[![AppVeyor Shield](https://img.shields.io/appveyor/ci/noseglid/atom-build/master.svg?style=flat-square&label=appveyor )](https://ci.appveyor.com/project/noseglid/atom-build)
 
 [![Gitter chat](https://img.shields.io/badge/gitter-noseglid%2Fatom--build-24CE66.svg?style=flat-square)](https://gitter.im/noseglid/atom-build)
 [![Slack Badge](https://img.shields.io/badge/chat-atom.io%20slack-ff69b4.svg?style=flat-square)](http://atom-slack.herokuapp.com/)
@@ -38,10 +37,15 @@ Read more about building your own provider in [the create provider documentation
 <a name="build-command"></a>
 ### Specifying a custom build command
 
-If no build tool is enough to suit your needs, you can create a file named `.atom-build.json`
-(it may also be `.atom-build.cson` if [CoffeeScript Object Notation](https://github.com/bevry/cson) is
-your cup of tea).
-in your project root, and specify exactly how your project is built:
+If no build tool is enough to suit your needs, you can create a custom build command.
+Supported formats and the name of the configuration file is
+
+  * JSON: `.atom-build.json`
+  * CSON: `.atom-build.cson`
+  * YAML: `.atom-build.yml`
+
+Pick your favorite format, save that file in your project root, and specify exactly
+how your project is built
 
     {
       "cmd": "<command to execute>",
@@ -59,6 +63,7 @@ in your project root, and specify exactly how your project is built:
         "^regexp2$"
       ],
       "keymap": "<keymap string>",
+      "atomCommandName": "namespace:command",
       "targets": {
         "<name of target>": {
           "cmd": "<command to execute>",
@@ -72,20 +77,24 @@ executable is not in your path, either fully qualify it or specify the path
 in you environment (e.g. by setting the `PATH` var appropriately on UNIX-like
 systems).
 
+If `sh` is true, it will use a shell (e.g. `/bin/sh -c`) on unix/linux, and command (`cmd /C`)
+on windows.
+
 <a name="custom-build-config"></a>
 #### Configuration options
 
-Option       | Required       | Description
--------------|----------------|-----------------------
-`cmd`        | **[required]** | The executable command
-`name`       | *[optional]*   | The name of the targets. Viewed in the targets list (toggled by `build:select-active-target`).
-`args`       | *[optional]*   | An array of arguments for the command
-`sh`         | *[optional]*   | If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
-`cwd`        | *[optional]*   | The working directory for the command. E.g. what `.` resolves to.
-`env`        | *[optional]*   | An object of environment variables and their values to set
-`errorMatch` | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
-`keymap`     | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
-`targets`    | *[optional]*   | Additional targets which can be used to build variations of your project.
+Option            | Required       | Description
+------------------|----------------|-----------------------
+`cmd`             | **[required]** | The executable command
+`name`            | *[optional]*   | The name of the target. Viewed in the targets list (toggled by `build:select-active-target`).
+`args`            | *[optional]*   | An array of arguments for the command
+`sh`              | *[optional]*   | If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
+`cwd`             | *[optional]*   | The working directory for the command. E.g. what `.` resolves to.
+`env`             | *[optional]*   | An object of environment variables and their values to set
+`errorMatch`      | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
+`keymap`          | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
+`atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
+`targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
 
 #### Replacements
 
