@@ -21,10 +21,11 @@
     "xregexp": "^2.0.0"
   },
   "devDependencies": {
-    "eslint-config-atom-build": "^1.0.0",
     "atom-build-spec-helpers": "^0.3.0",
     "babel-eslint": "^4.1.5",
+    "escope": "3.3.0",
     "eslint": "^1.10.1",
+    "eslint-config-atom-build": "^2.0.0",
     "fs-extra": "^0.23.0",
     "temp": "^0.8.1"
   },
