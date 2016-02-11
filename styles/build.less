@@ -1,58 +1,33 @@
 @import "ui-variables";
-@status-panel-height: 3em;
+@import "animations";
+
+@top-bot-control-width: 100px;
 
 .build {
 
-  height: 100%;
+  border-left: solid 1px @base-border-color;
+  border-bottom: solid 1px @base-border-color;
   font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
+  transition: background-color 0.2s ease-in;
 
-  .title {
-    transition: background-color 0.2s ease-in;
+  &.success {
+    animation: flash-background-success linear 1.2s;
   }
 
-  .build-timer {
-    display: inline-block;
-    width: 5em;
-    margin-right: @component-padding;
-  }
-
-  .title.error {
-    color: white;
-    background-image: none;
-    background-color: @background-color-error;
-  }
-
-  .title.success {
-    color: white;
-    background-image: none;
-    background-color: @background-color-success;
-  }
-
-  .title.warning {
-    color: white;
-    background-image:none;
-    background-color: @background-color-warning;
+  &.error {
+    animation: flash-background-error linear 1.2s;
   }
 
   .output {
     transition: 0.5s ease-in-out;
     transition-property: width, height;
-    padding: @component-padding 0 @status-panel-height @component-padding;
-    min-height: 100px;
+    padding: (@component-padding / 2);
+    margin-right: @top-bot-control-width;
+    min-height: 125px;
     overflow: auto;
     word-wrap: break-word;
     white-space: pre-wrap;
-  }
 
-  .status {
-    position: absolute;
-    bottom: 0;
-    height: @status-panel-height;
-    width: 100%;
-
-    h1 {
-      height: 100%;
-    }
   }
 
   a {
@@ -60,11 +35,52 @@
   }
 }
 
-.btn-container {
+.opaque-hover {
+  transition: opacity 0.2s linear;
+  opacity: 0.6;
+  &:hover {
+    opacity: 1.0;
+  }
+}
+
+.control-container {
+  height: 100%;
+  -webkit-user-select: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: @top-bot-control-width;
   .btn {
+    width: 32px;
     float: right;
     margin: @component-padding @component-padding 0 0;
     color: @text-color-info;
+  }
+
+  .title {
+    adding: 5px;
+    float: right;
+    font-size: 11px;
+    margin: @component-padding;
+    line-height: @component-line-height;
+    border-radius: 5px;
+  }
+
+  .title.error {
+    color: @background-color-error;
+  }
+
+  .title.success {
+    color: @background-color-success;
+  }
+
+  .build-timer {
+    float: right;
+    margin-right: @component-padding;
+  }
+
+  .icon-gear {
+    float: right;
   }
 
   .icon::before {
@@ -78,18 +94,20 @@
 
 atom-panel.left .build,
 atom-panel.right .build {
-  .btn-container {
+  height: 100%;
+  .control-container {
     float: none !important;
+    position: relative;
+    display: block;
+    height: 40px;
+    width: 100%;
     .new-row {
       clear: none;
     }
-    .btn:last-child {
-      margin-left: @component-padding;
-    }
   }
   .output {
-    min-width: 200px;
-    padding-right: @component-padding;
+    margin-right: 0;
+    min-width: 250px;
   }
 }
 

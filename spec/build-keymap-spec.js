@@ -1,6 +1,7 @@
 'use babel';
 
 import fs from 'fs-extra';
+import path from 'path';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 
@@ -11,12 +12,13 @@ describe('Keymap', () => {
   temp.track();
 
   beforeEach(() => {
-    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
+    directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + path.sep;
     atom.project.setPaths([ directory ]);
 
     atom.config.set('build.buildOnSave', false);
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
+    atom.config.set('build.notificationOnRefresh', true);
 
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');

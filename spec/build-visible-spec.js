@@ -7,6 +7,7 @@ import specHelpers from 'atom-build-spec-helpers';
 describe('Visible', () => {
   let directory = null;
   let workspaceElement = null;
+  const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
 
@@ -15,6 +16,7 @@ describe('Visible', () => {
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.stealFocus', true);
+    atom.config.set('build.notificationOnRefresh', true);
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
@@ -89,7 +91,7 @@ describe('Visible', () => {
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
-        waits(200);
+        waits(waitTime);
 
         runs(() => {
           expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -102,7 +104,7 @@ describe('Visible', () => {
         });
 
         // .atom-build.json is updated asynchronously... give it some time
-        waits(200);
+        waits(waitTime);
 
         runs(() => {
           atom.commands.dispatch(workspaceElement, 'build:trigger');
@@ -131,7 +133,7 @@ describe('Visible', () => {
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
-        waits(200);
+        waits(waitTime);
 
         runs(() => {
           expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -150,7 +152,7 @@ describe('Visible', () => {
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
-        waits(200);
+        waits(waitTime);
 
         runs(() => {
           expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -168,7 +170,7 @@ describe('Visible', () => {
 
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
-        waits(200); // Let build finish. Since UI component is not visible yet, there's nothing to poll.
+        waits(waitTime); // Let build finish. Since UI component is not visible yet, there's nothing to poll.
 
         runs(() => {
           atom.commands.dispatch(workspaceElement, 'build:toggle-panel');

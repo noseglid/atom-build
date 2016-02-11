@@ -1,6 +1,7 @@
 'use babel';
 
 import fs from 'fs-extra';
+import path from 'path';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 
@@ -15,6 +16,9 @@ describe('Build', () => {
 
   let directory = null;
   let workspaceElement = null;
+  const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
+  const cat = () => process.platform === 'win32' ? 'type' : 'cat';
+  const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
 
@@ -23,6 +27,7 @@ describe('Build', () => {
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.stealFocus', true);
+    atom.config.set('build.notificationOnRefresh', true);
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
@@ -34,7 +39,7 @@ describe('Build', () => {
       return specHelpers.vouch(temp.mkdir, 'atom-build-spec-').then( (dir) => {
         return specHelpers.vouch(fs.realpath, dir);
       }).then( (dir) => {
-        directory = dir + '/';
+        directory = dir + path.sep;
         atom.project.setPaths([ directory ]);
         return atom.packages.activatePackage('build');
       });
@@ -96,7 +101,7 @@ describe('Build', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo "Building, this will take some time..." && sleep 30 && echo "Done!"'
+        cmd: `echo "Building, this will take some time..." && ${sleep(30)} && echo "Done!"`
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -109,6 +114,7 @@ describe('Build', () => {
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
+        expect(workspaceElement.querySelector('.build .title .icon-gear').classList.contains('spin')).toBe(true);
         atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
@@ -122,7 +128,7 @@ describe('Build', () => {
       });
 
       waitsFor(() => {
-        return (workspaceElement.querySelector('.build .title .title-text').textContent === 'Aborted!');
+        return (!workspaceElement.querySelector('.build .title .icon-gear'));
       });
     });
 
@@ -132,7 +138,7 @@ describe('Build', () => {
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
-      waits(200);
+      waits(waitTime);
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -158,13 +164,14 @@ describe('Build', () => {
         return workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
+      waits(50);
+
       runs(() => {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      /* Give it some time here. There's nothing to probe for as we expect the exact same state when done. */
-      waits(200);
+      waits(50);
 
       runs(() => {
         expect(workspaceElement.querySelectorAll('.bottom.tool-panel.panel-bottom').length).toBe(1);
@@ -176,7 +183,10 @@ describe('Build', () => {
     it('should show the build window', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: cat(),
+        args: [ '.atom-build.json' ]
+      }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
@@ -189,7 +199,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"args":\[".atom-build.json"\]/);
       });
     });
 
@@ -234,6 +244,8 @@ describe('Build', () => {
     });
 
     it('should not show sh message if sh is false', () => {
+      if (process.platform === 'win32') return;
+
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shFalseAtomBuildFile));
@@ -324,7 +336,7 @@ describe('Build', () => {
         }));
       });
 
-      waits(100);
+      waits(waitTime);
 
       runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
@@ -365,7 +377,6 @@ describe('Build', () => {
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
         const output = workspaceElement.querySelector('.build .output').textContent;
-
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
@@ -445,7 +456,7 @@ describe('Build', () => {
         editor.save();
       });
 
-      waits(200);
+      waits(waitTime);
 
       runs(() => {
         expect(atom.notifications.getNotifications().length).toEqual(0);
@@ -459,7 +470,11 @@ describe('Build', () => {
       atom.project.addPath(directory2);
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      fs.writeFileSync(directory2 + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
+      fs.writeFileSync(directory2 + '.atom-build.json', JSON.stringify({
+        cmd: cat(),
+        args: [ '.atom-build.json' ]
+      }));
+
       waitsForPromise(() => {
         return Promise.all([
           specHelpers.refreshAwaitTargets(),
@@ -479,20 +494,22 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"args":\[".atom-build.json"\]/);
       });
     });
 
     it('should scan new project roots when they are added', () => {
       const directory2 = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
-      fs.writeFileSync(directory2 + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
+      fs.writeFileSync(directory2 + '.atom-build.json', JSON.stringify({
+        cmd: cat(),
+        args: [ '.atom-build.json' ]
+      }));
 
-      atom.project.addPath(directory2);
+      waitsForPromise(() => atom.workspace.open(directory2 + '/main.c'));
 
-      waitsForPromise(() => Promise.all([
-        atom.workspace.open(directory2 + '/main.c'),
-        specHelpers.awaitTargets()
-      ]));
+      runs(() => atom.project.addPath(directory2));
+
+      waitsForPromise(() => specHelpers.awaitTargets());
 
       runs(() => {
         atom.workspace.getActiveTextEditor().save();
@@ -506,7 +523,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"cmd": "dd"/);
+        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"args":\[".atom-build.json"\]/);
       });
     });
   });
