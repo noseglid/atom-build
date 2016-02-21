@@ -3,14 +3,18 @@
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('AtomCommandName', () => {
+  const originalHomedirFn = os.homedir;
   let directory = null;
   let workspaceElement = null;
 
   temp.track();
 
   beforeEach(() => {
+    const createdHomeDir = temp.mkdirSync('atom-build-spec-home');
+    os.homedir = () => createdHomeDir;
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' }));
     atom.project.setPaths([ directory ]);
 
@@ -33,6 +37,7 @@ describe('AtomCommandName', () => {
   });
 
   afterEach(() => {
+    os.homedir = originalHomedirFn;
     fs.removeSync(directory);
   });
 

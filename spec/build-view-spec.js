@@ -3,8 +3,10 @@
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('BuildView', () => {
+  const originalHomedirFn = os.homedir;
   let directory = null;
   let workspaceElement = null;
   const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
@@ -35,12 +37,18 @@ describe('BuildView', () => {
       }).then( (dir) => {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
+        return specHelpers.vouch(temp.mkdir, 'atom-build-spec-home');
+      }).then( (dir) => {
+        return specHelpers.vouch(fs.realpath, dir);
+      }).then( (dir) => {
+        os.homedir = () => dir;
         return atom.packages.activatePackage('build');
       });
     });
   });
 
   afterEach(() => {
+    os.homedir = originalHomedirFn;
     fs.removeSync(directory);
   });
 
