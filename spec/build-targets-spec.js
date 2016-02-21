@@ -4,8 +4,10 @@ import _ from 'lodash';
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('Target', () => {
+  const originalHomedirFn = os.homedir;
   let directory = null;
   let workspaceElement = null;
 
@@ -29,12 +31,18 @@ describe('Target', () => {
       }).then((dir) => {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
+        return specHelpers.vouch(temp.mkdir, 'atom-build-spec-home');
+      }).then( (dir) => {
+        return specHelpers.vouch(fs.realpath, dir);
+      }).then( (dir) => {
+        os.homedir = () => dir;
         return atom.packages.activatePackage('build');
       });
     });
   });
 
   afterEach(() => {
+    os.homedir = originalHomedirFn;
     fs.removeSync(directory);
   });
 

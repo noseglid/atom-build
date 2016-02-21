@@ -3,11 +3,13 @@
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('Visible', () => {
   let directory = null;
   let workspaceElement = null;
   const waitTime = process.env.CI ? 2400 : 200;
+  const originalHomedirFn = os.homedir;
 
   temp.track();
 
@@ -35,11 +37,17 @@ describe('Visible', () => {
       }).then( (dir) => {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
+        return specHelpers.vouch(temp.mkdir, 'atom-build-spec-home');
+      }).then( (dir) => {
+        return specHelpers.vouch(fs.realpath, dir);
+      }).then( (dir) => {
+        os.homedir = () => dir;
       });
     });
   });
 
   afterEach(() => {
+    os.homedir = originalHomedirFn;
     fs.removeSync(directory);
   });
 
