@@ -1,0 +1,6 @@
+{
+  "cmd": "exit",
+  "args": ["0"],
+  "atomCommandName": "build:hook-test:trigger-build",
+  "sh": true
+}
