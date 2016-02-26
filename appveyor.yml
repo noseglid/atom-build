@@ -1,19 +1,25 @@
-environment:
-  nodejs_version: "5"
-
 version: "{build}"
-os: Windows Server 2012 R2
+
+platform: x64
+
+branches:
+    only:
+      - master
+
+skip_tags: true
+
+environment:
+  APM_TEST_PACKAGES:
+
+  matrix:
+  - ATOM_CHANNEL: stable
+  - ATOM_CHANNEL: beta
+
+install:
+  - ps: Install-Product node 5
+
+build_script:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/atom/ci/master/build-package.ps1'))
 
 test: off
 deploy: off
-
-install:
-  - appveyor DownloadFile https://atom.io/download/windows -FileName AtomSetup.exe
-  - AtomSetup.exe /silent
-
-build_script:
-  - cd %APPVEYOR_BUILD_FOLDER%
-  - SET PATH=%LOCALAPPDATA%\atom\bin;%PATH%
-  - apm clean
-  - apm install
-  - apm test
