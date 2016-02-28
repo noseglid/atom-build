@@ -26,8 +26,10 @@ describe('custom provider', () => {
     os.homedir = originalHomedirFn;
   });
 
-  it('when there is no .atom-build config file in any elegible directory', () => {
-    expect(builder.isEligible()).toEqual(false);
+  describe('when there is no .atom-build config file in any elegible directory', () => {
+    it('should not be eligible', () => {
+      expect(builder.isEligible()).toEqual(false);
+    });
   });
 
   describe('when .atom-build config is on home directory', () => {

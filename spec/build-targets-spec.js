@@ -117,7 +117,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
       });
     });
 
@@ -138,7 +138,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
       });
     });
 
@@ -175,7 +175,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/customized/);
         atom.commands.dispatch(workspaceElement.querySelector('.build'), 'build:stop');
       });
 
@@ -193,7 +193,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/customized/);
       });
     });
   });

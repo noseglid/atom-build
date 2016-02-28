@@ -59,7 +59,7 @@ describe('AtomCommandName', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
     });

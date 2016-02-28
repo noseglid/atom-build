@@ -1,7 +1,7 @@
 @import "ui-variables";
 @import "animations";
 
-@top-bot-control-width: 100px;
+@top-bot-control-width: 120px;
 
 .build {
 
@@ -10,24 +10,46 @@
   font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
   transition: background-color 0.2s ease-in;
 
-  &.success {
-    animation: flash-background-success linear 1.2s;
-  }
 
-  &.error {
-    animation: flash-background-error linear 1.2s;
+
+  .panel-heading {
+    font-size: 0.8rem;
+    background-color: @panel-heading-background-color;
+    padding: 5px;
+    &.success {
+      animation: flash-background-success linear 1.2s;
+    }
+
+    &.error {
+      animation: flash-background-error linear 1.2s;
+    }
   }
 
   .output {
-    transition: 0.5s ease-in-out;
+    transition: 0.15s ease-in-out;
     transition-property: width, height;
-    padding: (@component-padding / 2);
     margin-right: @top-bot-control-width;
-    min-height: 125px;
-    overflow: auto;
-    word-wrap: break-word;
-    white-space: pre-wrap;
 
+    .terminal {
+      padding: 0px;
+      border: solid 3px @base-border-color;
+    }
+
+    .terminal-test {
+      background-color:none;
+      position: absolute;
+      float: left;
+      visibility: hidden;
+      height: auto;
+      width: auto;
+      white-space: nowrap;
+      border:none;
+    }
+
+    .terminal-cursor {
+      color: #ffffff;
+      background: #f0f0f0;
+    }
   }
 
   a {
@@ -44,11 +66,10 @@
 }
 
 .control-container {
-  height: 100%;
   -webkit-user-select: none;
   position: absolute;
   right: 0;
-  top: 0;
+  bottom: 0;
   width: @top-bot-control-width;
   .btn {
     width: 32px;
@@ -58,10 +79,10 @@
   }
 
   .title {
-    adding: 5px;
+    padding: 5px;
     float: right;
     font-size: 11px;
-    margin: @component-padding;
+    margin: 0 @component-padding;
     line-height: @component-line-height;
     border-radius: 5px;
   }
@@ -105,7 +126,7 @@ atom-panel.right .build {
       clear: none;
     }
   }
-  .output {
+  .terminal {
     margin-right: 0;
     min-width: 250px;
   }

@@ -53,27 +53,6 @@ describe('BuildView', () => {
   });
 
   describe('when output from build command should be viewed', () => {
-    it('should color output according to ansi escape codes', () => {
-      if (process.platform === 'win32') return;
-
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'printf "\\033[31mHello\\e[0m World"'
-      }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(() => {
-        expect(workspaceElement.querySelector('.build .output > span').style.color.match(/\d+/g)).toEqual([ '187', '0', '0' ]);
-      });
-    });
-
     it('should output data even if no line break exists', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'node',
@@ -91,32 +70,7 @@ describe('BuildView', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/data without linebreak/);
-      });
-    });
-
-    it('should only break the line when an actual newline character appears', () => {
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'node',
-        args: [ '-e', 'process.stdout.write(\'same\'); setTimeout(function() { process.stdout.write(\' line\\n\') }, 200);' ],
-        sh: false
-      }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(() => {
-        const el = workspaceElement.querySelector('.build .output');
-        /* Now we expect one line for the 'Executing...' row, one for the actual output and an empty one at the end. */
-        const lines = el.textContent.split('\n');
-        expect(lines.length).toEqual(3);
-        expect(lines[1]).toEqual('same line');
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/data without linebreak/);
       });
     });
 
@@ -124,7 +78,7 @@ describe('BuildView', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo "<script type=\"text/javascript\">alert(\'XSS!\')</script>"'
+        cmd: 'echo "<script type=\\\"text/javascript\\\">alert(\'XSS!\')</script>"'
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -138,7 +92,7 @@ describe('BuildView', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').innerHTML).toMatch(/&lt;script type="text\/javascript"&gt;alert\('XSS!'\)&lt;\/script&gt;/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/<script type="text\/javascript">alert\('XSS!'\)<\/script>/);
       });
     });
   });
@@ -169,34 +123,6 @@ describe('BuildView', () => {
     });
   });
 
-  describe('when links are added', () => {
-    it('should only add one link per text, even if multiple is requested', () => {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo match1 match1 match1 && exit 1',
-        errorMatch: 'match1'
-      }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(() => {
-        const output = workspaceElement.querySelector('.build .output');
-        expect(output.children.length).toEqual(6);
-        for (let i = 0; i < output.children.length; i++) {
-          expect(output.children[i].id).toEqual('error-match-0-0');
-        }
-      });
-    });
-  });
-
   describe('when panel orientation is altered', () => {
     it('should show the panel at the bottom spot', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
@@ -222,7 +148,7 @@ describe('BuildView', () => {
       });
     });
 
-    it('should show the panel at the bottom spot', () => {
+    it('should show the panel at the left spot', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.config.set('build.panelOrientation', 'Left');
 
@@ -246,7 +172,7 @@ describe('BuildView', () => {
       });
     });
 
-    it('should show the panel at the bottom spot', () => {
+    it('should show the panel at the top spot', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.config.set('build.panelOrientation', 'Top');
 
@@ -270,7 +196,7 @@ describe('BuildView', () => {
       });
     });
 
-    it('should show the panel at the bottom spot', () => {
+    it('should show the panel at the right spot', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.config.set('build.panelOrientation', 'Right');
 
@@ -314,8 +240,7 @@ describe('BuildView', () => {
       });
 
       runs(() => {
-        const el = workspaceElement.querySelector('.build .output');
-        expect(el.scrollTop).toBeGreaterThan(0);
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toBeGreaterThan(0);
       });
     });
   });

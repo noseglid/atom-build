@@ -299,9 +299,9 @@ describe('Error Match', () => {
       });
     });
 
-    it('should open the the file even if tool gives absolute path', () => {
+    it('should open the file even if tool gives absolute path', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo __' + directory + '.atom-build.json__ && return 1',
+        cmd: 'echo __' + directory + '.atom-build.json__ && exit 1',
         errorMatch: '__(?<file>.+)__'
       }));
 
@@ -421,22 +421,21 @@ describe('Error Match', () => {
       });
 
       waits(waitTime);
-      let firstScrollTop;
       runs(() => {
-        firstScrollTop = workspaceElement.querySelector('.build .output').scrollTop;
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toEqual(6);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
       waits(waitTime);
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toBeGreaterThan(firstScrollTop);
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toEqual(12);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
       waits(waitTime);
       runs(() => {
         /* Should wrap around to first match */
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(firstScrollTop);
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toEqual(6);
       });
     });
 
@@ -458,21 +457,20 @@ describe('Error Match', () => {
       });
 
       waits(waitTime);
-      let firstScrollTop;
       runs(() => {
-        firstScrollTop = workspaceElement.querySelector('.build .output').scrollTop;
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toEqual(6);
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
       waits(waitTime);
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toBeGreaterThan(firstScrollTop);
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toEqual(12);
         atom.commands.dispatch(workspaceElement, 'build:error-match-first');
       });
 
       waits(waitTime);
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').scrollTop).toEqual(firstScrollTop);
+        expect(workspaceElement.querySelector('.terminal').terminal.ydisp).toEqual(6);
       });
     });
 
