@@ -124,7 +124,6 @@ describe('Build', () => {
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Building, this will take some time.../);
-        expect(workspaceElement.querySelector('.build .title .icon-gear').classList.contains('spin')).toBe(true);
         atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
@@ -138,7 +137,7 @@ describe('Build', () => {
       });
 
       waitsFor(() => {
-        return (!workspaceElement.querySelector('.build .title .icon-gear'));
+        return (!workspaceElement.querySelector('.build .title'));
       });
     });
 
@@ -386,7 +385,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        const output = workspaceElement.querySelector('.terminal').terminal.getContent().replace(/\n/g, '');
+        const output = workspaceElement.querySelector('.terminal').terminal.getContent().replace(/[\n ]/g, '');
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
