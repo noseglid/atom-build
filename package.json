@@ -17,6 +17,7 @@
     "js-yaml": "^3.4.6",
     "lodash": "^3.8.0",
     "node-uuid": "^1.4.3",
+    "term.js": "0.0.7",
     "tree-kill": "^1.0.0",
     "xregexp": "^2.0.0"
   },
