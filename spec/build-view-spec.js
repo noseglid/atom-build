@@ -148,30 +148,6 @@ describe('BuildView', () => {
       });
     });
 
-    it('should show the panel at the left spot', () => {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-      atom.config.set('build.panelOrientation', 'Left');
-
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo this will fail && exit 1'
-      }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(() => {
-        const panels = atom.workspace.getLeftPanels();
-        expect(panels.length).toEqual(1);
-        expect(panels[0].item.constructor.name).toEqual('BuildView');
-      });
-    });
-
     it('should show the panel at the top spot', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.config.set('build.panelOrientation', 'Top');
@@ -191,30 +167,6 @@ describe('BuildView', () => {
 
       runs(() => {
         const panels = atom.workspace.getTopPanels();
-        expect(panels.length).toEqual(1);
-        expect(panels[0].item.constructor.name).toEqual('BuildView');
-      });
-    });
-
-    it('should show the panel at the right spot', () => {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
-      atom.config.set('build.panelOrientation', 'Right');
-
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo this will fail && exit 1'
-      }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
-      });
-
-      runs(() => {
-        const panels = atom.workspace.getRightPanels();
         expect(panels.length).toEqual(1);
         expect(panels[0].item.constructor.name).toEqual('BuildView');
       });
