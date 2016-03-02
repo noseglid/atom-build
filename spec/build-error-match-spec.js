@@ -198,7 +198,7 @@ describe('Error Match', () => {
         expect(editor.getTitle()).toEqual('.atom-build.json');
         expect(bufferPosition.row).toEqual(2);
         expect(bufferPosition.column).toEqual(7);
-        atom.workspace.getActivePane().destroyActiveItem();
+        atom.workspace.getActivePane().destroy();
       });
 
       runs(() => {
@@ -263,7 +263,7 @@ describe('Error Match', () => {
         expect(editor.getTitle()).toEqual('.atom-build.json');
         expect(bufferPosition.row).toEqual(2);
         expect(bufferPosition.column).toEqual(7);
-        atom.workspace.getActivePane().destroyActiveItem();
+        atom.workspace.getActivePane().destroy();
       });
 
       runs(() => {
