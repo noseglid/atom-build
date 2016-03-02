@@ -29,6 +29,7 @@ describe('Keymap', () => {
 
     runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
+      workspaceElement.setAttribute('style', 'width:9999px');
       jasmine.attachToDOM(workspaceElement);
     });
 

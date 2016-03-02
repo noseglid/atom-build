@@ -22,6 +22,7 @@ describe('BuildView', () => {
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement.setAttribute('style', 'width:9999px');
     jasmine.attachToDOM(workspaceElement);
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');

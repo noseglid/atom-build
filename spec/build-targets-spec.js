@@ -14,8 +14,6 @@ describe('Target', () => {
   temp.track();
 
   beforeEach(() => {
-    workspaceElement = atom.views.getView(atom.workspace);
-
     atom.config.set('build.buildOnSave', false);
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
@@ -23,6 +21,9 @@ describe('Target', () => {
 
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
+
+    workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement.setAttribute('style', 'width:9999px');
     jasmine.attachToDOM(workspaceElement);
 
     waitsForPromise(() => {

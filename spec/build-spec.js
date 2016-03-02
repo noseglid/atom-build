@@ -35,6 +35,7 @@ describe('Build', () => {
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement.setAttribute('style', 'width:9999px');
     jasmine.attachToDOM(workspaceElement);
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
@@ -385,7 +386,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        const output = workspaceElement.querySelector('.terminal').terminal.getContent().replace(/[\n ]/g, '');
+        const output = workspaceElement.querySelector('.terminal').terminal.getContent();
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
