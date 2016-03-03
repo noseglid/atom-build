@@ -22,6 +22,7 @@ describe('Visible', () => {
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement.setAttribute('style', 'width:9999px');
     jasmine.attachToDOM(workspaceElement);
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
@@ -107,7 +108,7 @@ describe('Visible', () => {
 
         runs(() => {
           fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-            cmd: 'echo "Very bad..." && exit 2'
+            cmd: 'echo Very bad... && exit 1'
           }));
         });
 
@@ -119,11 +120,14 @@ describe('Visible', () => {
         });
 
         waitsFor(() => {
-          return workspaceElement.querySelector('.build');
+          return workspaceElement.querySelector('.build .title') &&
+            workspaceElement.querySelector('.build .title').classList.contains('error');
         });
 
+        waits(waitTime);
+
         runs(() => {
-          expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
+          expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Very bad\.\.\./);
         });
       });
     });
@@ -190,7 +194,7 @@ describe('Visible', () => {
         });
 
         runs(() => {
-          expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
+          expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
         });
       });
     });

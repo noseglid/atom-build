@@ -28,6 +28,7 @@ describe('AtomCommandName', () => {
 
     runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
+      workspaceElement.setAttribute('style', 'width:9999px');
       jasmine.attachToDOM(workspaceElement);
     });
 
@@ -59,7 +60,7 @@ describe('AtomCommandName', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
     });

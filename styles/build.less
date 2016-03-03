@@ -1,37 +1,48 @@
 @import "ui-variables";
 @import "animations";
 
-@top-bot-control-width: 100px;
-
 .build {
 
-  border-left: solid 1px @base-border-color;
-  border-bottom: solid 1px @base-border-color;
   font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
-  transition: background-color 0.2s ease-in;
 
-  &.success {
-    animation: flash-background-success linear 1.2s;
-  }
+  .panel-heading {
+    font-size: 8px;
+    padding: 7px 3px;
+    background-color: @panel-heading-background-color;
+    &.success {
+      animation: flash-background-success linear 1.2s;
+    }
 
-  &.error {
-    animation: flash-background-error linear 1.2s;
+    &.error {
+      animation: flash-background-error linear 1.2s;
+    }
   }
 
   .output {
-    transition: 0.5s ease-in-out;
+    transition: 0.15s ease-in-out;
     transition-property: width, height;
-    padding: (@component-padding / 2);
-    margin-right: @top-bot-control-width;
-    min-height: 125px;
-    overflow: auto;
-    word-wrap: break-word;
-    white-space: pre-wrap;
+    background-color: #000;
 
-  }
+    .terminal {
+      padding: 0px;
+      border: solid 3px #000;
+    }
 
-  a {
-    text-decoration: underline;
+    .terminal-test {
+      background-color:none;
+      position: absolute;
+      float: left;
+      visibility: hidden;
+      height: auto;
+      width: auto;
+      white-space: nowrap;
+      border:none;
+    }
+
+    .terminal-cursor {
+      color: #ffffff;
+      background: #f0f0f0;
+    }
   }
 }
 
@@ -44,69 +55,35 @@
 }
 
 .control-container {
-  height: 100%;
   -webkit-user-select: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: @top-bot-control-width;
+  position: relative;
+  top: -9px;
+
   .btn {
-    width: 32px;
     float: right;
-    margin: @component-padding @component-padding 0 0;
     color: @text-color-info;
+    margin: 0 1px;
+
+    &.icon:before {
+      font-size: 10px;
+    }
   }
 
   .title {
-    adding: 5px;
     float: right;
-    font-size: 11px;
-    margin: @component-padding;
-    line-height: @component-line-height;
-    border-radius: 5px;
-  }
-
-  .title.error {
-    color: @background-color-error;
-  }
-
-  .title.success {
-    color: @background-color-success;
+    line-height: 13px;
+    height: 100%;
   }
 
   .build-timer {
-    float: right;
     margin-right: @component-padding;
-  }
-
-  .icon-gear {
-    float: right;
-  }
-
-  .icon::before {
-    margin: 0;
-  }
-
-  .new-row {
-    clear: both;
   }
 }
 
 atom-panel.left .build,
 atom-panel.right .build {
   height: 100%;
-  .control-container {
-    float: none !important;
-    position: relative;
-    display: block;
-    height: 40px;
-    width: 100%;
-    .new-row {
-      clear: none;
-    }
-  }
   .output {
-    margin-right: 0;
     min-width: 250px;
   }
 }

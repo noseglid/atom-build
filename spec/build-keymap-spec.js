@@ -29,6 +29,7 @@ describe('Keymap', () => {
 
     runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
+      workspaceElement.setAttribute('style', 'width:9999px');
       jasmine.attachToDOM(workspaceElement);
     });
 
@@ -65,7 +66,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
@@ -83,7 +84,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/keymapped/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/keymapped/);
       });
     });
 
@@ -109,7 +110,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
@@ -127,7 +128,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/keymapped/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/keymapped/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
 
@@ -145,7 +146,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
       });
     });
@@ -172,7 +173,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
       });
 
       waitsFor(() => {
@@ -189,7 +190,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/keymapped/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/keymapped/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           name: 'The default build',
@@ -226,7 +227,7 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/ctrl-x new file/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/ctrl-x new file/);
       });
     });
   });

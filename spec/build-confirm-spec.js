@@ -31,6 +31,7 @@ describe('Confirm', () => {
 
     runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
+      workspaceElement.setAttribute('style', 'width:9999px');
       jasmine.attachToDOM(workspaceElement);
     });
 
@@ -133,7 +134,7 @@ describe('Confirm', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
       });
     });
 
