@@ -79,7 +79,7 @@ describe('BuildView', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: 'echo "<script type=\\\"text/javascript\\\">alert(\'XSS!\')</script>"'
+        cmd: 'echo "<tag>"'
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -93,7 +93,7 @@ describe('BuildView', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/<script type="text\/javascript">alert\('XSS!'\)<\/script>/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/<tag>/);
       });
     });
   });
