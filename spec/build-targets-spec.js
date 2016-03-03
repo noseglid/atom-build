@@ -4,16 +4,16 @@ import _ from 'lodash';
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('Target', () => {
+  const originalHomedirFn = os.homedir;
   let directory = null;
   let workspaceElement = null;
 
   temp.track();
 
   beforeEach(() => {
-    workspaceElement = atom.views.getView(atom.workspace);
-
     atom.config.set('build.buildOnSave', false);
     atom.config.set('build.panelVisibility', 'Toggle');
     atom.config.set('build.saveOnBuild', false);
@@ -21,6 +21,9 @@ describe('Target', () => {
 
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
+
+    workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement.setAttribute('style', 'width:9999px');
     jasmine.attachToDOM(workspaceElement);
 
     waitsForPromise(() => {
@@ -29,12 +32,18 @@ describe('Target', () => {
       }).then((dir) => {
         directory = dir + '/';
         atom.project.setPaths([ directory ]);
+        return specHelpers.vouch(temp.mkdir, 'atom-build-spec-home');
+      }).then( (dir) => {
+        return specHelpers.vouch(fs.realpath, dir);
+      }).then( (dir) => {
+        os.homedir = () => dir;
         return atom.packages.activatePackage('build');
       });
     });
   });
 
   afterEach(() => {
+    os.homedir = originalHomedirFn;
     fs.removeSync(directory);
   });
 
@@ -109,7 +118,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
       });
     });
 
@@ -130,7 +139,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/default/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
       });
     });
 
@@ -167,7 +176,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/customized/);
         atom.commands.dispatch(workspaceElement.querySelector('.build'), 'build:stop');
       });
 
@@ -185,7 +194,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/customized/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/customized/);
       });
     });
   });

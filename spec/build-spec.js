@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('Build', () => {
   const goodAtomBuildfile = __dirname + '/fixture/.atom-build.json';
@@ -13,11 +14,14 @@ describe('Build', () => {
   const shTrueAtomBuildFile = __dirname + '/fixture/.atom-build.sh-true.json';
   const shDefaultAtomBuildFile = __dirname + '/fixture/.atom-build.sh-default.json';
   const syntaxErrorAtomBuildFile = __dirname + '/fixture/.atom-build.syntax-error.json';
+  const originalHomedirFn = os.homedir;
 
   let directory = null;
   let workspaceElement = null;
-  const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
-  const cat = () => process.platform === 'win32' ? 'type' : 'cat';
+  const isWin = process.platform === 'win32';
+  const sleep = (duration) => isWin ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
+  const cat = () => isWin ? 'type' : 'cat';
+  const shellCmd = isWin ? 'cmd /C' : '/bin/sh -c';
   const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
@@ -31,6 +35,7 @@ describe('Build', () => {
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement.setAttribute('style', 'width:9999px');
     jasmine.attachToDOM(workspaceElement);
     jasmine.unspy(window, 'setTimeout');
     jasmine.unspy(window, 'clearTimeout');
@@ -41,6 +46,11 @@ describe('Build', () => {
       }).then( (dir) => {
         directory = dir + path.sep;
         atom.project.setPaths([ directory ]);
+        return specHelpers.vouch(temp.mkdir, 'atom-build-spec-home');
+      }).then( (dir) => {
+        return specHelpers.vouch(fs.realpath, dir);
+      }).then( (dir) => {
+        os.homedir = () => dir;
         return atom.packages.activatePackage('build');
       });
     });
@@ -48,6 +58,7 @@ describe('Build', () => {
 
   afterEach(() => {
     fs.removeSync(directory);
+    os.homedir = originalHomedirFn;
   });
 
   describe('when package is activated', () => {
@@ -75,7 +86,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Very bad\.\.\./);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Very bad\.\.\./);
       });
     });
 
@@ -113,8 +124,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Building, this will take some time.../);
-        expect(workspaceElement.querySelector('.build .title .icon-gear').classList.contains('spin')).toBe(true);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Building, this will take some time.../);
         atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
@@ -128,7 +138,7 @@ describe('Build', () => {
       });
 
       waitsFor(() => {
-        return (!workspaceElement.querySelector('.build .title .icon-gear'));
+        return (!workspaceElement.querySelector('.build .title'));
       });
     });
 
@@ -199,7 +209,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"args":\[".atom-build.json"\]/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/"args":\[".atom-build.json"\]/);
       });
     });
 
@@ -219,7 +229,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Good news, everyone!/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Good news, everyone!/);
       });
     });
 
@@ -239,7 +249,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Executing with sh:/);
+        expect(workspaceElement.querySelector('.build .panel-heading').textContent).toMatch(new RegExp(`^${shellCmd}`));
       });
     });
 
@@ -261,7 +271,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Executing:/);
+        expect(workspaceElement.querySelector('.build .panel-heading').textContent).toMatch(/^echo/);
       });
     });
 
@@ -281,7 +291,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Executing with sh:/);
+        expect(workspaceElement.querySelector('.build .panel-heading').textContent).toMatch(new RegExp(`^${shellCmd}`));
       });
     });
 
@@ -323,7 +333,7 @@ describe('Build', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/first/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/first/);
       });
 
       waitsFor(() => {
@@ -348,7 +358,7 @@ describe('Build', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/second/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/second/);
       });
     });
   });
@@ -376,7 +386,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        const output = workspaceElement.querySelector('.build .output').textContent;
+        const output = workspaceElement.querySelector('.terminal').terminal.getContent();
         expect(output.indexOf('PROJECT_PATH=' + directory.substring(0, -1))).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FROM_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
@@ -414,7 +424,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
       });
     });
 
@@ -494,7 +504,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"args":\[".atom-build.json"\]/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/"args":\[".atom-build.json"\]/);
       });
     });
 
@@ -523,7 +533,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/"args":\[".atom-build.json"\]/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/"args":\[".atom-build.json"\]/);
       });
     });
   });

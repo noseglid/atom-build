@@ -1,5 +1,5 @@
 {
-  "cmd": "echo 'file:.atom-build.json,line:3,column:8\nfile:.atom-build.json,line:1,column::::2'\nfile:.atom-build.json,line:2,column:5' && exit 1",
+  "cmd": "echo file:.atom-build.json,line:3,column:8 && echo file:.atom-build.json,line:1,column::::2 && echo file:.atom-build.json,line:2,column:5 && exit 1",
   "errorMatch": [
     "file:(?<file>[^,]+),line:(?<line>\\d+),column:(?<col>\\d+)",
     "file:(?<file>[^,]+),line:(?<line>\\d+),column::::(?<col>\\d+)"

@@ -4,16 +4,20 @@ import _ from 'lodash';
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import os from 'os';
 
 describe('Confirm', () => {
   let directory = null;
   let workspaceElement = null;
   const cat = process.platform === 'win32' ? 'type' : 'cat';
   const waitTime = process.env.CI ? 2400 : 200;
+  const originalHomedirFn = os.homedir;
 
   temp.track();
 
   beforeEach(() => {
+    const createdHomeDir = temp.mkdirSync('atom-build-spec-home');
+    os.homedir = () => createdHomeDir;
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' })) + '/';
     atom.project.setPaths([ directory ]);
 
@@ -27,6 +31,7 @@ describe('Confirm', () => {
 
     runs(() => {
       workspaceElement = atom.views.getView(atom.workspace);
+      workspaceElement.setAttribute('style', 'width:9999px');
       jasmine.attachToDOM(workspaceElement);
     });
 
@@ -37,6 +42,7 @@ describe('Confirm', () => {
 
   afterEach(() => {
     fs.removeSync(directory);
+    os.homedir = originalHomedirFn;
   });
 
   describe('when the text editor is modified', () => {
@@ -128,7 +134,7 @@ describe('Confirm', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .output').textContent).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Surprising is the passing of time but not so, as the time of passing/);
       });
     });
 

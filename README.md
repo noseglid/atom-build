@@ -24,28 +24,23 @@ Automatically build your project inside your new favorite editor, Atom.
 #### Builds your project - configure it your way
 ![work work](https://noseglid.github.io/build.gif)
 
-#### Extract targets - here used with [build-gulp](https://github.com/AtomBuild/atom-build-gulp).
+#### Automatically extract targets - here with [build-gulp](https://github.com/AtomBuild/atom-build-gulp).
 ![targets](https://noseglid.github.io/targets.gif)
 
 #### Match errors and go directly to offending code
 ![error matching](https://noseglid.github.io/error-match.gif)
 
 ## Build providers
-The best way to use this `build` packages is via a build provider.
-Build providers are plugins to `build` which enables specific build tools (such as `GNU Make`, `gradle` or `gulp`).
+** [AtomBuilds homepage](https://atombuild.github.io) holds a comprehensive list of available build providers. **
 
-[AtomBuilds homepage](https://atombuild.github.io) for a list of build providers.
+The best way to use this `build` packages is via a build provider.
+Build providers are plugins to `build` which enables specific build tools (such as `GNU Make`, `gradle`, `gulp`, etc).
 
 Build providers can be downloaded via Atoms package manager and installed as
 any other package.
 
-### Creating a build provider
-Creating a build provider require very little code in the easiest case, and can
-be as complicated as necessary to achieve the correct functionality.
-Read more about building your own provider in [the create provider documentation](create-provider.md).
-
 <a name="build-command"></a>
-### Specifying a custom build command
+### Specify a custom build command
 
 If no build tool is enough to suit your needs, you can create a custom build command.
 Supported formats and the name of the configuration file is
@@ -55,7 +50,7 @@ Supported formats and the name of the configuration file is
   * YAML: `.atom-build.yml`
 
 Pick your favorite format, save that file in your project root, and specify exactly
-how your project is built
+how your project is built (example in `json`)
 
     {
       "cmd": "<command to execute>",
@@ -82,12 +77,12 @@ how your project is built
       }
     }
 
-Note that if `sh` is false `cmd` must only be the executable - no arguments here. If the
+Note that if `sh` is false `cmd` must only be the executable - no arguments here.  If the
 executable is not in your path, either fully qualify it or specify the path
 in you environment (e.g. by setting the `PATH` var appropriately on UNIX-like
 systems).
 
-If `sh` is true, it will use a shell (e.g. `/bin/sh -c`) on unix/linux, and command (`cmd /C`)
+If `sh` is true, it will use a shell (e.g. `/bin/sh -c`) on unix/linux, and command (`cmd /S /C`)
 on windows.
 
 <a name="custom-build-config"></a>
@@ -117,6 +112,11 @@ values of `env`. They should all be enclosed in curly brackets `{}`
   * `{FILE_ACTIVE_NAME_BASE}` - Name of active file WITHOUT extension. E.g., `build`
   * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/noseglid/github/atom-build`
   * `{REPO_BRANCH_SHORT}` - Short name of the current active branch (if project is backed by git). E.g `master` or `v0.9.1`.
+
+### Creating a build provider
+Creating a build provider require very little code in the easiest case, and can
+be as complicated as necessary to achieve the correct functionality.
+Read more about building your own provider in [the create provider documentation](create-provider.md).
 
 <a name="error-match"></a>
 ## Error matching
