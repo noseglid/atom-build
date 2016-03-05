@@ -4,8 +4,11 @@
 .build {
 
   font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
+  background-color: #000;
 
   .panel-heading {
+    -webkit-user-select: none;
+    cursor: row-resize;
     font-size: 8px;
     padding: 7px 3px;
     background-color: @panel-heading-background-color;
@@ -19,13 +22,20 @@
   }
 
   .output {
-    transition: 0.15s ease-in-out;
-    transition-property: width, height;
     background-color: #000;
 
     .terminal {
       padding: 0px;
-      border: solid 3px #000;
+      margin: 0px;
+      display: -webkit-flex-inline;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      > div {
+        flex: none;
+        white-space: nowrap;
+        font-size: inherit;
+      }
     }
 
     .terminal-test {

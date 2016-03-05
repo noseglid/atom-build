@@ -178,9 +178,8 @@ describe('BuildView', () => {
     it('should keep the build scrolled to bottom', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      const args = Array(50).join('All work and no play');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: `echo "${args}" && exit 1`
+        cmd: `echo a && echo b && echo c && echo d && echo e && exit 1`
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
