@@ -8,7 +8,6 @@
 
   .panel-heading {
     -webkit-user-select: none;
-    cursor: row-resize;
     font-size: 8px;
     padding: 7px 3px;
     background-color: @panel-heading-background-color;
@@ -48,11 +47,6 @@
       white-space: nowrap;
       border:none;
     }
-
-    .terminal-cursor {
-      color: #ffffff;
-      background: #f0f0f0;
-    }
   }
 }
 
@@ -90,10 +84,30 @@
   }
 }
 
+atom-panel.top .build .resizer,
+atom-panel.right .build .resizer,
+atom-panel.left .build .resizer {
+  border: solid 5px @base-border-color;
+  height: 100%;
+}
+
+atom-panel.top .build .resizer {
+  float: none;
+}
+
+atom-panel.left .build .resizer {
+  float: right;
+}
+
+atom-panel.right .build .resizer {
+  float: left;
+}
+
 atom-panel.left .build,
 atom-panel.right .build {
   height: 100%;
   .output {
+    height: 100%;
     min-width: 250px;
   }
 }
