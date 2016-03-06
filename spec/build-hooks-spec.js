@@ -7,12 +7,10 @@ import specHelpers from 'atom-build-spec-helpers';
 describe('Hooks', () => {
   let directory = null;
   let workspaceElement = null;
-  let target = null;
-  const commandName = 'build:hook-test:trigger-build';
-
-  function getBuildModule() {
-    return atom.packages.getLoadedPackage('build').mainModule;
-  }
+  const succedingCommandName = 'build:hook-test:succeding';
+  const failingCommandName = 'build:hook-test:failing';
+  const dummyPackageName = 'atom-build-hooks-dummy-package';
+  const dummyPackagePath = __dirname + '/fixture/' + dummyPackageName;
 
   temp.track();
 
@@ -34,11 +32,9 @@ describe('Hooks', () => {
     });
 
     waitsForPromise(() => {
-      return atom.packages.activatePackage('build');
-    });
-
-    runs(() => {
-      fs.writeFileSync(directory + '/.atom-build.json', fs.readFileSync(__dirname + '/fixture/.atom-build.hooks.json'));
+      return Promise.resolve()
+        .then(() => atom.packages.activatePackage('build'))
+        .then(() => atom.packages.activatePackage(dummyPackagePath));
     });
 
     waitsForPromise(() => specHelpers.refreshAwaitTargets());
@@ -49,12 +45,13 @@ describe('Hooks', () => {
   });
 
   it('should call preBuild', () => {
-    runs(() => {
-      target = getBuildModule().targets[directory].find(t => t.atomCommandName === commandName);
-      target.preBuild = () => {};
-      spyOn(target, 'preBuild');
+    let pkg;
 
-      atom.commands.dispatch(workspaceElement, commandName);
+    runs(() => {
+      pkg = atom.packages.getActivePackage(dummyPackageName).mainModule;
+      spyOn(pkg.hooks, 'preBuild');
+
+      atom.commands.dispatch(workspaceElement, succedingCommandName);
     });
 
     waitsFor(() => {
@@ -62,18 +59,19 @@ describe('Hooks', () => {
     });
 
     runs(() => {
-      expect(target.preBuild).toHaveBeenCalled();
+      expect(pkg.hooks.preBuild).toHaveBeenCalled();
     });
   });
 
   describe('postBuild', () => {
     it('should be called with `true` as an argument when build succeded', () => {
-      runs(() => {
-        target = getBuildModule().targets[directory].find(t => t.atomCommandName === commandName);
-        target.postBuild = () => {};
-        spyOn(target, 'postBuild');
+      let pkg;
 
-        atom.commands.dispatch(workspaceElement, commandName);
+      runs(() => {
+        pkg = atom.packages.getActivePackage(dummyPackageName).mainModule;
+        spyOn(pkg.hooks, 'postBuild');
+
+        atom.commands.dispatch(workspaceElement, succedingCommandName);
       });
 
       waitsFor(() => {
@@ -82,19 +80,18 @@ describe('Hooks', () => {
       });
 
       runs(() => {
-        expect(target.postBuild).toHaveBeenCalledWith(true);
+        expect(pkg.hooks.postBuild).toHaveBeenCalledWith(true);
       });
     });
 
     it('should be called with `false` as an argument when build failed', () => {
+      let pkg;
+
       runs(() => {
-        target = getBuildModule().targets[directory].find(t => t.atomCommandName === commandName);
-        target.postBuild = () => {};
-        spyOn(target, 'postBuild');
+        pkg = atom.packages.getActivePackage(dummyPackageName).mainModule;
+        spyOn(pkg.hooks, 'postBuild');
 
-        target.args = ['1'];
-
-        atom.commands.dispatch(workspaceElement, commandName);
+        atom.commands.dispatch(workspaceElement, failingCommandName);
       });
 
       waitsFor(() => {
@@ -103,7 +100,7 @@ describe('Hooks', () => {
       });
 
       runs(() => {
-        expect(target.postBuild).toHaveBeenCalledWith(false);
+        expect(pkg.hooks.postBuild).toHaveBeenCalledWith(false);
       });
     });
   });
