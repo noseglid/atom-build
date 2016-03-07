@@ -4,7 +4,6 @@
 .build {
 
   font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
-  background-color: #000;
 
   .panel-heading {
     -webkit-user-select: none;
@@ -18,6 +17,40 @@
     &.error {
       animation: flash-background-error linear 1.2s;
     }
+  }
+
+  .control-container {
+    float: right;
+    -webkit-user-select: none;
+    position: relative;
+    top: -9px;
+
+    .btn {
+      color: @text-color-info;
+      margin: 0 1px;
+
+      &.icon:before {
+        font-size: 10px;
+      }
+    }
+
+    .title {
+      float: left;
+      line-height: 13px;
+      height: 100%;
+
+      .build-timer {
+        margin-right: @component-padding;
+      }
+    }
+
+  }
+
+  .heading-text {
+    max-width: 70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .output {
@@ -42,8 +75,8 @@
       position: absolute;
       float: left;
       visibility: hidden;
-      height: auto;
-      width: auto;
+      height: auto !important;
+      width: auto !important;
       white-space: nowrap;
       border:none;
     }
@@ -55,60 +88,6 @@
   opacity: 0.6;
   &:hover {
     opacity: 1.0;
-  }
-}
-
-.control-container {
-  -webkit-user-select: none;
-  position: relative;
-  top: -9px;
-
-  .btn {
-    float: right;
-    color: @text-color-info;
-    margin: 0 1px;
-
-    &.icon:before {
-      font-size: 10px;
-    }
-  }
-
-  .title {
-    float: right;
-    line-height: 13px;
-    height: 100%;
-  }
-
-  .build-timer {
-    margin-right: @component-padding;
-  }
-}
-
-atom-panel.top .build .resizer,
-atom-panel.right .build .resizer,
-atom-panel.left .build .resizer {
-  border: solid 5px @base-border-color;
-  height: 100%;
-}
-
-atom-panel.top .build .resizer {
-  float: none;
-}
-
-atom-panel.left .build .resizer {
-  float: right;
-}
-
-atom-panel.right .build .resizer {
-  float: left;
-}
-
-atom-panel.left .build,
-atom-panel.right .build {
-  height: 100%;
-  .output {
-    height: 100%;
-    min-width: 250px;
   }
 }
 
