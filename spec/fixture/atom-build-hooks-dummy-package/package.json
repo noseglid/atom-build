@@ -1,0 +1,11 @@
+{
+  "name": "atom-build-hooks-dummy-package",
+  "main": "main",
+  "providedServices": {
+    "builder": {
+      "versions": {
+        "2.0.0": "provideBuilder"
+      }
+    }
+  }
+}
