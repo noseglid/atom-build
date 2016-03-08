@@ -19,6 +19,7 @@ describe('BuildView', () => {
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.stealFocus', true);
     atom.config.set('build.notificationOnRefresh', true);
+    atom.config.set('editor.fontSize', 14);
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
@@ -179,7 +180,7 @@ describe('BuildView', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: `echo a && echo b && echo c && echo d && echo e && exit 1`
+        cmd: `echo a && echo b && echo c && echo d && echo e && echo f && echo g && echo h && exit 1`
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());

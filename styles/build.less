@@ -4,12 +4,19 @@
 .build {
 
   min-width: 250px;
-  font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
+  font-family: Menlo;
+  font-weight: 600;
+  font-size: @font-size;
+
+  .resizer {
+    opacity: 0.0;
+    position: absolute;
+    border: solid 4px @base-border-color;
+  }
 
   .panel-heading {
     -webkit-user-select: none;
     line-height: 21px;
-    font-size: 8px;
     padding: 0 3px;
     background-color: @panel-heading-background-color;
     &.success {
@@ -19,56 +26,56 @@
     &.error {
       animation: flash-background-error linear 1.2s;
     }
-  }
 
-  .control-container {
-    float: right;
-    -webkit-user-select: none;
-    position: relative;
-    top: 5px;
-
-    .btn {
-      color: @text-color-info;
-      margin: 0 1px;
-
-      &.icon:before {
-        font-size: 10px;
-      }
+    .heading-text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    .title {
-      float: left;
-      line-height: 13px;
-      height: 100%;
+    .control-container {
+      float: right;
+      margin-left: @component-padding;
 
-      .build-timer {
-        margin-right: @component-padding;
+      .btn {
+        color: @text-color-info;
+        margin: 0 1px;
+        top: 0px;
+        padding: 0 7px;
+
+        &.icon:before {
+          line-height: 18px;
+          font-size: 14px;
+        }
+      }
+
+      .title {
+        float: left;
+
+        .build-timer {
+          margin-right: @component-padding;
+        }
+
+        &.error {
+          color: @text-color-error;
+        }
+
+        &.success {
+          color: @text-color-success;
+        }
       }
     }
-
-  }
-
-  .heading-text {
-    top: 1px;
-    position: relative;
-    margin-right: 125px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
 
   .output {
     background-color: #000;
 
     .terminal {
-      padding: 0px;
-      margin: 0px;
-      display: -webkit-flex-inline;
-      flex-direction: column;
+      padding: 0;
+      margin: 0;
       height: 100%;
       width: 100%;
       > div {
-        flex: none;
         white-space: nowrap;
         font-size: inherit;
       }
@@ -82,7 +89,7 @@
       height: auto !important;
       width: auto !important;
       white-space: nowrap;
-      border:none;
+      border: none;
     }
   }
 }

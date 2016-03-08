@@ -249,7 +249,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .panel-heading').textContent).toMatch(new RegExp(`^${shellCmd}`));
+        expect(workspaceElement.querySelector('.build .heading-text').textContent).toMatch(new RegExp(`^${shellCmd}`));
       });
     });
 
@@ -271,7 +271,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .panel-heading').textContent).toMatch(/^echo/);
+        expect(workspaceElement.querySelector('.build .heading-text').textContent).toMatch(/^echo/);
       });
     });
 
@@ -291,7 +291,7 @@ describe('Build', () => {
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
-        expect(workspaceElement.querySelector('.build .panel-heading').textContent).toMatch(new RegExp(`^${shellCmd}`));
+        expect(workspaceElement.querySelector('.build .heading-text').textContent).toMatch(new RegExp(`^${shellCmd}`));
       });
     });
 
