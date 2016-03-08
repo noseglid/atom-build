@@ -3,14 +3,21 @@
 
 .build {
 
-  font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
-  background-color: #000;
+  min-width: 250px;
+  font-family: Menlo;
+  font-weight: 600;
+  font-size: @font-size;
+
+  .resizer {
+    opacity: 0.0;
+    position: absolute;
+    border: solid 4px @base-border-color;
+  }
 
   .panel-heading {
     -webkit-user-select: none;
-    cursor: row-resize;
-    font-size: 8px;
-    padding: 7px 3px;
+    line-height: 21px;
+    padding: 0 3px;
     background-color: @panel-heading-background-color;
     &.success {
       animation: flash-background-success linear 1.2s;
@@ -19,20 +26,56 @@
     &.error {
       animation: flash-background-error linear 1.2s;
     }
+
+    .heading-text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .control-container {
+      float: right;
+      margin-left: @component-padding;
+
+      .btn {
+        color: @text-color-info;
+        margin: 0 1px;
+        top: 0px;
+        padding: 0 7px;
+
+        &.icon:before {
+          line-height: 18px;
+          font-size: 14px;
+        }
+      }
+
+      .title {
+        float: left;
+
+        .build-timer {
+          margin-right: @component-padding;
+        }
+
+        &.error {
+          color: @text-color-error;
+        }
+
+        &.success {
+          color: @text-color-success;
+        }
+      }
+    }
   }
 
   .output {
     background-color: #000;
 
     .terminal {
-      padding: 0px;
-      margin: 0px;
-      display: -webkit-flex-inline;
-      flex-direction: column;
+      padding: 0;
+      margin: 0;
       height: 100%;
       width: 100%;
       > div {
-        flex: none;
         white-space: nowrap;
         font-size: inherit;
       }
@@ -43,15 +86,10 @@
       position: absolute;
       float: left;
       visibility: hidden;
-      height: auto;
-      width: auto;
+      height: auto !important;
+      width: auto !important;
       white-space: nowrap;
-      border:none;
-    }
-
-    .terminal-cursor {
-      color: #ffffff;
-      background: #f0f0f0;
+      border: none;
     }
   }
 }
@@ -61,40 +99,6 @@
   opacity: 0.6;
   &:hover {
     opacity: 1.0;
-  }
-}
-
-.control-container {
-  -webkit-user-select: none;
-  position: relative;
-  top: -9px;
-
-  .btn {
-    float: right;
-    color: @text-color-info;
-    margin: 0 1px;
-
-    &.icon:before {
-      font-size: 10px;
-    }
-  }
-
-  .title {
-    float: right;
-    line-height: 13px;
-    height: 100%;
-  }
-
-  .build-timer {
-    margin-right: @component-padding;
-  }
-}
-
-atom-panel.left .build,
-atom-panel.right .build {
-  height: 100%;
-  .output {
-    min-width: 250px;
   }
 }
 

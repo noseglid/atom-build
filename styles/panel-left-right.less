@@ -1,0 +1,29 @@
+@import "ui-variables";
+
+atom-panel.left .build,
+atom-panel.right .build {
+  height: 100%;
+  width: 250px;
+  .output {
+    height: 100%;
+  }
+
+  .resizer {
+    cursor: col-resize;
+    height: 100%;
+    top: 0;
+  }
+}
+
+atom-panel.left .build {
+  .resizer {
+    right: 0;
+  }
+}
+
+atom-panel.right .build {
+  .resizer {
+    left: 0;
+  }
+}
+
