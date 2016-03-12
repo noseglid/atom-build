@@ -15,7 +15,6 @@
     "getmac": "^1.0.7",
     "grim": "^2.0.0",
     "js-yaml": "^3.4.6",
-    "lodash": "^3.8.0",
     "node-uuid": "^1.4.3",
     "term.js": "git+https://github.com/jeremyramin/term.js.git#de1635fc2695e7d8165012d3b1d007d7ce60eea2",
     "tree-kill": "^1.0.0",
