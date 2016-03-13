@@ -35,7 +35,7 @@ describe('utils', () => {
     });
   });
 
-  fdescribe('when getting default settings', () => {
+  describe('when getting default settings', () => {
     it('should prioritize specified settings', () => {
       expect(getDefaultSettings('/cwd', { cmd: 'echo hello', cwd: 'relative' })).toEqual({
         cmd: 'echo hello',
