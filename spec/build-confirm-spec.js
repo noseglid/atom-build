@@ -1,6 +1,5 @@
 'use babel';
 
-import _ from 'lodash';
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
@@ -120,7 +119,7 @@ describe('Confirm', () => {
       });
 
       runs(() => {
-        const editor = _.find(atom.workspace.getTextEditors(), (textEditor) => {
+        const editor = atom.workspace.getTextEditors().find(textEditor => {
           return ('untitled' === textEditor.getTitle());
         });
         editor.insertText('Just some temporary place to write stuff');
