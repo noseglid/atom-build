@@ -14,11 +14,11 @@
     border: solid 4px @base-border-color;
   }
 
-  .panel-heading {
+  .heading {
     -webkit-user-select: none;
-    line-height: 21px;
+    line-height: 3.0em;
     padding: 0 3px;
-    background-color: @panel-heading-background-color;
+
     &.success {
       animation: flash-background-success linear 1.2s;
     }
@@ -40,13 +40,6 @@
       .btn {
         color: @text-color-info;
         margin: 0 1px;
-        top: 0px;
-        padding: 0 7px;
-
-        &.icon:before {
-          line-height: 18px;
-          font-size: 14px;
-        }
       }
 
       .title {
