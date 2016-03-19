@@ -1,6 +1,7 @@
 {
   ".platform-darwin atom-workspace, .platform-darwin atom-text-editor": {
     "cmd-alt-b": "build:trigger",
+    "cmd-alt-u": "build:trigger-test",
     "cmd-alt-v": "build:toggle-panel",
     "cmd-alt-g": "build:error-match",
     "cmd-alt-h": "build:error-match-first",
@@ -8,6 +9,7 @@
   },
   ".platform-linux atom-workspace, .platform-linux atom-text-editor, .platform-win32 atom-workspace, .platform-win32 atom-text-editor": {
     "ctrl-alt-b": "build:trigger",
+    "ctrl-alt-u": "build:trigger-test",
     "ctrl-alt-v": "build:toggle-panel",
     "ctrl-alt-g": "build:error-match",
     "ctrl-alt-h": "build:error-match-first",
