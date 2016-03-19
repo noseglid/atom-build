@@ -8,6 +8,10 @@
           "command": "build:trigger"
         },
         {
+          "label": "Test project…",
+          "command": "build:trigger-test"
+        },
+        {
           "label": "Terminate build.",
           "command": "build:stop"
         } ]
