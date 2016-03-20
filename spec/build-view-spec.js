@@ -19,6 +19,7 @@ describe('BuildView', () => {
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.stealFocus', true);
     atom.config.set('build.notificationOnRefresh', true);
+    atom.config.set('editor.fontSize', 14);
     atom.notifications.clear();
 
     workspaceElement = atom.views.getView(atom.workspace);
@@ -178,9 +179,8 @@ describe('BuildView', () => {
     it('should keep the build scrolled to bottom', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
-      const args = Array(50).join('All work and no play');
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        cmd: `echo "${args}" && exit 1`
+        cmd: `echo a && echo b && echo c && echo d && echo e && echo f && echo g && echo h && exit 1`
       }));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());

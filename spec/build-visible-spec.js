@@ -60,8 +60,8 @@ describe('Visible', () => {
       });
     });
 
-    it('should not show build window', () => {
-      expect(workspaceElement.querySelector('.build')).not.toExist();
+    it('should show build window', () => {
+      expect(workspaceElement.querySelector('.build')).toExist();
     });
   });
 

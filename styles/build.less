@@ -3,12 +3,22 @@
 
 .build {
 
-  font-family: 'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace;
+  min-width: 250px;
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-weight: 600;
+  font-size: @font-size;
 
-  .panel-heading {
-    font-size: 8px;
-    padding: 7px 3px;
-    background-color: @panel-heading-background-color;
+  .resizer {
+    opacity: 0.0;
+    position: absolute;
+    border: solid 4px @base-border-color;
+  }
+
+  .heading {
+    -webkit-user-select: none;
+    line-height: 3.0em;
+    padding: 0 3px;
+
     &.success {
       animation: flash-background-success linear 1.2s;
     }
@@ -16,16 +26,55 @@
     &.error {
       animation: flash-background-error linear 1.2s;
     }
+
+    .heading-text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .control-container {
+      float: right;
+      margin-left: @component-padding;
+
+      .btn {
+        color: @text-color-info;
+        margin: 0 1px;
+      }
+
+      .title {
+        float: left;
+
+        .build-timer {
+          margin-right: @component-padding;
+        }
+
+        &.error {
+          color: @text-color-error;
+        }
+
+        &.success {
+          color: @text-color-success;
+        }
+      }
+    }
   }
 
   .output {
-    transition: 0.15s ease-in-out;
-    transition-property: width, height;
-    background-color: #000;
+    &.override-theme {
+      color: #fff;
+      background-color: #000;
+    }
 
     .terminal {
-      padding: 0px;
-      border: solid 3px #000;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      > div {
+        white-space: nowrap;
+        font-size: inherit;
+      }
     }
 
     .terminal-test {
@@ -33,15 +82,10 @@
       position: absolute;
       float: left;
       visibility: hidden;
-      height: auto;
-      width: auto;
+      height: auto !important;
+      width: auto !important;
       white-space: nowrap;
-      border:none;
-    }
-
-    .terminal-cursor {
-      color: #ffffff;
-      background: #f0f0f0;
+      border: none;
     }
   }
 }
@@ -51,40 +95,6 @@
   opacity: 0.6;
   &:hover {
     opacity: 1.0;
-  }
-}
-
-.control-container {
-  -webkit-user-select: none;
-  position: relative;
-  top: -9px;
-
-  .btn {
-    float: right;
-    color: @text-color-info;
-    margin: 0 1px;
-
-    &.icon:before {
-      font-size: 10px;
-    }
-  }
-
-  .title {
-    float: right;
-    line-height: 13px;
-    height: 100%;
-  }
-
-  .build-timer {
-    margin-right: @component-padding;
-  }
-}
-
-atom-panel.left .build,
-atom-panel.right .build {
-  height: 100%;
-  .output {
-    min-width: 250px;
   }
 }
 

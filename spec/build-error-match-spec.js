@@ -33,6 +33,7 @@ describe('Error Match', () => {
     atom.config.set('build.saveOnBuild', false);
     atom.config.set('build.scrollOnError', false);
     atom.config.set('build.notificationOnRefresh', true);
+    atom.config.set('editor.fontSize', 14);
     atom.notifications.clear();
 
     jasmine.unspy(window, 'setTimeout');

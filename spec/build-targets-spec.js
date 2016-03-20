@@ -1,6 +1,5 @@
 'use babel';
 
-import _ from 'lodash';
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
@@ -66,7 +65,7 @@ describe('Target', () => {
       });
 
       runs(() => {
-        const targets = _.map(workspaceElement.querySelectorAll('.select-list li.build-target'), el => el.textContent);
+        const targets = [ ...workspaceElement.querySelectorAll('.select-list li.build-target') ].map(el => el.textContent);
         expect(targets).toEqual([ 'Custom: The default build', 'Custom: Some customized build' ]);
       });
     });
