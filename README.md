@@ -27,8 +27,10 @@ Automatically build your project inside your new favorite editor, Atom.
 #### Automatically extract targets - here with [build-make](https://github.com/AtomBuild/atom-build-make).
 ![targets](https://noseglid.github.io/targets-make.gif)
 
-#### Match errors and go directly to offending code
+#### Match errors and go directly to offending code - with [Atom Linter](https://atom.io/packages/linter).
 ![error matching](https://noseglid.github.io/error-match.gif)
+
+(You can also use keyboard shortcuts to go to errors if you don't like Atom Linter, or want to keep package dependencies to a minimum).
 
 ## Build providers
 **[Full list of build providers](https://atombuild.github.io)**
