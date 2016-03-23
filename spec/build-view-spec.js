@@ -4,12 +4,12 @@ import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 import os from 'os';
+import { sleep } from './helpers';
 
 describe('BuildView', () => {
   const originalHomedirFn = os.homedir;
   let directory = null;
   let workspaceElement = null;
-  const sleep = (duration) => process.platform === 'win32' ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
 
   temp.track();
 

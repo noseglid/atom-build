@@ -3,6 +3,7 @@
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
+import { sleep } from './helpers';
 
 describe('Linter Integration', () => {
   let directory = null;
@@ -75,7 +76,7 @@ describe('Linter Integration', () => {
       });
     });
 
-    fit('should parse `message` and include that to linter', () => {
+    it('should parse `message` and include that to linter', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
       fs.writeFileSync(`${directory}/.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.error-match.message.json`));
 
@@ -98,6 +99,49 @@ describe('Linter Integration', () => {
             type: 'Error'
           }
         ]);
+      });
+    });
+
+    it('should clear linter errors when starting a new build', () => {
+      expect(dummyPackage.hasRegistered()).toEqual(true);
+      fs.writeFileSync(`${directory}/.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.error-match.message.json`));
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        const linter = dummyPackage.getLinter();
+        expect(linter.messages).toEqual([
+          {
+            filePath: '.atom-build.json',
+            range: [ [2, 7], [2, 7] ],
+            text: 'very bad things',
+            type: 'Error'
+          }
+        ]);
+        fs.writeFileSync(`${directory}/.atom-build.json`, JSON.stringify({
+          cmd: `${sleep(30)}`
+        }));
+      });
+
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          !workspaceElement.querySelector('.build .title').classList.contains('error') &&
+          !workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(() => {
+        expect(dummyPackage.getLinter().messages.length).toEqual(0);
       });
     });
   });
