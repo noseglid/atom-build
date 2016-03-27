@@ -5,7 +5,6 @@ atom-panel.bottom .build {
   .resizer {
     cursor: row-resize;
     width: 100%;
-    bottom: 0;
   }
 
   .terminal {
@@ -13,11 +12,14 @@ atom-panel.bottom .build {
   }
 }
 
-atom-panel.bottom .build {
-  .heading {
-    cursor: row-resize;
-  }
+atom-panel.top .build {
   .resizer {
-    display: none;
+    bottom: 0;
+  }
+}
+
+atom-panel.bottom .build {
+  .resizer {
+    top: 0;
   }
 }
