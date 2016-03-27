@@ -24,20 +24,16 @@ Automatically build your project inside your new favorite editor, Atom.
 #### Builds your project - configure it your way
 ![work work](https://noseglid.github.io/build.gif)
 
-#### Automatically extract targets - here with [build-gulp](https://github.com/AtomBuild/atom-build-gulp).
-![targets](https://noseglid.github.io/targets.gif)
+#### Automatically extract targets - here with [build-make](https://github.com/AtomBuild/atom-build-make).
+![targets](https://noseglid.github.io/targets-make.gif)
 
-#### Match errors and go directly to offending code
+#### Match errors and go directly to offending code - with [Atom Linter](https://atom.io/packages/linter).
 ![error matching](https://noseglid.github.io/error-match.gif)
 
+(You can also use keyboard shortcuts to go to errors if you don't like Atom Linter, or want to keep package dependencies to a minimum).
+
 ## Build providers
-** [AtomBuilds homepage](https://atombuild.github.io) holds a comprehensive list of available build providers. **
-
-The best way to use this `build` packages is via a build provider.
-Build providers are plugins to `build` which enables specific build tools (such as `GNU Make`, `gradle`, `gulp`, etc).
-
-Build providers can be downloaded via Atoms package manager and installed as
-any other package.
+**[Full list of build providers](https://atombuild.github.io)**
 
 <a name="build-command"></a>
 ### Specify a custom build command
@@ -133,7 +129,7 @@ correct file, row and column of the error. For instance:
 1 error generated.
 ```
 
-Would be matched with the regular expression: `\n(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+)`.
+Would be matched with the regular expression: `(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+):\\s+(?<message>.+)`.
 After the build has failed, pressing `cmd-alt-g` (OS X) or `f4` (Linux/Windows), `a.c` would be
 opened and the cursor would be placed at row 4, column 26.
 
@@ -145,18 +141,26 @@ The following named groups can be matched from the output:
   * `file` - **[required]** the file to open. May be relative `cwd` or absolute. `(?<file> RE)`.
   * `line` - *[optional]* the line the error resides on. `(?<line> RE)`.
   * `col` - *[optional]* the column the error resides on. `(?<col> RE)`.
+  * `message` - *[optional]* Catch the humanized error message. `(?<message> RE)`.
 
-Since the regular expressions are written in a JSON file, backslashes must be escaped.
+Backslashes must be escaped, thus the double `\\` everywhere.
 
 The `file` should be relative the `cwd` specified. If no `cwd` has been specified, then
 the `file` should be relative the project root (e.g. the top most directory shown in the
 Atom Editor).
 
 If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
-to cycle through the errors (in the order they appear, first on stderr then on stdout).
+to cycle through the errors (in the order they appear, first on stderr then on stdout), or you can use the
+Atom Linter integration discussed in the next section.
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use `cmd-alt-h` (OS X) or `shift-f4` (Linux/Windows) at any point to go to the first error.
+
+### Error matching and Atom Linter
+
+Install [Atom Linter](https://atom.io/packages/linter) and all your matched errors will listed in a neat panel.
+
+![Linter integration](https://noseglid.github.io/build-linter.png)
 
 ## Analytics
 

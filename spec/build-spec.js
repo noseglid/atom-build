@@ -5,6 +5,7 @@ import path from 'path';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
 import os from 'os';
+import { sleep, cat, shellCmd, waitTime } from './helpers';
 
 describe('Build', () => {
   const goodAtomBuildfile = __dirname + '/fixture/.atom-build.json';
@@ -18,11 +19,6 @@ describe('Build', () => {
 
   let directory = null;
   let workspaceElement = null;
-  const isWin = process.platform === 'win32';
-  const sleep = (duration) => isWin ? `ping 127.0.0.1 -n ${duration} > NUL` : `sleep ${duration}`;
-  const cat = () => isWin ? 'type' : 'cat';
-  const shellCmd = isWin ? 'cmd /C' : '/bin/sh -c';
-  const waitTime = process.env.CI ? 2400 : 200;
 
   temp.track();
 
