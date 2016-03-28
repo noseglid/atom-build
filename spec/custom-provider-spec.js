@@ -114,7 +114,7 @@ describe('custom provider', () => {
   });
 
   describe('when .atom-build.js exists', () => {
-    fit('it should provide targets', () => {
+    it('it should provide targets', () => {
       fs.writeFileSync(`${directory}.atom-build.js`, fs.readFileSync(`${__dirname}/fixture/.atom-build.js`));
       expect(builder.isEligible()).toEqual(true);
 
