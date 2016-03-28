@@ -44,6 +44,7 @@ Supported formats and the name of the configuration file is
   * JSON: `.atom-build.json`
   * CSON: `.atom-build.cson`
   * YAML: `.atom-build.yml`
+  * JS: `.atom-build.js`
 
 Pick your favorite format, save that file in your project root, and specify exactly
 how your project is built (example in `json`)
@@ -81,6 +82,21 @@ systems).
 If `sh` is true, it will use a shell (e.g. `/bin/sh -c`) on unix/linux, and command (`cmd /S /C`)
 on windows.
 
+Using a JavaScript (JS) file gives you the additional benefit of being able to specify `preBuild` and `postBuild`. Keep in mind
+that the JavaScript file must `export` the configuration
+
+```javascript
+module.exports = {
+  cmd: "myCommand",
+  preBuild: function () {
+    console.log('This is run **before** the build command');
+  },
+  postBuild: function () {
+    console.log('This is run **after** the build command');
+  }
+};
+```
+
 <a name="custom-build-config"></a>
 #### Configuration options
 
@@ -96,6 +112,8 @@ Option            | Required       | Description
 `keymap`          | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
 `atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
 `targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
+`preBuild`        | *[optional]*   | **JS only**. A function which will be called *before* executing `cmd`. No arguments. `this` will be the build configuration.
+`postBuild`       | *[optional]*   | **JS only**. A function which will be called *after* executing `cmd`. A single argument `bool buildOutcome` indicating outcome of the running `cmd`. `this` will be the build configuration.
 
 #### Replacements
 
@@ -130,8 +148,8 @@ correct file, row and column of the error. For instance:
 ```
 
 Would be matched with the regular expression: `(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+):\\s+(?<message>.+)`.
-After the build has failed, pressing `cmd-alt-g` (OS X) or `f4` (Linux/Windows), `a.c` would be
-opened and the cursor would be placed at row 4, column 26.
+After the build has failed, pressing `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
+(or `f4` on either platform), `a.c` would be opened and the cursor would be placed at row 4, column 26.
 
 Note the syntax for match groups. This is from the [XRegExp](http://xregexp.com/) package
 and has the syntax for named groups: `(?<name> RE )` where `name` would be the name of the group
