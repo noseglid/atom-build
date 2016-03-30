@@ -14,6 +14,7 @@
     "cson-parser": "^1.3.0",
     "getmac": "^1.0.7",
     "js-yaml": "^3.4.6",
+    "lodash": "^4.6.1",
     "node-uuid": "^1.4.3",
     "term.js": "git+https://github.com/jeremyramin/term.js.git#de1635fc2695e7d8165012d3b1d007d7ce60eea2",
     "tree-kill": "^1.0.0",
