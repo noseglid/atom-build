@@ -17,15 +17,14 @@
     "node-uuid": "^1.4.3",
     "term.js": "git+https://github.com/jeremyramin/term.js.git#de1635fc2695e7d8165012d3b1d007d7ce60eea2",
     "tree-kill": "^1.0.0",
-    "xregexp": "^2.0.0"
+    "xregexp": "^3.1.0"
   },
   "devDependencies": {
-    "atom-build-spec-helpers": "^0.3.0",
-    "babel-eslint": "^4.1.5",
-    "escope": "3.3.0",
-    "eslint": "^1.10.1",
-    "eslint-config-atom-build": "^2.0.0",
-    "fs-extra": "^0.23.0",
+    "atom-build-spec-helpers": "^0.4.0",
+    "babel-eslint": "^6.0.0",
+    "eslint": "^2.5.3",
+    "eslint-config-atom-build": "^3.0.0",
+    "fs-extra": "^0.26.7",
     "temp": "^0.8.1"
   },
   "consumedServices": {

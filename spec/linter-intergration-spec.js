@@ -35,7 +35,7 @@ describe('Linter Integration', () => {
       return Promise.resolve()
         .then(() => atom.packages.activatePackage('build'))
         .then(() => atom.packages.activatePackage(`${__dirname}/fixture/atom-build-spec-linter/`))
-        .then(() => dummyPackage = atom.packages.getActivePackage('atom-build-spec-linter').mainModule);
+        .then(() => (dummyPackage = atom.packages.getActivePackage('atom-build-spec-linter').mainModule));
     });
   });
 
