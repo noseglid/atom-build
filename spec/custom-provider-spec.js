@@ -112,4 +112,20 @@ describe('custom provider', () => {
       });
     });
   });
+
+  describe('when .atom-build.js exists', () => {
+    it('it should provide targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.js`, fs.readFileSync(`${__dirname}/fixture/.atom-build.js`));
+      expect(builder.isEligible()).toEqual(true);
+
+      waitsForPromise(() => {
+        return Promise.resolve(builder.settings()).then(settings => {
+          const s = settings[0];
+          expect(s.exec).toEqual('echo');
+          expect(s.args).toEqual([ 'hello', 'world', 'from', 'js' ]);
+          expect(s.name).toEqual('Custom: from js');
+        });
+      });
+    });
+  });
 });
