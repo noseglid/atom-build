@@ -9,6 +9,7 @@ describe('Linter Integration', () => {
   let directory = null;
   let workspaceElement = null;
   let dummyPackage = null;
+  const join = require('path').join;
 
   temp.track();
 
@@ -34,7 +35,7 @@ describe('Linter Integration', () => {
     waitsForPromise(() => {
       return Promise.resolve()
         .then(() => atom.packages.activatePackage('build'))
-        .then(() => atom.packages.activatePackage(`${__dirname}/fixture/atom-build-spec-linter/`))
+        .then(() => atom.packages.activatePackage(join(__dirname, 'fixture', 'atom-build-spec-linter')))
         .then(() => (dummyPackage = atom.packages.getActivePackage('atom-build-spec-linter').mainModule));
     });
   });
@@ -46,7 +47,7 @@ describe('Linter Integration', () => {
   describe('when error matching and linter is activated', () => {
     it('should push those errors to the linter', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
-      fs.writeFileSync(`${directory}/.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.error-match-multiple.json`));
+      fs.writeFileSync(join(directory, '.atom-build.json'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.error-match-multiple.json')));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
@@ -61,13 +62,13 @@ describe('Linter Integration', () => {
         const linter = dummyPackage.getLinter();
         expect(linter.messages).toEqual([
           {
-            filePath: `${directory}/.atom-build.json`,
+            filePath: join(directory, '.atom-build.json'),
             range: [ [2, 7], [2, 7] ],
             text: 'Error from build',
             type: 'Error'
           },
           {
-            filePath: `${directory}/.atom-build.json`,
+            filePath: join(directory, '.atom-build.json'),
             range: [ [1, 4], [1, 4] ],
             text: 'Error from build',
             type: 'Error'
@@ -78,7 +79,7 @@ describe('Linter Integration', () => {
 
     it('should parse `message` and include that to linter', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
-      fs.writeFileSync(`${directory}/.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.error-match.message.json`));
+      fs.writeFileSync(join(directory, '.atom-build.json'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.error-match.message.json')));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
@@ -93,7 +94,7 @@ describe('Linter Integration', () => {
         const linter = dummyPackage.getLinter();
         expect(linter.messages).toEqual([
           {
-            filePath: `${directory}/.atom-build.json`,
+            filePath: join(directory, '.atom-build.json'),
             range: [ [2, 7], [2, 7] ],
             text: 'very bad things',
             type: 'Error'
@@ -104,7 +105,7 @@ describe('Linter Integration', () => {
 
     it('should clear linter errors when starting a new build', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
-      fs.writeFileSync(`${directory}/.atom-build.json`, fs.readFileSync(`${__dirname}/fixture/.atom-build.error-match.message.json`));
+      fs.writeFileSync(join(directory, '.atom-build.json'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.error-match.message.json')));
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
@@ -119,13 +120,13 @@ describe('Linter Integration', () => {
         const linter = dummyPackage.getLinter();
         expect(linter.messages).toEqual([
           {
-            filePath: `${directory}/.atom-build.json`,
+            filePath: join(directory, '.atom-build.json'),
             range: [ [2, 7], [2, 7] ],
             text: 'very bad things',
             type: 'Error'
           }
         ]);
-        fs.writeFileSync(`${directory}/.atom-build.json`, JSON.stringify({
+        fs.writeFileSync(join(directory, '.atom-build.json'), JSON.stringify({
           cmd: `${sleep(30)}`
         }));
       });
