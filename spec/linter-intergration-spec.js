@@ -61,13 +61,13 @@ describe('Linter Integration', () => {
         const linter = dummyPackage.getLinter();
         expect(linter.messages).toEqual([
           {
-            filePath: '.atom-build.json',
+            filePath: `${directory}/.atom-build.json`,
             range: [ [2, 7], [2, 7] ],
             text: 'Error from build',
             type: 'Error'
           },
           {
-            filePath: '.atom-build.json',
+            filePath: `${directory}/.atom-build.json`,
             range: [ [1, 4], [1, 4] ],
             text: 'Error from build',
             type: 'Error'
@@ -93,7 +93,7 @@ describe('Linter Integration', () => {
         const linter = dummyPackage.getLinter();
         expect(linter.messages).toEqual([
           {
-            filePath: '.atom-build.json',
+            filePath: `${directory}/.atom-build.json`,
             range: [ [2, 7], [2, 7] ],
             text: 'very bad things',
             type: 'Error'
@@ -119,7 +119,7 @@ describe('Linter Integration', () => {
         const linter = dummyPackage.getLinter();
         expect(linter.messages).toEqual([
           {
-            filePath: '.atom-build.json',
+            filePath: `${directory}/.atom-build.json`,
             range: [ [2, 7], [2, 7] ],
             text: 'very bad things',
             type: 'Error'
