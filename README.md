@@ -157,8 +157,10 @@ matched by the regular expression `RE`.
 
 The following named groups can be matched from the output:
   * `file` - **[required]** the file to open. May be relative `cwd` or absolute. `(?<file> RE)`.
-  * `line` - *[optional]* the line the error resides on. `(?<line> RE)`.
-  * `col` - *[optional]* the column the error resides on. `(?<col> RE)`.
+  * `line` - *[optional]* the line the error starts on. `(?<line> RE)`.
+  * `col` - *[optional]* the column the error starts on. `(?<col> RE)`.
+  * `line_end` - *[optional]* the line the error ends on. `(?<line_end> RE)`.
+  * `col_end` - *[optional]* the column the error ends on. `(?<col_end> RE)`.
   * `message` - *[optional]* Catch the humanized error message. `(?<message> RE)`.
 
 Backslashes must be escaped, thus the double `\\` everywhere.
