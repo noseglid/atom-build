@@ -113,7 +113,7 @@ describe('Visible', () => {
         });
 
         // .atom-build.json is updated asynchronously... give it some time
-        waits(waitTime);
+        waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
         runs(() => {
           atom.commands.dispatch(workspaceElement, 'build:trigger');

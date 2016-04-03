@@ -342,7 +342,7 @@ describe('Build', () => {
         }));
       });
 
-      waits(waitTime);
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
