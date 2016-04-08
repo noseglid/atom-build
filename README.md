@@ -14,11 +14,11 @@
 
 Automatically build your project inside your new favorite editor, Atom.
 
-  * <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>B</kbd> / <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>B</kbd> / <kbd>F9</kbd> builds your project.
-  * <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> / <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> / <kbd>F4</kbd> cycles through causes of build error. See [Error Matching](#error-match).
-  * <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> / <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>H</kbd> / <kbd>Shift</kbd>-<kbd>F4</kbd> goes to the first build error. See [Error Matching](#error-match).
-  * <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>V</kbd> / <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>V</kbd> / <kbd>F8</kbd> Toggles the build panel.
-  * <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>T</kbd> / <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>T</kbd> / <kbd>F7</kbd> Displays the available build targets.
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>B</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>B</kbd> / <kbd>F9</kbd> builds your project.
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>G</kbd> / <kbd>F4</kbd> cycles through causes of build error. See [Error Matching](#error-match).
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>H</kbd> / <kbd>Shift</kbd> <kbd>F4</kbd> goes to the first build error. See [Error Matching](#error-match).
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>V</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>V</kbd> / <kbd>F8</kbd> Toggles the build panel.
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>T</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>T</kbd> / <kbd>F7</kbd> Displays the available build targets.
   * <kbd>Esc</kbd> terminates build / closes the build window.
 
 #### Builds your project - configure it your way
@@ -150,7 +150,7 @@ correct file, row and column of the error. For instance:
 ```
 
 Would be matched with the regular expression: `(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+):\\s+(?<message>.+)`.
-After the build has failed, pressing <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> (OS X) or <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> (Linux/Windows)
+After the build has failed, pressing <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (OS X) or <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (Linux/Windows)
 (or <kbd>F4</kbd> on either platform), `a.c` would be opened and the cursor would be placed at row 4, column 26.
 
 Note the syntax for match groups. This is from the [XRegExp](http://xregexp.com/) package
@@ -171,12 +171,12 @@ The `file` should be relative the `cwd` specified. If no `cwd` has been specifie
 the `file` should be relative the project root (e.g. the top most directory shown in the
 Atom Editor).
 
-If your build outputs multiple errors, all will be matched. Press <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> (OS X) or <kbd>Ctrl</kbd>-<kbd>Alt</kbd>-<kbd>G</kbd> (Linux/Windows)
+If your build outputs multiple errors, all will be matched. Press <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (OS X) or <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (Linux/Windows)
 to cycle through the errors (in the order they appear, first on stderr then on stdout), or you can use the
 Atom Linter integration discussed in the next section.
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
-To jump to the first error you can use <kbd>Cmd</kbd>-<kbd>Alt</kbd>-<kbd>H</kbd> (OS X) or <kbd>Shift</kbd>-<kbd>F4</kbd> (Linux/Windows) at any point to go to the first error.
+To jump to the first error you can use <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>H</kbd> (OS X) or <kbd>Shift</kbd> <kbd>F4</kbd> (Linux/Windows) at any point to go to the first error.
 
 ### Error matching and Atom Linter
 
