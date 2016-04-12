@@ -1,5 +1,6 @@
 @import "ui-variables";
 @import "animations";
+@import "node_modules/xterm/src/xterm.css";
 
 .build {
 
@@ -106,4 +107,13 @@
   .status-error {
     color: @text-color-error;
   }
+}
+
+.terminal .xterm-helper-textarea {
+  display: none;
+  // text-indent: -9999em;
+  // opacity: 0;
+  // width: 0;
+  // height: 0;
+  // z-index: -10;
 }
