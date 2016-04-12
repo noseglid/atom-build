@@ -14,12 +14,12 @@
 
 Automatically build your project inside your new favorite editor, Atom.
 
-  * `cmd-alt-b` / `ctrl-alt-b` / `f9` builds your project.
-  * `cmd-alt-g` / `ctrl-alt-g` / `f4` cycles through causes of build error. See [Error Matching](#error-match).
-  * `cmd-alt-h` / `ctrl-alt-h` / `shift-f4` goes to the first build error. See [Error Matching](#error-match).
-  * `cmd-alt-v` / `ctrl-alt-v` / `f8` Toggles the build panel.
-  * `cmd-alt-t` / `ctrl-alt-t` / `f7` Displays the available build targets.
-  * `escape` terminates build / closes the build window.
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>B</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>B</kbd> / <kbd>F9</kbd> builds your project.
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>G</kbd> / <kbd>F4</kbd> cycles through causes of build error. See [Error Matching](#error-match).
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>H</kbd> / <kbd>Shift</kbd> <kbd>F4</kbd> goes to the first build error. See [Error Matching](#error-match).
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>V</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>V</kbd> / <kbd>F8</kbd> Toggles the build panel.
+  * <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>T</kbd> / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>T</kbd> / <kbd>F7</kbd> Displays the available build targets.
+  * <kbd>Esc</kbd> terminates build / closes the build window.
 
 #### Builds your project - configure it your way
 ![work work](https://noseglid.github.io/build.gif)
@@ -49,30 +49,32 @@ Supported formats and the name of the configuration file is
 Pick your favorite format, save that file in your project root, and specify exactly
 how your project is built (example in `json`)
 
-    {
+```json
+{
+  "cmd": "<command to execute>",
+  "name": "<name of target>",
+  "args": [ "<argument1>", "<argument2>", ... ],
+  "sh": true,
+  "cwd": "<current working directory for `cmd`>",
+  "env": {
+    "VARIABLE1": "VALUE1",
+    "VARIABLE2": "VALUE2",
+    ...
+  },
+  "errorMatch": [
+    "^regexp1$",
+    "^regexp2$"
+  ],
+  "keymap": "<keymap string>",
+  "atomCommandName": "namespace:command",
+  "targets": {
+    "<name of target>": {
       "cmd": "<command to execute>",
-      "name": "<name of target>",
-      "args": [ "<argument1>", "<argument2>", ... ],
-      "sh": true,
-      "cwd": "<current working directory for `cmd`>",
-      "env": {
-        "VARIABLE1": "VALUE1",
-        "VARIABLE2": "VALUE2",
-        ...
-      },
-      "errorMatch": [
-        "^regexp1$",
-        "^regexp2$"
-      ],
-      "keymap": "<keymap string>",
-      "atomCommandName": "namespace:command",
-      "targets": {
-        "<name of target>": {
-          "cmd": "<command to execute>",
-          ... (all previous options are viable here except `targets`)
-        }
-      }
+      ... (all previous options are viable here except `targets`)
     }
+  }
+}
+```
 
 Note that if `sh` is false `cmd` must only be the executable - no arguments here.  If the
 executable is not in your path, either fully qualify it or specify the path
@@ -148,8 +150,8 @@ correct file, row and column of the error. For instance:
 ```
 
 Would be matched with the regular expression: `(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):(?<col>\\d+):\\s+(?<message>.+)`.
-After the build has failed, pressing `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
-(or `f4` on either platform), `a.c` would be opened and the cursor would be placed at row 4, column 26.
+After the build has failed, pressing <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (OS X) or <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (Linux/Windows)
+(or <kbd>F4</kbd> on either platform), `a.c` would be opened and the cursor would be placed at row 4, column 26.
 
 Note the syntax for match groups. This is from the [XRegExp](http://xregexp.com/) package
 and has the syntax for named groups: `(?<name> RE )` where `name` would be the name of the group
@@ -169,12 +171,12 @@ The `file` should be relative the `cwd` specified. If no `cwd` has been specifie
 the `file` should be relative the project root (e.g. the top most directory shown in the
 Atom Editor).
 
-If your build outputs multiple errors, all will be matched. Press `cmd-alt-g` (OS X) or `ctrl-alt-g` (Linux/Windows)
+If your build outputs multiple errors, all will be matched. Press <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (OS X) or <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>G</kbd> (Linux/Windows)
 to cycle through the errors (in the order they appear, first on stderr then on stdout), or you can use the
 Atom Linter integration discussed in the next section.
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
-To jump to the first error you can use `cmd-alt-h` (OS X) or `shift-f4` (Linux/Windows) at any point to go to the first error.
+To jump to the first error you can use <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>H</kbd> (OS X) or <kbd>Shift</kbd> <kbd>F4</kbd> (Linux/Windows) at any point to go to the first error.
 
 ### Error matching and Atom Linter
 
