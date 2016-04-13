@@ -458,14 +458,13 @@ describe('Build', () => {
       });
 
       runs(() => {
-        const editor = atom.workspace.getActiveTextEditor();
-        editor.save();
+        atom.workspace.getActiveTextEditor().save();
       });
 
       waits(waitTime);
 
       runs(() => {
-        expect(atom.notifications.getNotifications().length).toEqual(0);
+        expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
   });
@@ -511,11 +510,13 @@ describe('Build', () => {
         args: [ '.atom-build.json' ]
       }));
 
-      waitsForPromise(() => atom.workspace.open(directory2 + '/main.c'));
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
-      runs(() => atom.project.addPath(directory2));
-
-      waitsForPromise(() => specHelpers.awaitTargets());
+      waitsForPromise(() => {
+        const promise = specHelpers.awaitTargets();
+        atom.project.addPath(directory2);
+        return Promise.all([ promise, atom.workspace.open(directory2 + '/main.c') ]);
+      });
 
       runs(() => {
         atom.workspace.getActiveTextEditor().save();
