@@ -373,6 +373,8 @@ describe('Build', () => {
         ]);
       });
 
+      runs(() => atom.workspace.getActiveTextEditor().setSelectedBufferRange([[1, 3], [1, 6]]));
+
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -389,6 +391,7 @@ describe('Build', () => {
         expect(output.indexOf('FROM_PROCESS_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME=.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME_BASE=.atom-build')).not.toBe(-1);
+        expect(output.indexOf('SELECTION=cmd')).not.toBe(-1);
       });
     });
   });
