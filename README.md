@@ -127,7 +127,8 @@ values of `env`. They should all be enclosed in curly brackets `{}`
   * `{FILE_ACTIVE_NAME}` - Full name and extension of active file. E.g., `build.js`
   * `{FILE_ACTIVE_NAME_BASE}` - Name of active file WITHOUT extension. E.g., `build`
   * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/noseglid/github/atom-build`
-  * `{REPO_BRANCH_SHORT}` - Short name of the current active branch (if project is backed by git). E.g `master` or `v0.9.1`.
+  * `{REPO_BRANCH_SHORT}` - Short name of the current active branch (if project is backed by git). E.g `master` or `v0.9.1`
+  * `{SELECTION}` - Selected text.
 
 ### Creating a build provider
 Creating a build provider require very little code in the easiest case, and can
