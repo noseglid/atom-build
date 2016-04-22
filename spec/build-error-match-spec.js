@@ -72,11 +72,9 @@ describe('Error Match', () => {
       });
 
       runs(() => {
-        expect(atom.notifications.getNotifications().length).toEqual(1);
-
-        const notification = atom.notifications.getNotifications()[0];
+        const notification = atom.notifications.getNotifications().find(n => n.getMessage() === 'Error matching failed!');
+        expect(notification).not.toBe(undefined);
         expect(notification.getType()).toEqual('error');
-        expect(notification.getMessage()).toEqual('Error matching failed!');
         expect(notification.options.detail).toMatch(/Unterminated group/);
       });
     });
@@ -132,12 +130,11 @@ describe('Error Match', () => {
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
-      waitsFor(() => {
-        return atom.notifications.getNotifications().length > 0;
-      });
+      waitsFor(() => atom.notifications.getNotifications().find(n => n.getMessage() === 'Error matching failed!'));
 
       runs(() => {
-        const notification = atom.notifications.getNotifications()[0];
+        const notification = atom.notifications.getNotifications().find(n => n.getMessage() === 'Error matching failed!');
+        expect(notification).not.toBe(undefined);
         expect(notification.getType()).toEqual('error');
         expect(notification.getMessage()).toEqual('Error matching failed!');
       });
