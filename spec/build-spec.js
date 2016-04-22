@@ -592,14 +592,11 @@ describe('Build', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
-      waitsFor(() => {
-        return atom.notifications.getNotifications().length > 0;
-      });
+      waitsFor(() => atom.notifications.getNotifications().find(n => n.getMessage() === 'No eligible build target.'));
 
       runs(() => {
-        const notification = atom.notifications.getNotifications()[0];
+        const notification = atom.notifications.getNotifications().find(n => n.getMessage() === 'No eligible build target.');
         expect(notification.getType()).toEqual('warning');
-        expect(notification.getMessage()).toEqual('No eligible build target.');
       });
     });
   });

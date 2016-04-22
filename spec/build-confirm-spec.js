@@ -63,7 +63,7 @@ describe('Confirm', () => {
       });
 
       waitsFor(() => {
-        return workspaceElement.querySelector(':focus');
+        return workspaceElement.querySelector('.build-confirm');
       });
 
       runs(() => {
