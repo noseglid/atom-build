@@ -84,8 +84,11 @@ systems).
 If `sh` is true, it will use a shell (e.g. `/bin/sh -c`) on unix/linux, and command (`cmd /S /C`)
 on windows.
 
-Using a JavaScript (JS) file gives you the additional benefit of being able to specify `preBuild` and `postBuild`. Keep in mind
-that the JavaScript file must `export` the configuration
+Using a JavaScript (JS) file gives you the additional benefit of being able to specify `preBuild` and `postBuild` and being able to run arbitrary match functions instead of regex-matching. The
+javascript function needs to return an array of matches. The fields of the matches must be the same
+as those that the regex can set.
+
+Keep in mind that the JavaScript file must `export` the configuration
 
 ```javascript
 module.exports = {
@@ -95,7 +98,26 @@ module.exports = {
   },
   postBuild: function () {
     console.log('This is run **after** the build command');
-  }
+  },
+  errorMatch: [
+    // normal regexes and functions may be mixed in this array
+    'this is a regex',
+    function (terminal_output) {
+      // this is the array of matches that we create
+      var matches = [];
+      terminal_output.split(/\n/).forEach(function (line, line_number, terminal_output) {
+        // all lines starting with a slash
+        if line[0] == '/' {
+          this.push({
+            file: 'x.txt',
+            line: line_number.toString(),
+            message: line
+          });
+        }
+      }.bind(matches));
+      return matches;
+    }
+  ]
 };
 ```
 
@@ -110,7 +132,7 @@ Option            | Required       | Description
 `sh`              | *[optional]*   | If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
 `cwd`             | *[optional]*   | The working directory for the command. E.g. what `.` resolves to.
 `env`             | *[optional]*   | An object of environment variables and their values to set
-`errorMatch`      | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
+`errorMatch`      | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details. (**JS only**: pass a function instead of regex to execute your own matching code)
 `keymap`          | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
 `atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
 `targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
