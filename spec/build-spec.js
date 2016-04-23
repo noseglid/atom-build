@@ -373,6 +373,8 @@ describe('Build', () => {
         ]);
       });
 
+      runs(() => atom.workspace.getActiveTextEditor().setSelectedBufferRange([[1, 3], [1, 6]]));
+
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -389,6 +391,7 @@ describe('Build', () => {
         expect(output.indexOf('FROM_PROCESS_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME=.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME_BASE=.atom-build')).not.toBe(-1);
+        expect(output.indexOf('SELECTION=cmd')).not.toBe(-1);
       });
     });
   });
@@ -458,14 +461,13 @@ describe('Build', () => {
       });
 
       runs(() => {
-        const editor = atom.workspace.getActiveTextEditor();
-        editor.save();
+        atom.workspace.getActiveTextEditor().save();
       });
 
       waits(waitTime);
 
       runs(() => {
-        expect(atom.notifications.getNotifications().length).toEqual(0);
+        expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
   });
@@ -511,11 +513,13 @@ describe('Build', () => {
         args: [ '.atom-build.json' ]
       }));
 
-      waitsForPromise(() => atom.workspace.open(directory2 + '/main.c'));
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
-      runs(() => atom.project.addPath(directory2));
-
-      waitsForPromise(() => specHelpers.awaitTargets());
+      waitsForPromise(() => {
+        const promise = specHelpers.awaitTargets();
+        atom.project.addPath(directory2);
+        return Promise.all([ promise, atom.workspace.open(directory2 + '/main.c') ]);
+      });
 
       runs(() => {
         atom.workspace.getActiveTextEditor().save();
@@ -591,14 +595,11 @@ describe('Build', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       atom.commands.dispatch(workspaceElement, 'build:trigger');
 
-      waitsFor(() => {
-        return atom.notifications.getNotifications().length > 0;
-      });
+      waitsFor(() => atom.notifications.getNotifications().find(n => n.getMessage() === 'No eligible build target.'));
 
       runs(() => {
-        const notification = atom.notifications.getNotifications()[0];
+        const notification = atom.notifications.getNotifications().find(n => n.getMessage() === 'No eligible build target.');
         expect(notification.getType()).toEqual('warning');
-        expect(notification.getMessage()).toEqual('No eligible build target.');
       });
     });
   });

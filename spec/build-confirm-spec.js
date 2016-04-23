@@ -63,11 +63,11 @@ describe('Confirm', () => {
       });
 
       waitsFor(() => {
-        return workspaceElement.querySelector(':focus');
+        return workspaceElement.querySelector('.build-confirm');
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.btn-success:focus')).toExist();
+        expect(document.activeElement.classList.contains('btn-success')).toEqual(true);
       });
     });
 
@@ -88,13 +88,11 @@ describe('Confirm', () => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(() => {
-        return workspaceElement.querySelector(':focus');
-      });
+      waitsFor(() => workspaceElement.querySelector('.build-confirm'));
 
       runs(() => {
         atom.commands.dispatch(workspaceElement, 'build:no-confirm');
-        expect(workspaceElement.querySelector('.btn-success:focus')).not.toExist();
+        expect(workspaceElement.querySelector('.build-confirm')).not.toExist();
       });
     });
 
@@ -158,9 +156,8 @@ describe('Confirm', () => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(() => workspaceElement.querySelector(':focus'));
-
-      runs(() => workspaceElement.querySelector(':focus').click());
+      waitsFor(() => workspaceElement.querySelector('.build-confirm'));
+      runs(() => document.activeElement.click());
 
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
@@ -196,9 +193,7 @@ describe('Confirm', () => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(() => {
-        return workspaceElement.querySelector(':focus');
-      });
+      waitsFor(() => workspaceElement.querySelector('.build-confirm'));
 
       runs(() => {
         workspaceElement.querySelector('button[click="confirmWithoutSave"]').click();
@@ -238,9 +233,7 @@ describe('Confirm', () => {
         atom.commands.dispatch(workspaceElement, 'build:trigger');
       });
 
-      waitsFor(() => {
-        return workspaceElement.querySelector(':focus');
-      });
+      waitsFor(() => workspaceElement.querySelector('.build-confirm'));
 
       runs(() => {
         workspaceElement.querySelector('button[click="cancel"]').click();
