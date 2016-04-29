@@ -196,5 +196,16 @@ describe('Target', () => {
         expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/customized/);
       });
     });
+
+    it('should show a warning if current file is not part of an open Atom project', () => {
+      waitsForPromise(() => atom.workspace.open('/randomFile'));
+      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:select-active-target'));
+      waitsFor(() => atom.notifications.getNotifications().find(n => n.message === 'Unable to build.'));
+      runs(() => {
+        const not = atom.notifications.getNotifications().find(n => n.message === 'Unable to build.');
+        expect(not.type).toBe('warning');
+      });
+    });
   });
 });
