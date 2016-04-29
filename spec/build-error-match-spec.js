@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import temp from 'temp';
 import os from 'os';
+import { sleep } from './helpers';
 
 describe('Error Match', () => {
   const errorMatchAtomBuildFile = __dirname + '/fixture/.atom-build.error-match.json';
@@ -509,6 +510,48 @@ describe('Error Match', () => {
         const bufferPosition = editor.getCursorBufferPosition();
         expect(editor.getTitle()).toEqual('.atom-build.json');
         expect(bufferPosition.row).toEqual(1);
+        expect(bufferPosition.column).toEqual(4);
+      });
+    });
+  });
+
+  describe('when build is cancelled', () => {
+    it('should still be possible to errormatch', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: `echo ".atom-build.json:1:5." && ${sleep(30)} && echo "Done!"`,
+        errorMatch: '(?<file>.atom-build.json):(?<line>1):(?<col>5)'
+      }));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      // Let build run for one second before we terminate it
+      waits(1000);
+
+      runs(() => {
+        expect(workspaceElement.querySelector('.build')).toExist();
+        atom.commands.dispatch(workspaceElement, 'build:stop');
+      });
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(0);
         expect(bufferPosition.column).toEqual(4);
       });
     });
