@@ -301,11 +301,11 @@ describe('Build', () => {
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
-        return atom.notifications.getNotifications().length > 0;
+        return atom.notifications.getNotifications().find(n => n.getType() === 'error');
       });
 
       runs(() => {
-        const notification = atom.notifications.getNotifications()[0];
+        const notification = atom.notifications.getNotifications().find(n => n.getType() === 'error');
         expect(notification.getType()).toEqual('error');
         expect(notification.getMessage()).toEqual('Invalid build file.');
         expect(notification.options.detail).toMatch(/Unexpected token t/);
