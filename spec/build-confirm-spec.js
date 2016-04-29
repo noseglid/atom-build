@@ -2,7 +2,6 @@
 
 import fs from 'fs-extra';
 import temp from 'temp';
-import specHelpers from 'atom-build-spec-helpers';
 import os from 'os';
 
 describe('Confirm', () => {
@@ -110,7 +109,6 @@ describe('Confirm', () => {
 
       waitsForPromise(() => {
         return Promise.all([
-          specHelpers.refreshAwaitTargets(),
           atom.workspace.open('.atom-build.json'),
           atom.workspace.open()
         ]);
@@ -143,12 +141,7 @@ describe('Confirm', () => {
         cmd: `${cat} catme`
       }));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('catme')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('catme'));
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();
@@ -180,12 +173,7 @@ describe('Confirm', () => {
         cmd: `${cat} catme`
       }));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('catme')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('catme'));
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();
@@ -220,12 +208,7 @@ describe('Confirm', () => {
         cmd: `${cat} catme`
       }));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('catme')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('catme'));
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();
@@ -257,12 +240,7 @@ describe('Confirm', () => {
         cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
       }));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('.atom-build.json')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('.atom-build.json'));
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();

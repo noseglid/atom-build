@@ -49,8 +49,6 @@ describe('Linter Integration', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
       fs.writeFileSync(join(directory, '.atom-build.json'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.error-match-multiple.json')));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -81,8 +79,6 @@ describe('Linter Integration', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
       fs.writeFileSync(join(directory, '.atom-build.json'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.error-match.message.json')));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -106,8 +102,6 @@ describe('Linter Integration', () => {
     it('should clear linter errors when starting a new build', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
       fs.writeFileSync(join(directory, '.atom-build.json'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.error-match.message.json')));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 

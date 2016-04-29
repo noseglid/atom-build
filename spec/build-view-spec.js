@@ -62,8 +62,6 @@ describe('BuildView', () => {
         sh: false
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -82,8 +80,6 @@ describe('BuildView', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo "<tag>"'
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -106,8 +102,6 @@ describe('BuildView', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: `echo "Building, this will take some time..." && ${sleep(30)} && echo "Done!"`
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -134,8 +128,6 @@ describe('BuildView', () => {
         cmd: 'echo this will fail && exit 1'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -157,8 +149,6 @@ describe('BuildView', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo this will fail && exit 1'
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -182,8 +172,6 @@ describe('BuildView', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo a && echo b && echo c && echo d && echo e && echo f && echo g && echo h && exit 1'
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -214,8 +202,6 @@ describe('BuildView', () => {
         cmd: 'echo hello && exit 1'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -233,8 +219,6 @@ describe('BuildView', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo hello && exit 1'
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 

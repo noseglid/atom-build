@@ -95,8 +95,6 @@ describe('Visible', () => {
           cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
         }));
 
-        waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
@@ -140,8 +138,6 @@ describe('Visible', () => {
           cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
         }));
 
-        waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
@@ -159,8 +155,6 @@ describe('Visible', () => {
           cmd: 'echo "Very bad..." && exit 2'
         }));
 
-        waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
         /* Give it some reasonable time to show itself if there is a bug */
@@ -177,8 +171,6 @@ describe('Visible', () => {
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
         }));
-
-        waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
         runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 

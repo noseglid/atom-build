@@ -71,8 +71,6 @@ describe('Build', () => {
         cmd: 'echo Very bad... && exit 1'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -94,8 +92,6 @@ describe('Build', () => {
         errorMatch: 'ERROR'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -110,8 +106,6 @@ describe('Build', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: `echo "Building, this will take some time..." && ${sleep(30)} && echo "Done!"`
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -150,6 +144,24 @@ describe('Build', () => {
         expect(workspaceElement.querySelector('.build')).not.toExist();
       });
     });
+
+    it('should automatically refresh if build is triggered an no targets are found', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
+        cmd: 'echo hello world'
+      }));
+
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
+
+      waitsFor(() =>
+        workspaceElement.querySelector('.build .title') &&
+        workspaceElement.querySelector('.build .title').classList.contains('success'));
+
+      runs(() => {
+        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/hello world/);
+      });
+    });
   });
 
   describe('when build is triggered twice', () => {
@@ -161,8 +173,6 @@ describe('Build', () => {
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
         cmd: 'echo hello world'
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -194,8 +204,6 @@ describe('Build', () => {
         args: [ '.atom-build.json' ]
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -214,8 +222,6 @@ describe('Build', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shellAtomBuildfile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -233,8 +239,6 @@ describe('Build', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shTrueAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -256,8 +260,6 @@ describe('Build', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shFalseAtomBuildFile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -276,8 +278,6 @@ describe('Build', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(shDefaultAtomBuildFile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -295,8 +295,6 @@ describe('Build', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(syntaxErrorAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -319,9 +317,7 @@ describe('Build', () => {
         cmd: 'echo first'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+      atom.commands.dispatch(workspaceElement, 'build:trigger');
 
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
@@ -344,9 +340,7 @@ describe('Build', () => {
 
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
-      runs(() => {
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
@@ -366,12 +360,7 @@ describe('Build', () => {
       process.env.FROM_PROCESS_ENV = '{FILE_ACTIVE}';
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(replaceAtomBuildFile));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('.atom-build.json')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('.atom-build.json'));
 
       runs(() => atom.workspace.getActiveTextEditor().setSelectedBufferRange([[1, 3], [1, 6]]));
 
@@ -404,12 +393,7 @@ describe('Build', () => {
         cmd: 'echo Surprising is the passing of time but not so, as the time of passing.'
       }));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('dummy')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('dummy'));
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();
@@ -434,12 +418,7 @@ describe('Build', () => {
         cmd: 'echo "hello, world"'
       });
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open('dummy')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open('dummy'));
 
       runs(() => {
         const editor = atom.workspace.getActiveTextEditor();
@@ -454,7 +433,9 @@ describe('Build', () => {
     it('should not attempt to build if buildOnSave is true and no build tool exists', () => {
       atom.config.set('build.buildOnSave', true);
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
+      fs.writeFileSync(directory + '.atom-build.json', {
+        cmd: 'echo "hello, world"'
+      });
 
       waitsForPromise(() => {
         return atom.workspace.open('dummy');
@@ -483,12 +464,7 @@ describe('Build', () => {
         args: [ '.atom-build.json' ]
       }));
 
-      waitsForPromise(() => {
-        return Promise.all([
-          specHelpers.refreshAwaitTargets(),
-          atom.workspace.open(directory2 + '/main.c')
-        ]);
-      });
+      waitsForPromise(() => atom.workspace.open(directory2 + '/main.c'));
 
       runs(() => {
         atom.workspace.getActiveTextEditor().save();
@@ -554,8 +530,6 @@ describe('Build', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -574,8 +548,6 @@ describe('Build', () => {
       const activeElement = document.activeElement;
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(goodAtomBuildfile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 

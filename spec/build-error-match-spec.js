@@ -3,7 +3,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import temp from 'temp';
-import specHelpers from 'atom-build-spec-helpers';
 import os from 'os';
 
 describe('Error Match', () => {
@@ -62,8 +61,6 @@ describe('Error Match', () => {
         errorMatch: '(invalidRegex'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -85,8 +82,6 @@ describe('Error Match', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -117,8 +112,6 @@ describe('Error Match', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchNoFileBuildFile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -145,8 +138,6 @@ describe('Error Match', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchNLCAtomBuildFile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -172,8 +163,6 @@ describe('Error Match', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -237,8 +226,6 @@ describe('Error Match', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiFirstAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -304,8 +291,6 @@ describe('Error Match', () => {
         errorMatch: '__(?<file>.+)__'
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -334,8 +319,6 @@ describe('Error Match', () => {
         errorMatch: '__(?<file>.+)__'
       };
       fs.writeFileSync(directory + '.atom-build.json', JSON.stringify(atomBuild));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -380,8 +363,6 @@ describe('Error Match', () => {
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchAtomBuildFile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -405,8 +386,6 @@ describe('Error Match', () => {
     it('should scroll the build panel to the text of the error', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchLongOutputAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -442,8 +421,6 @@ describe('Error Match', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchLongOutputAtomBuildFile));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -477,8 +454,6 @@ describe('Error Match', () => {
       expect(workspaceElement.querySelector('.build')).not.toExist();
 
       fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(errorMatchMultiMatcherAtomBuildFile));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
