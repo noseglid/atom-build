@@ -56,8 +56,6 @@ describe('Keymap', () => {
         }
       }));
 
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
-
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
@@ -99,8 +97,6 @@ describe('Keymap', () => {
           }
         }
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
@@ -162,8 +158,6 @@ describe('Keymap', () => {
           }
         }
       }));
-
-      waitsForPromise(() => specHelpers.refreshAwaitTargets());
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
