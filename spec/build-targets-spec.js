@@ -2,6 +2,7 @@
 
 import fs from 'fs-extra';
 import temp from 'temp';
+import path from 'path';
 import specHelpers from 'atom-build-spec-helpers';
 import os from 'os';
 
@@ -198,7 +199,7 @@ describe('Target', () => {
     });
 
     it('should show a warning if current file is not part of an open Atom project', () => {
-      waitsForPromise(() => atom.workspace.open('/randomFile'));
+      waitsForPromise(() => atom.workspace.open(path.join('..', 'randomFile')));
       waitsForPromise(() => specHelpers.refreshAwaitTargets());
       runs(() => atom.commands.dispatch(workspaceElement, 'build:select-active-target'));
       waitsFor(() => atom.notifications.getNotifications().find(n => n.message === 'Unable to build.'));
