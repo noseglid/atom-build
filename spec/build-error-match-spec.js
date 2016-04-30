@@ -540,7 +540,7 @@ describe('Error Match', () => {
         const bufferPosition = editor.getCursorBufferPosition();
         expect(editor.getTitle()).toEqual('.atom-build.js');
         expect(bufferPosition.row).toEqual(0);
-        expect(bufferPosition.column).toEqual(0);
+        expect(bufferPosition.column).toEqual(4);
         atom.workspace.getActivePane().destroyActiveItem();
       });
 

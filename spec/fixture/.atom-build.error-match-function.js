@@ -8,6 +8,7 @@ module.exports = {
         {
             file: '.atom-build.js',
             line: '1',
+            col: '5',
         },
         {
             file: '.atom-build.js',
