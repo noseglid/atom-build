@@ -14,6 +14,7 @@ describe('Error Match', () => {
   const errorMatchMultiFirstAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-first.json';
   const errorMatchLongOutputAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-long-output.json';
   const errorMatchMultiMatcherAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-errorMatch.json';
+  const errorMatchFunction = __dirname + '/fixture/.atom-build.error-match-function.js';
   const originalHomedirFn = os.homedir;
 
   let directory = null;
@@ -511,6 +512,69 @@ describe('Error Match', () => {
         expect(editor.getTitle()).toEqual('.atom-build.json');
         expect(bufferPosition.row).toEqual(1);
         expect(bufferPosition.column).toEqual(4);
+      });
+    });
+
+    it('should run javascript functions that return matches', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.js', fs.readFileSync(errorMatchFunction));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.js');
+        expect(bufferPosition.row).toEqual(0);
+        expect(bufferPosition.column).toEqual(4);
+        atom.workspace.getActivePane().destroyActiveItem();
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.js');
+        expect(bufferPosition.row).toEqual(1);
+        expect(bufferPosition.column).toEqual(0);
+        atom.workspace.getActivePane().destroyActiveItem();
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.js');
+        expect(bufferPosition.row).toEqual(4);
+        expect(bufferPosition.column).toEqual(0);
       });
     });
   });
