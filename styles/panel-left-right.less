@@ -2,10 +2,11 @@
 
 atom-panel.left .build,
 atom-panel.right .build {
-  height: 100%;
   width: 250px;
+  display: flex;
+  flex-direction: column;
   .output {
-    height: 100%;
+    flex-grow: 1;
   }
 
   .resizer {
@@ -26,4 +27,3 @@ atom-panel.right .build {
     left: 0;
   }
 }
-
