@@ -32,13 +32,28 @@ Automatically build your project inside your new favorite editor, Atom.
 
 (You can also use keyboard shortcuts to go to errors if you don't like Atom Linter, or want to keep package dependencies to a minimum).
 
+### Quick start
+
+Create a file called `.atom-build.yml` (note the inital dot):
+```yml
+cmd: echo Hello world
+```
+
+Save it, and press <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (OS X) / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (Linux/Windows)
+and you should se the output of `echo Hello world`, which should be `Hello world` if all is correct.
+
 ## Build providers
+
+Instead of specifying commands manually, you can use a build provider. They often include functionality such as parsing
+targets (for instance all tasks from `gulpfile.js` or `Makefile`).
+
 **[Full list of build providers](https://atombuild.github.io)**
 
 <a name="build-command"></a>
 ### Specify a custom build command
 
-If no build tool is enough to suit your needs, you can create a custom build command.
+If no build provider is enough to suit your needs, you can configure the custom build command extensively.
+
 Supported formats and the name of the configuration file is
 
   * JSON: `.atom-build.json`
@@ -47,33 +62,29 @@ Supported formats and the name of the configuration file is
   * JS: `.atom-build.js`
 
 Pick your favorite format, save that file in your project root, and specify exactly
-how your project is built (example in `json`)
+how your project is built (example in `yml`)
 
-```json
-{
-  "cmd": "<command to execute>",
-  "name": "<name of target>",
-  "args": [ "<argument1>", "<argument2>", ... ],
-  "sh": true,
-  "cwd": "<current working directory for `cmd`>",
-  "env": {
-    "VARIABLE1": "VALUE1",
-    "VARIABLE2": "VALUE2",
-    ...
-  },
-  "errorMatch": [
-    "^regexp1$",
-    "^regexp2$"
-  ],
-  "keymap": "<keymap string>",
-  "atomCommandName": "namespace:command",
-  "targets": {
-    "<name of target>": {
-      "cmd": "<command to execute>",
-      ... (all previous options are viable here except `targets`)
-    }
-  }
-}
+```yml
+cmd: "<command to execute>"
+name: "<name of target>"
+args:
+  - <argument1>
+  - <argument2>
+sh: true,
+cwd: <current working directory for `cmd`>
+env:
+  VARIABLE1: "VALUE1"
+  VARIABLE2: "VALUE2"
+errorMatch:
+  - ^regexp1$
+  - ^regexp2$
+keymap: <keymap string>
+atomCommandName: namespace:command
+targets:
+  extraTargetName:
+      cmd: "<command to execute>"
+      args:
+      # (any previous options are viable here except `targets` itself)
 ```
 
 Note that if `sh` is false `cmd` must only be the executable - no arguments here.  If the
@@ -187,8 +198,6 @@ The following named groups can be matched from the output:
   * `line_end` - *[optional]* the line the error ends on. `(?<line_end> RE)`.
   * `col_end` - *[optional]* the column the error ends on. `(?<col_end> RE)`.
   * `message` - *[optional]* Catch the humanized error message. `(?<message> RE)`.
-
-Backslashes must be escaped, thus the double `\\` everywhere.
 
 The `file` should be relative the `cwd` specified. If no `cwd` has been specified, then
 the `file` should be relative the project root (e.g. the top most directory shown in the
