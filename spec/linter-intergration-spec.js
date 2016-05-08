@@ -65,7 +65,7 @@ describe('Linter Integration', () => {
             text: 'Error from build',
             type: 'Error',
             severity: 'error',
-            trace: undefined,
+            trace: undefined
           },
           {
             filePath: join(directory, '.atom-build.json'),
@@ -73,7 +73,7 @@ describe('Linter Integration', () => {
             text: 'Error from build',
             type: 'Error',
             severity: 'error',
-            trace: undefined,
+            trace: undefined
           }
         ]);
       });
@@ -99,7 +99,7 @@ describe('Linter Integration', () => {
             text: 'very bad things',
             type: 'Error',
             severity: 'error',
-            trace: undefined,
+            trace: undefined
           }
         ]);
       });
@@ -125,7 +125,7 @@ describe('Linter Integration', () => {
             text: 'mildly bad things',
             type: 'Warning',
             severity: 'warning',
-            trace: undefined,
+            trace: undefined
           }
         ]);
       });
@@ -157,9 +157,9 @@ describe('Linter Integration', () => {
                 severity: 'info',
                 type: 'Explanation',
                 range: [ [0, 0], [0, 0]],
-                filePath: undefined,
+                filePath: undefined
               }
-            ],
+            ]
           }
         ]);
       });
@@ -185,7 +185,7 @@ describe('Linter Integration', () => {
             text: 'very bad things',
             type: 'Error',
             severity: 'error',
-            trace: undefined,
+            trace: undefined
           }
         ]);
         fs.writeFileSync(join(directory, '.atom-build.json'), JSON.stringify({
