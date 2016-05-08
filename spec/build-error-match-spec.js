@@ -15,6 +15,7 @@ describe('Error Match', () => {
   const errorMatchLongOutputAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-long-output.json';
   const errorMatchMultiMatcherAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-errorMatch.json';
   const errorMatchFunction = __dirname + '/fixture/.atom-build.error-match-function.js';
+  const matchFunctionWarning = __dirname + '/fixture/.atom-build.match-function-warning.js';
   const originalHomedirFn = os.homedir;
 
   let directory = null;
@@ -559,6 +560,35 @@ describe('Error Match', () => {
         expect(bufferPosition.row).toEqual(1);
         expect(bufferPosition.column).toEqual(0);
         atom.workspace.getActivePane().destroyActiveItem();
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.js');
+        expect(bufferPosition.row).toEqual(4);
+        expect(bufferPosition.column).toEqual(0);
+      });
+    });
+
+    it('should be possible to change the type of the match to something other than `Error`', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.js', fs.readFileSync(matchFunctionWarning));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
       });
 
       runs(() => {

@@ -63,13 +63,17 @@ describe('Linter Integration', () => {
             filePath: join(directory, '.atom-build.json'),
             range: [ [2, 7], [2, 7] ],
             text: 'Error from build',
-            type: 'Error'
+            type: 'Error',
+            severity: 'error',
+            trace: undefined,
           },
           {
             filePath: join(directory, '.atom-build.json'),
             range: [ [1, 4], [1, 4] ],
             text: 'Error from build',
-            type: 'Error'
+            type: 'Error',
+            severity: 'error',
+            trace: undefined,
           }
         ]);
       });
@@ -93,7 +97,69 @@ describe('Linter Integration', () => {
             filePath: join(directory, '.atom-build.json'),
             range: [ [2, 7], [2, 7] ],
             text: 'very bad things',
-            type: 'Error'
+            type: 'Error',
+            severity: 'error',
+            trace: undefined,
+          }
+        ]);
+      });
+    });
+
+    fit('should emit warnings just like errors', () => {
+      expect(dummyPackage.hasRegistered()).toEqual(true);
+      fs.writeFileSync(join(directory, '.atom-build.js'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.match-function-warning.js')));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        const linter = dummyPackage.getLinter();
+        expect(linter.messages).toEqual([
+          {
+            filePath: join(directory, '.atom-build.js'),
+            range: [ [4, 0], [4, 0] ],
+            text: 'mildly bad things',
+            type: 'Warning',
+            severity: 'warning',
+            trace: undefined,
+          }
+        ]);
+      });
+    });
+
+    fit('should attach traces to matches where applicable', () => {
+      expect(dummyPackage.hasRegistered()).toEqual(true);
+      fs.writeFileSync(join(directory, '.atom-build.js'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.match-function-trace.js')));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        const linter = dummyPackage.getLinter();
+        expect(linter.messages).toEqual([
+          {
+            filePath: join(directory, '.atom-build.js'),
+            range: [ [5, 0], [5, 0] ],
+            text: 'Error from build',
+            type: 'Error',
+            severity: 'error',
+            trace: [
+              {
+                text: 'insert great explanation here',
+                severity: 'info',
+                type: 'Explanation',
+                range: [ [0, 0], [0, 0]],
+                filePath: undefined,
+              }
+            ],
           }
         ]);
       });
@@ -117,7 +183,9 @@ describe('Linter Integration', () => {
             filePath: join(directory, '.atom-build.json'),
             range: [ [2, 7], [2, 7] ],
             text: 'very bad things',
-            type: 'Error'
+            type: 'Error',
+            severity: 'error',
+            trace: undefined,
           }
         ]);
         fs.writeFileSync(join(directory, '.atom-build.json'), JSON.stringify({
