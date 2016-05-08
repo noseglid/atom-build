@@ -105,7 +105,7 @@ describe('Linter Integration', () => {
       });
     });
 
-    fit('should emit warnings just like errors', () => {
+    it('should emit warnings just like errors', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
       fs.writeFileSync(join(directory, '.atom-build.js'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.match-function-warning.js')));
 
@@ -131,7 +131,7 @@ describe('Linter Integration', () => {
       });
     });
 
-    fit('should attach traces to matches where applicable', () => {
+    it('should attach traces to matches where applicable', () => {
       expect(dummyPackage.hasRegistered()).toEqual(true);
       fs.writeFileSync(join(directory, '.atom-build.js'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.match-function-trace.js')));
 
