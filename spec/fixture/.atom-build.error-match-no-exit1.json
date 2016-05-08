@@ -1,0 +1,4 @@
+{
+	"cmd": "echo 'file:.atom-build.json,line:3,column:8' && exit 0",
+	"errorMatch": "file:(?<file>[^,]+),line:(?<line>\\d+),column:(?<col>\\d+)"
+}

@@ -1,0 +1,4 @@
+{
+	"cmd": "echo file:.atom-build.json,line:3,column:8 && echo file:.atom-build.json,line:2,column:5 && exit 0",
+	"warningMatch": "file:(?<file>[^,]+),line:(?<line>\\d+),column:(?<col>\\d+)"
+}
