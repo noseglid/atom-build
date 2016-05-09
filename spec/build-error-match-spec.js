@@ -125,7 +125,7 @@ describe('Error Match', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.build .title').classList.contains('error')).not.toExist()
+        expect(workspaceElement.querySelector('.build .title').classList.contains('error')).not.toExist();
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
