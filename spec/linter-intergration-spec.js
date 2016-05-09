@@ -113,7 +113,7 @@ describe('Linter Integration', () => {
 
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(() => {

@@ -120,7 +120,8 @@ describe('Error Match', () => {
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
 
       waitsFor(() => {
-        return workspaceElement.querySelector('.build .title');
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(() => {
@@ -619,7 +620,7 @@ describe('Error Match', () => {
 
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('error');
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(() => {
