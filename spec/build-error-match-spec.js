@@ -58,7 +58,7 @@ describe('Error Match', () => {
     // FIXME: try to figure out why atom still holds on to the directory/files on windows
     try {
       fs.removeSync(directory);
-    } catch {
+    } catch (err) {
     }
     os.homedir = originalHomedirFn;
   });
