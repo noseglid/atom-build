@@ -3,7 +3,7 @@ module.exports = {
   args: [ 'cake' ],
   name: 'from js',
   sh: true,
-  errorMatch: function (terminal_output) {
+  functionMatch: function (terminal_output) {
     return [
         {
             file: '.atom-build.js',

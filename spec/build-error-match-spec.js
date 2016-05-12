@@ -15,6 +15,9 @@ describe('Error Match', () => {
   const errorMatchLongOutputAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-long-output.json';
   const errorMatchMultiMatcherAtomBuildFile = __dirname + '/fixture/.atom-build.error-match-multiple-errorMatch.json';
   const errorMatchFunction = __dirname + '/fixture/.atom-build.error-match-function.js';
+  const matchFunctionWarning = __dirname + '/fixture/.atom-build.match-function-warning.js';
+  const warningMatchAtomBuildFile = __dirname + '/fixture/.atom-build.warning-match.json';
+  const functionChangeDirs = __dirname + '/fixture/.atom-build.match-function-change-dirs.js';
   const originalHomedirFn = os.homedir;
 
   let directory = null;
@@ -52,7 +55,12 @@ describe('Error Match', () => {
   });
 
   afterEach(() => {
-    fs.removeSync(directory);
+    // FIXME: try to figure out why atom still holds on to the directory/files on windows
+    try {
+      fs.removeSync(directory);
+    } catch (err) {
+      // Failed to clean up, ignore this.
+    }
     os.homedir = originalHomedirFn;
   });
 
@@ -93,6 +101,37 @@ describe('Error Match', () => {
       });
 
       runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.json');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(7);
+      });
+    });
+
+    it('should place the line and column on warning in correct file', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      atom.config.set('build.matchedErrorFailsBuild', true);
+
+      fs.writeFileSync(directory + '.atom-build.json', fs.readFileSync(warningMatchAtomBuildFile));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(() => {
+        expect(workspaceElement.querySelector('.build .title').classList.contains('error')).not.toExist();
         atom.commands.dispatch(workspaceElement, 'build:error-match');
       });
 
@@ -575,6 +614,68 @@ describe('Error Match', () => {
         expect(editor.getTitle()).toEqual('.atom-build.js');
         expect(bufferPosition.row).toEqual(4);
         expect(bufferPosition.column).toEqual(0);
+      });
+    });
+
+    it('should be possible to change the type of the match to something other than `Error`', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+
+      fs.writeFileSync(directory + '.atom-build.js', fs.readFileSync(matchFunctionWarning));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('.atom-build.js');
+        expect(bufferPosition.row).toEqual(4);
+        expect(bufferPosition.column).toEqual(0);
+      });
+    });
+  });
+
+  describe('when using function matches', () => {
+    it('should be possible to keep state from previous lines', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      fs.writeFileSync(directory + '.atom-build.js', fs.readFileSync(functionChangeDirs));
+      fs.writeFileSync(directory + 'change_dir_output.txt', fs.readFileSync(__dirname + '/fixture/change_dir_output.txt'));
+      fs.mkdirSync(directory + 'foo');
+      fs.mkdirSync(directory + 'foo/src');
+      fs.writeFileSync(directory + 'foo/src/testmake.c', 'lorem ipsum\naquarium laudanum\nbabaorum petibonum\nthe cake is a lie');
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('testmake.c');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(4);
       });
     });
   });

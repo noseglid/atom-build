@@ -78,6 +78,9 @@ env:
 errorMatch:
   - ^regexp1$
   - ^regexp2$
+warningMatch:
+  - ^regexp1$
+  - ^regexp2$
 keymap: <keymap string>
 atomCommandName: namespace:command
 targets:
@@ -95,6 +98,8 @@ systems).
 If `sh` is true, it will use a shell (e.g. `/bin/sh -c`) on unix/linux, and command (`cmd /S /C`)
 on windows.
 
+#### Programmatic Build commands (Javascript)
+
 Using a JavaScript (JS) file gives you the additional benefit of being able to specify `preBuild` and `postBuild` and being able to run arbitrary match functions instead of regex-matching. The
 javascript function needs to return an array of matches. The fields of the matches must be the same
 as those that the regex can set.
@@ -110,27 +115,85 @@ module.exports = {
   postBuild: function () {
     console.log('This is run **after** the build command');
   },
-  errorMatch: [
-    // normal regexes and functions may be mixed in this array
-    'this is a regex',
-    function (terminal_output) {
-      // this is the array of matches that we create
-      var matches = [];
-      terminal_output.split(/\n/).forEach(function (line, line_number, terminal_output) {
-        // all lines starting with a slash
-        if line[0] == '/' {
-          this.push({
-            file: 'x.txt',
-            line: line_number.toString(),
-            message: line
-          });
-        }
-      }.bind(matches));
-      return matches;
-    }
-  ]
+  functionMatch: function (terminal_output) {
+    // this is the array of matches that we create
+    var matches = [];
+    terminal_output.split(/\n/).forEach(function (line, line_number, terminal_output) {
+      // all lines starting with a slash
+      if line[0] == '/' {
+        this.push({
+          file: 'x.txt',
+          line: line_number.toString(),
+          message: line
+        });
+      }
+    }.bind(matches));
+    return matches;
+  }
 };
 ```
+
+A major advantage of the `functionMatch` method is that you can keep state while
+parsing the output. For example, if you have a `Makefile` output like this:
+
+```terminal
+make[1]: Entering directory 'foo'
+make[2]: Entering directory 'foo/src'
+testmake.c: In function 'main':
+testmake.c:3:5: error: unknown type name 'error'
+```
+
+then you can't use a regex to match the filename, because the regex doesn't have
+the information about the directory changes. The following `functionMatch` can
+handle this case. Explanations are in the comments:
+
+```js
+module.exports = {
+  cmd: 'make',
+  name: 'Makefile',
+  sh: true,
+  functionMatch: function (output) {
+    const enterDir = /^make\[\d+\]: Entering directory '([^']+)'$/;
+    const error = /^([^:]+):(\d+):(\d+): error: (.+)$/;
+    // this is the list of error matches that atom-build will process
+    const array = [];
+    // stores the current directory
+    var dir = null;
+    // iterate over the output by lines
+    output.split(/\r?\n/).forEach(line => {
+      // update the current directory on lines with `Entering directory`
+      const dir_match = enterDir.exec(line);
+      if (dir_match) {
+        dir = dir_match[1];
+      } else {
+        // process possible error messages
+        const error_match = error.exec(line);
+        if (error_match) {
+          // map the regex match to the error object that atom-build expects
+          array.push({
+            file: dir ? dir + '/' + error_match[1] : error_match[1],
+            line: error_match[2],
+            col: error_match[3],
+            message: error_match[4]
+          });
+        }
+      }
+    });
+    return array;
+  }
+};
+```
+
+Another feature of `functionMatch` is that you can attach informational messages
+to the error messages:
+
+![pic of traces and custom error types](https://cloud.githubusercontent.com/assets/332036/15097688/ddfc170c-1523-11e6-8394-d24a79d125ea.png)
+
+You can add these additional messages by setting the trace field of the error
+object. It needs to be an array of objects with the same fields as the error.
+Instead of adding squiggly lines at the location given by the `file`, `line` and
+`col` fields, a link is added to the popup message, so you can conveniently jump
+to the location given in the trace.
 
 <a name="custom-build-config"></a>
 #### Configuration options
@@ -143,7 +206,9 @@ Option            | Required       | Description
 `sh`              | *[optional]*   | If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
 `cwd`             | *[optional]*   | The working directory for the command. E.g. what `.` resolves to.
 `env`             | *[optional]*   | An object of environment variables and their values to set
-`errorMatch`      | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details. (**JS only**: pass a function instead of regex to execute your own matching code)
+`errorMatch`      | *[optional]*   | A (list of) regular expressions to match output to a file, row and col. See [Error matching](#error-match) for details.
+`warningMatch`    | *[optional]*   | Like `errorMatch`, but is reported as just a warning
+`functionMatch`   | *[optional]*   | A (list of) javascript functions that return a list of match objects
 `keymap`          | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
 `atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
 `targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
