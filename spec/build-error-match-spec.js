@@ -59,6 +59,7 @@ describe('Error Match', () => {
     try {
       fs.removeSync(directory);
     } catch (err) {
+      // Failed to clean up, ignore this.
     }
     os.homedir = originalHomedirFn;
   });
