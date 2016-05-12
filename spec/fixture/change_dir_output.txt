@@ -1,0 +1,9 @@
+make  all-recursive
+make[1]: Entering directory 'foo'
+Making all in src
+make[2]: Entering directory 'foo/src'
+  CC       testmake.o
+testmake.c: In function 'main':
+testmake.c:3:5: error: unknown type name 'error'
+     error is here!
+     ^

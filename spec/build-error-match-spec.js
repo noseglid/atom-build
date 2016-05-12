@@ -17,6 +17,7 @@ describe('Error Match', () => {
   const errorMatchFunction = __dirname + '/fixture/.atom-build.error-match-function.js';
   const matchFunctionWarning = __dirname + '/fixture/.atom-build.match-function-warning.js';
   const warningMatchAtomBuildFile = __dirname + '/fixture/.atom-build.warning-match.json';
+  const functionChangeDirs = __dirname + '/fixture/.atom-build.match-function-change-dirs.js';
   const originalHomedirFn = os.homedir;
 
   let directory = null;
@@ -637,6 +638,39 @@ describe('Error Match', () => {
         expect(editor.getTitle()).toEqual('.atom-build.js');
         expect(bufferPosition.row).toEqual(4);
         expect(bufferPosition.column).toEqual(0);
+      });
+    });
+  });
+
+  describe('when using function matches', () => {
+    it('should be possible to keep state from previous lines', () => {
+      expect(workspaceElement.querySelector('.build')).not.toExist();
+      fs.writeFileSync(directory + '.atom-build.js', fs.readFileSync(functionChangeDirs));
+      fs.writeFileSync(directory + 'change_dir_output.txt', fs.readFileSync(__dirname + '/fixture/change_dir_output.txt'));
+      fs.mkdirSync(directory + 'foo');
+      fs.mkdirSync(directory + 'foo/src');
+      fs.writeFileSync(directory + 'foo/src/testmake.c', 'lorem ipsum\naquarium laudanum\nbabaorum petibonum\nthe cake is a lie');
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:error-match');
+      });
+
+      waitsFor(() => {
+        return atom.workspace.getActiveTextEditor();
+      });
+
+      runs(() => {
+        const editor = atom.workspace.getActiveTextEditor();
+        const bufferPosition = editor.getCursorBufferPosition();
+        expect(editor.getTitle()).toEqual('testmake.c');
+        expect(bufferPosition.row).toEqual(2);
+        expect(bufferPosition.column).toEqual(4);
       });
     });
   });
