@@ -161,6 +161,8 @@ module.exports = {
     var dir = null;
     // iterate over the output by lines
     output.split(/\r?\n/).forEach(line => {
+      // remove any ANSI escape sequences 
+      line = line.replace(/\x1b[^m]*m/g, "");
       // update the current directory on lines with `Entering directory`
       const dir_match = enterDir.exec(line);
       if (dir_match) {
