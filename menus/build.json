@@ -4,12 +4,24 @@
     "submenu": [ {
         "label": "Build",
         "submenu": [ {
-          "label": "Build project...",
+          "label": "Build project",
           "command": "build:trigger"
         },
         {
-          "label": "Terminate build.",
+          "label": "Terminate build",
           "command": "build:stop"
+        },
+        {
+          "label": "Select active target",
+          "command": "build:select-active-target"
+        },
+        {
+          "label": "Refresh targets",
+          "command": "build:refresh-targets"
+        },
+        {
+          "label": "Toggle panel",
+          "command": "build:toggle-panel"
         } ]
       } ]
   } ],
