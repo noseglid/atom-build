@@ -697,6 +697,7 @@ describe('Error Match', () => {
       runs(() => {
         expect(workspaceElement.querySelector('.build')).toExist();
         atom.commands.dispatch(workspaceElement, 'build:stop');
+        atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
       waitsFor(() => {
