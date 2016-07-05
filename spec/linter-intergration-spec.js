@@ -1,5 +1,6 @@
 'use babel';
 
+import os from 'os';
 import fs from 'fs-extra';
 import temp from 'temp';
 import specHelpers from 'atom-build-spec-helpers';
@@ -10,10 +11,13 @@ describe('Linter Integration', () => {
   let workspaceElement = null;
   let dummyPackage = null;
   const join = require('path').join;
+  const originalHomedirFn = os.homedir;
 
   temp.track();
 
   beforeEach(() => {
+    const createdHomeDir = temp.mkdirSync('atom-build-spec-home');
+    os.homedir = () => createdHomeDir;
     directory = fs.realpathSync(temp.mkdirSync({ prefix: 'atom-build-spec-' }));
     atom.project.setPaths([ directory ]);
 
@@ -42,6 +46,7 @@ describe('Linter Integration', () => {
 
   afterEach(() => {
     fs.removeSync(directory);
+    os.homedir = originalHomedirFn;
   });
 
   describe('when error matching and linter is activated', () => {
