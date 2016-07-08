@@ -282,6 +282,5 @@ describe('Linter Integration', () => {
         ]);
       });
     });
-
   });
 });
