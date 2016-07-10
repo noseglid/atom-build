@@ -195,6 +195,10 @@ Instead of adding squiggly lines at the location given by the `file`, `line` and
 `col` fields, a link is added to the popup message, so you can conveniently jump
 to the location given in the trace.
 
+One more feature provided by `functionMatch` is the ability to use HTML in
+the message text by setting `html_message` instead of `message`. If both
+`html_message` and `message` are set, the latter takes priority.
+
 <a name="custom-build-config"></a>
 #### Configuration options
 

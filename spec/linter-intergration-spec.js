@@ -282,5 +282,68 @@ describe('Linter Integration', () => {
         ]);
       });
     });
+
+    it('should give priority to text over html when both are set', () => {
+      expect(dummyPackage.hasRegistered()).toEqual(true);
+      fs.writeFileSync(join(directory, '.atom-build.js'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.match-function-message-and-html.js')));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('success');
+      });
+
+      runs(() => {
+        const linter = dummyPackage.getLinter();
+        expect(linter.messages).toEqual([
+          {
+            filePath: join(directory, '.atom-build.js'),
+            range: [ [4, 0], [4, 0] ],
+            text: 'something happened in plain text',
+            html: undefined,
+            type: 'Warning',
+            severity: 'warning',
+            trace: undefined
+          }
+        ]);
+      });
+    });
+
+    it('should give priority to text over html when both are set in traces', () => {
+      expect(dummyPackage.hasRegistered()).toEqual(true);
+      fs.writeFileSync(join(directory, '.atom-build.js'), fs.readFileSync(join(__dirname, 'fixture', '.atom-build.match-function-trace-message-and-html.js')));
+
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.build .title') &&
+          workspaceElement.querySelector('.build .title').classList.contains('error');
+      });
+
+      runs(() => {
+        const linter = dummyPackage.getLinter();
+        expect(linter.messages).toEqual([
+          {
+            filePath: join(directory, '.atom-build.js'),
+            range: [ [5, 0], [5, 0] ],
+            text: 'Error from build',
+            html: undefined,
+            type: 'Error',
+            severity: 'error',
+            trace: [
+              {
+                text: 'insert plain text explanation here',
+                html: undefined,
+                severity: 'info',
+                type: 'Explanation',
+                range: [ [0, 0], [0, 0]],
+                filePath: undefined
+              }
+            ]
+          }
+        ]);
+      });
+    });
   });
 });
