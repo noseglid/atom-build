@@ -204,7 +204,7 @@ the message text by setting `html_message` instead of `message`. If both
 
 Option            | Required       | Description
 ------------------|----------------|-----------------------
-`cmd`             | *[required]* | The executable command
+`cmd`             | **[required]** | The executable command
 `name`            | *[optional]*   | The name of the target. Viewed in the targets list (toggled by `build:select-active-target`).
 `args`            | *[optional]*   | An array of arguments for the command
 `sh`              | *[optional]*   | If `true`, the combined command and arguments will be passed to `/bin/sh`. Default `true`.
