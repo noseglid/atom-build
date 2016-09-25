@@ -40,7 +40,7 @@ cmd: echo Hello world
 ```
 
 Save it, and press <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (OS X) / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (Linux/Windows)
-and you should se the output of `echo Hello world`, which should be `Hello world` if all is correct.
+and you should see the output of `echo Hello world`, which should be `Hello world` if all is correct.
 
 ## Build providers
 
