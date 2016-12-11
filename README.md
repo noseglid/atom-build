@@ -34,6 +34,11 @@ Automatically build your project inside your new favorite editor, Atom.
 
 ### Quick start
 
+Install the build package using apm (apm can be installed using the install shell commands tool in Atom)(Linux/Mac):
+```bash
+$ apm install build
+```
+
 Create a file called `.atom-build.yml` (note the inital dot):
 ```yml
 cmd: echo Hello world
