@@ -63,7 +63,7 @@ Supported formats and the name of the configuration file is
 
   * JSON: `.atom-build.json`
   * CSON: `.atom-build.cson`
-  * YAML: `.atom-build.yml`
+  * YAML: `.atom-build.yaml` or `.atom-build.yml`
   * JS: `.atom-build.js`
 
 Pick your favorite format, save that file in your project root, and specify exactly
