@@ -19,7 +19,7 @@ class Builder {
       {
         exec: 'exit',
         args: ['0'],
-        atomCommandName: 'build:hook-test:succeding',
+        atomCommandName: 'build:hook-test:succeeding',
         preBuild: () => hooks.preBuild(),
         postBuild: (success) => hooks.postBuild(success)
       },
