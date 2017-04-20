@@ -222,7 +222,7 @@ Option            | Required       | Description
 `killSignals`     | *[optional]*   | An array of signals. The signals will be sent, one after each time `Escape` is pressed until the process has been terminated. The default value is `SIGINT` -> `SIGTERM` -> `SIGKILL`. The only signal which is guaranteed to terminate the process is `SIGKILL` so it is recommended to include that in the list.
 `atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
 `targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
-`preBuild`        | *[optional]*   | **JS only**. A function which will be called *before* executing `cmd`. No arguments. `this` will be the build configuration.
+`preBuild`        | *[optional]*   | **JS only**. A function which will be called *before* executing `cmd`. It will be passed 1 argument: `object replacements` containing computed replacement strings. `this` will be the build configuration.
 `postBuild`       | *[optional]*   | **JS only**. A function which will be called *after* executing `cmd`. It will be passed 3 arguments: `bool buildOutcome` indicating outcome of the running `cmd`, `string stdout` containing the contents of `stdout`, and `string stderr` containing the contents of `stderr`. `this` will be the build configuration.
 
 #### Replacements
