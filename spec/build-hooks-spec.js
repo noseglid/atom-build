@@ -7,7 +7,7 @@ import specHelpers from 'atom-build-spec-helpers';
 describe('Hooks', () => {
   let directory = null;
   let workspaceElement = null;
-  const succedingCommandName = 'build:hook-test:succeding';
+  const succeedingCommandName = 'build:hook-test:succeeding';
   const failingCommandName = 'build:hook-test:failing';
   const dummyPackageName = 'atom-build-hooks-dummy-package';
   const dummyPackagePath = __dirname + '/fixture/' + dummyPackageName;
@@ -51,7 +51,7 @@ describe('Hooks', () => {
       pkg = atom.packages.getActivePackage(dummyPackageName).mainModule;
       spyOn(pkg.hooks, 'preBuild');
 
-      atom.commands.dispatch(workspaceElement, succedingCommandName);
+      atom.commands.dispatch(workspaceElement, succeedingCommandName);
     });
 
     waitsFor(() => {
@@ -71,7 +71,7 @@ describe('Hooks', () => {
         pkg = atom.packages.getActivePackage(dummyPackageName).mainModule;
         spyOn(pkg.hooks, 'postBuild');
 
-        atom.commands.dispatch(workspaceElement, succedingCommandName);
+        atom.commands.dispatch(workspaceElement, succeedingCommandName);
       });
 
       waitsFor(() => {
