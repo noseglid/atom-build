@@ -3,7 +3,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import temp from 'temp';
-import specHelpers from 'atom-build-spec-helpers';
 import os from 'os';
 
 describe('Keymap', () => {
@@ -64,86 +63,9 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
-        atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
-      });
-
-      waitsFor(() => {
-        return !workspaceElement.querySelector('.build .title');
-      });
-
-      runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
-      });
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/keymapped/);
-      });
-    });
-
-    it('should not changed the set active build', () => {
-      fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
-        name: 'The default build',
-        cmd: 'echo default',
-        targets: {
-          'keymapped build': {
-            cmd: 'echo keymapped',
-            keymap: 'ctrl-alt-k'
-          }
-        }
-      }));
-
-      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
-        atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
-      });
-
-      waitsFor(() => {
-        return !workspaceElement.querySelector('.build .title');
-      });
-
-      runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
-      });
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/keymapped/);
-        atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
-      });
-
-      waitsFor(() => {
-        return !workspaceElement.querySelector('.build .title');
-      });
-
-      runs(() => {
-        atom.commands.dispatch(workspaceElement, 'build:trigger');
-      });
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
-      });
-
-      runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
-        atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
+        const bindings = atom.keymaps.findKeyBindings({ command: 'build:trigger:Custom: keymapped build' });
+        expect(bindings.length).toEqual(1);
+        expect(bindings[0].keystrokes).toEqual('ctrl-alt-k');
       });
     });
 
@@ -160,31 +82,18 @@ describe('Keymap', () => {
       }));
 
       runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
-
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
           workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/default/);
-      });
-
-      waitsFor(() => {
-        return !workspaceElement.querySelector('.build .title');
-      });
-
-      runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
-      });
-
-      waitsFor(() => {
-        return workspaceElement.querySelector('.build .title') &&
-          workspaceElement.querySelector('.build .title').classList.contains('success');
+        const bindings = atom.keymaps.findKeyBindings({ command: 'build:trigger:Custom: keymapped build' });
+        expect(bindings.length).toEqual(1);
+        expect(bindings[0].keystrokes).toEqual('ctrl-alt-k');
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/keymapped/);
         atom.commands.dispatch(workspaceElement, 'build:toggle-panel');
         fs.writeFileSync(directory + '.atom-build.json', JSON.stringify({
           name: 'The default build',
@@ -198,30 +107,16 @@ describe('Keymap', () => {
         }));
       });
 
-      waitsForPromise(() => specHelpers.awaitTargets());
-
-      waitsFor(() => {
-        return !workspaceElement.querySelector('.build .title');
-      });
-
-      runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
-      });
-
-      waits(300);
-
-      runs(() => {
-        expect(workspaceElement.querySelector('.build')).not.toExist();
-        specHelpers.keydown('x', { ctrl: true, element: workspaceElement });
-      });
-
+      runs(() => atom.commands.dispatch(workspaceElement, 'build:trigger'));
       waitsFor(() => {
         return workspaceElement.querySelector('.build .title') &&
-            workspaceElement.querySelector('.build .title').classList.contains('success');
+          workspaceElement.querySelector('.build .title').classList.contains('success');
       });
 
       runs(() => {
-        expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/ctrl-x new file/);
+        const bindings = atom.keymaps.findKeyBindings({ command: 'build:trigger:Custom: keymapped build' });
+        expect(bindings.length).toEqual(1);
+        expect(bindings[0].keystrokes).not.toEqual('ctrl-alt-x');
       });
     });
   });
