@@ -55,13 +55,8 @@ describe('Error Match', () => {
   });
 
   afterEach(() => {
-    // FIXME: try to figure out why atom still holds on to the directory/files on windows
-    try {
-      fs.removeSync(directory);
-    } catch (err) {
-      // Failed to clean up, ignore this.
-    }
     os.homedir = originalHomedirFn;
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when error matcher is configured incorrectly', () => {

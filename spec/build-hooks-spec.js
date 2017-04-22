@@ -41,7 +41,7 @@ describe('Hooks', () => {
   });
 
   afterEach(() => {
-    fs.removeSync(directory);
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   it('should call preBuild', () => {
