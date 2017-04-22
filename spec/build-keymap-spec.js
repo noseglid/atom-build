@@ -39,7 +39,7 @@ describe('Keymap', () => {
 
   afterEach(() => {
     os.homedir = originalHomedirFn;
-    fs.removeSync(directory);
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when custom keymap is defined in .atom-build.json', () => {

@@ -45,7 +45,7 @@ describe('Target', () => {
 
   afterEach(() => {
     os.homedir = originalHomedirFn;
-    fs.removeSync(directory);
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when multiple targets exists', () => {

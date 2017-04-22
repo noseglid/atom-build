@@ -22,8 +22,8 @@ describe('custom provider', () => {
   });
 
   afterEach(() => {
-    fs.removeSync(directory);
     os.homedir = originalHomedirFn;
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when there is no .atom-build config file in any elegible directory', () => {

@@ -39,8 +39,8 @@ describe('Confirm', () => {
   });
 
   afterEach(() => {
-    fs.removeSync(directory);
     os.homedir = originalHomedirFn;
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when the text editor is modified', () => {

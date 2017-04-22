@@ -45,8 +45,8 @@ describe('Linter Integration', () => {
   });
 
   afterEach(() => {
-    fs.removeSync(directory);
     os.homedir = originalHomedirFn;
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when error matching and linter is activated', () => {
