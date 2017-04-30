@@ -234,6 +234,8 @@ values of `env`. They should all be enclosed in curly brackets `{}`
   * `{FILE_ACTIVE_PATH}` - Full path to the folder where the currently active file is. E.g. `/home/noseglid/github/atom-build/lib`
   * `{FILE_ACTIVE_NAME}` - Full name and extension of active file. E.g., `build.js`
   * `{FILE_ACTIVE_NAME_BASE}` - Name of active file WITHOUT extension. E.g., `build`
+  * `{FILE_ACTIVE_CURSOR_ROW}` - Line number where the last inserted cursor sits. E.g, `21`
+  * `{FILE_ACTIVE_CURSOR_COLUMN}` - Column number where the last inserted cursor sits. E.g, `42`
   * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/noseglid/github/atom-build`
   * `{REPO_BRANCH_SHORT}` - Short name of the current active branch (if project is backed by git). E.g `master` or `v0.9.1`
   * `{SELECTION}` - Selected text.
