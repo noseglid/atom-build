@@ -269,7 +269,7 @@ and has the syntax for named groups: `(?<name> RE )` where `name` would be the n
 matched by the regular expression `RE`.
 
 The following named groups can be matched from the output:
-  * `file` - **[required]** the file to open. May be relative `cwd` or absolute. `(?<file> RE)`.
+  * `file` - *[optional]* the file the error occurs in. May be relative `cwd` or absolute. `(?<file> RE)`.
   * `line` - *[optional]* the line the error starts on. `(?<line> RE)`.
   * `col` - *[optional]* the column the error starts on. `(?<col> RE)`.
   * `line_end` - *[optional]* the line the error ends on. `(?<line_end> RE)`.
@@ -286,6 +286,8 @@ Atom Linter integration discussed in the next section.
 
 Often, the first error is the most interesting since other errors tend to be secondary faults caused by that first one.
 To jump to the first error you can use <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>H</kbd> (OS X) or <kbd>Shift</kbd> <kbd>F4</kbd> (Linux/Windows) at any point to go to the first error.
+
+For errors that do not have a `file` specified - they will not be marked in the source or be accessible via keyboard shortcuts, but will instead be shown in a single popup error notification.
 
 ### Error matching and Atom Linter
 
