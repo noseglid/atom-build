@@ -13,6 +13,12 @@
     "ctrl-alt-h": "build:error-match-first",
     "ctrl-alt-t": "build:select-active-target"
   },
+  "body.platform-darwin .build .output": {
+    "cmd-c": "core:copy"
+  },
+  "body.platform-linux .build .output, body.platform-win32 .build .output": {
+    "ctrl-c": "core:copy"
+  },
   "atom-workspace, atom-text-editor": {
     "f9": "build:trigger",
     "f8": "build:toggle-panel",
