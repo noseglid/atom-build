@@ -112,7 +112,7 @@ describe('custom provider', () => {
       });
     });
   });
-  
+
   describe('when .atom-build.yaml exists', () => {
     it('it should provide targets', () => {
       fs.writeFileSync(`${directory}.atom-build.yaml`, fs.readFileSync(`${__dirname}/fixture/.atom-build.yml`));
