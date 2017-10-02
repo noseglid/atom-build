@@ -28,7 +28,7 @@
     "temp": "^0.8.1"
   },
   "package-deps": [
-    "busy"
+    "busy-signal"
   ],
   "consumedServices": {
     "builder": {
@@ -41,9 +41,9 @@
         "^1.0.0": "consumeStatusBar"
       }
     },
-    "busy": {
+    "busy-signal": {
       "versions": {
-        "^1.0.0": "consumeBusy"
+        "^1.0.0": "consumeBusySignal"
       }
     },
     "linter-indie": {
