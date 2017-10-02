@@ -398,9 +398,9 @@ describe('Build', () => {
 
       waitsForPromise(() => atom.workspace.open('dummy'));
 
-      runs(() => {
+      waitsForPromise(() => {
         const editor = atom.workspace.getActiveTextEditor();
-        editor.save();
+        return editor.save();
       });
 
       waitsFor(() => {
@@ -423,9 +423,9 @@ describe('Build', () => {
 
       waitsForPromise(() => atom.workspace.open('dummy'));
 
-      runs(() => {
+      waitsForPromise(() => {
         const editor = atom.workspace.getActiveTextEditor();
-        editor.save();
+        return editor.save();
       });
 
       runs(() => {
