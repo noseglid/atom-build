@@ -113,6 +113,22 @@ describe('custom provider', () => {
     });
   });
 
+  describe('when .atom-build.yaml exists', () => {
+    it('it should provide targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.yaml`, fs.readFileSync(`${__dirname}/fixture/.atom-build.yml`));
+      expect(builder.isEligible()).toEqual(true);
+
+      waitsForPromise(() => {
+        return Promise.resolve(builder.settings()).then(settings => {
+          const s = settings[0];
+          expect(s.exec).toEqual('echo');
+          expect(s.args).toEqual([ 'hello', 'world', 'from', 'yaml' ]);
+          expect(s.name).toEqual('Custom: yaml conf');
+        });
+      });
+    });
+  });
+
   describe('when .atom-build.js exists', () => {
     it('it should provide targets', () => {
       fs.writeFileSync(`${directory}.atom-build.js`, fs.readFileSync(`${__dirname}/fixture/.atom-build.js`));
