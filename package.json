@@ -14,6 +14,7 @@
     "cross-spawn": "^4.0.2",
     "cson-parser": "^1.3.0",
     "getmac": "^1.0.7",
+    "iconv-lite": "^0.4.23",
     "js-yaml": "^3.4.6",
     "term.js": "https://github.com/jeremyramin/term.js/tarball/de1635fc2695e7d8165012d3b1d007d7ce60eea2",
     "tree-kill": "^1.0.0",
