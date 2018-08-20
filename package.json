@@ -48,7 +48,7 @@
     },
     "linter-indie": {
       "versions": {
-        "1.0.0": "consumeLinterRegistry"
+        "2.0.0": "consumeLinterRegistry"
       }
     }
   },
