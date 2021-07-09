@@ -144,4 +144,20 @@ describe('custom provider', () => {
       });
     });
   });
+  
+  describe('when .atom-build.coffee exists', () => {
+    it('it should provide targets', () => {
+      fs.writeFileSync(`${directory}.atom-build.coffee`, fs.readFileSync(`${__dirname}/fixture/.atom-build.coffee`));
+      expect(builder.isEligible()).toEqual(true);
+
+      waitsForPromise(() => {
+        return Promise.resolve(builder.settings()).then(settings => {
+          const s = settings[0];
+          expect(s.exec).toEqual('echo');
+          expect(s.args).toEqual([ 'hello', 'world', 'from', 'coffeescript' ]);
+          expect(s.name).toEqual('Custom: from coffeescript');
+        });
+      });
+    });
+  });
 });
