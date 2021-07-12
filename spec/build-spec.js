@@ -116,6 +116,7 @@ describe('Build', () => {
         expect(workspaceElement.querySelector('.build')).toExist();
         expect(workspaceElement.querySelector('.terminal').terminal.getContent()).toMatch(/Building, this will take some time.../);
         atom.commands.dispatch(workspaceElement, 'build:stop');
+        atom.commands.dispatch(workspaceElement, 'build:stop');
       });
 
       waitsFor(() => {

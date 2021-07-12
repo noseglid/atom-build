@@ -210,6 +210,7 @@ Option            | Required       | Description
 `warningMatch`    | *[optional]*   | Like `errorMatch`, but is reported as just a warning
 `functionMatch`   | *[optional]*   | A (list of) javascript functions that return a list of match objects
 `keymap`          | *[optional]*   | A keymap string as defined by [`Atom`](https://atom.io/docs/latest/behind-atom-keymaps-in-depth). Pressing this key combination will trigger the target. Examples: `ctrl-alt-k` or `cmd-U`.
+`killSignals`     | *[optional]*   | An array of signals. The signals will be sent, one after each time `Escape` is pressed until the process has been terminated. The default value is `SIGINT` -> `SIGTERM` -> `SIGKILL`. The only signal which is guaranteed to terminate the process is `SIGKILL` so it is recommended to include that in the list.
 `atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
 `targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
 `preBuild`        | *[optional]*   | **JS only**. A function which will be called *before* executing `cmd`. No arguments. `this` will be the build configuration.

@@ -31,6 +31,12 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      &::before {
+        margin-right: 5px;
+        color: @text-color-error;
+        animation: flash linear infinite 1.0s;
+      }
     }
 
     .control-container {
