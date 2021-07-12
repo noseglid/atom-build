@@ -49,7 +49,7 @@ describe('Visible', () => {
 
   afterEach(() => {
     os.homedir = originalHomedirFn;
-    fs.removeSync(directory);
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when package is activated with panel visibility set to Keep Visible', () => {

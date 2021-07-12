@@ -34,13 +34,18 @@ Automatically build your project inside your new favorite editor, Atom.
 
 ### Quick start
 
+Install the build package using apm (apm can be installed using the install shell commands tool in Atom)(Linux/Mac):
+```bash
+$ apm install build
+```
+
 Create a file called `.atom-build.yml` (note the inital dot):
 ```yml
 cmd: echo Hello world
 ```
 
 Save it, and press <kbd>Cmd</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (OS X) / <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (Linux/Windows)
-and you should se the output of `echo Hello world`, which should be `Hello world` if all is correct.
+and you should see the output of `echo Hello world`, which should be `Hello world` if all is correct.
 
 ## Build providers
 
@@ -58,7 +63,7 @@ Supported formats and the name of the configuration file is
 
   * JSON: `.atom-build.json`
   * CSON: `.atom-build.cson`
-  * YAML: `.atom-build.yml`
+  * YAML: `.atom-build.yaml` or `.atom-build.yml`
   * JS: `.atom-build.js`
 
 Pick your favorite format, save that file in your project root, and specify exactly
@@ -195,6 +200,10 @@ Instead of adding squiggly lines at the location given by the `file`, `line` and
 `col` fields, a link is added to the popup message, so you can conveniently jump
 to the location given in the trace.
 
+One more feature provided by `functionMatch` is the ability to use HTML in
+the message text by setting `html_message` instead of `message`. If both
+`html_message` and `message` are set, the latter takes priority.
+
 <a name="custom-build-config"></a>
 #### Configuration options
 
@@ -214,7 +223,7 @@ Option            | Required       | Description
 `atomCommandName` | *[optional]*   | Command name to register which should be on the form of `namespace:command`. Read more about [Atom CommandRegistry](https://atom.io/docs/api/v1.4.1/CommandRegistry). The command will be available in the command palette and can be trigger from there. If this is returned by a build provider, the command can programatically be triggered by [dispatching](https://atom.io/docs/api/v1.4.1/CommandRegistry#instance-dispatch).
 `targets`         | *[optional]*   | Additional targets which can be used to build variations of your project.
 `preBuild`        | *[optional]*   | **JS only**. A function which will be called *before* executing `cmd`. No arguments. `this` will be the build configuration.
-`postBuild`       | *[optional]*   | **JS only**. A function which will be called *after* executing `cmd`. A single argument `bool buildOutcome` indicating outcome of the running `cmd`. `this` will be the build configuration.
+`postBuild`       | *[optional]*   | **JS only**. A function which will be called *after* executing `cmd`. It will be passed 3 arguments: `bool buildOutcome` indicating outcome of the running `cmd`, `string stdout` containing the contents of `stdout`, and `string stderr` containing the contents of `stderr`. `this` will be the build configuration.
 
 #### Replacements
 
@@ -225,6 +234,8 @@ values of `env`. They should all be enclosed in curly brackets `{}`
   * `{FILE_ACTIVE_PATH}` - Full path to the folder where the currently active file is. E.g. `/home/noseglid/github/atom-build/lib`
   * `{FILE_ACTIVE_NAME}` - Full name and extension of active file. E.g., `build.js`
   * `{FILE_ACTIVE_NAME_BASE}` - Name of active file WITHOUT extension. E.g., `build`
+  * `{FILE_ACTIVE_CURSOR_ROW}` - Line number where the last inserted cursor sits. E.g, `21`
+  * `{FILE_ACTIVE_CURSOR_COLUMN}` - Column number where the last inserted cursor sits. E.g, `42`
   * `{PROJECT_PATH}` - Full path to the root of the project. This is normally the path Atom has as root. E.g `/home/noseglid/github/atom-build`
   * `{REPO_BRANCH_SHORT}` - Short name of the current active branch (if project is backed by git). E.g `master` or `v0.9.1`
   * `{SELECTION}` - Selected text.

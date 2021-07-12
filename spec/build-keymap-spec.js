@@ -40,7 +40,7 @@ describe('Keymap', () => {
 
   afterEach(() => {
     os.homedir = originalHomedirFn;
-    fs.removeSync(directory);
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when custom keymap is defined in .atom-build.json', () => {
@@ -73,7 +73,8 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
+        const key = atom.keymaps.constructor.buildKeydownEvent('k', { ctrl: true, alt: true, target: workspaceElement });
+        atom.keymaps.handleKeyboardEvent(key);
       });
 
       waitsFor(() => {
@@ -115,7 +116,8 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
+        const key = atom.keymaps.constructor.buildKeydownEvent('k', { ctrl: true, alt: true, target: workspaceElement });
+        atom.keymaps.handleKeyboardEvent(key);
       });
 
       waitsFor(() => {
@@ -175,7 +177,8 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
+        const key = atom.keymaps.constructor.buildKeydownEvent('k', { ctrl: true, alt: true, target: workspaceElement });
+        atom.keymaps.handleKeyboardEvent(key);
       });
 
       waitsFor(() => {
@@ -205,14 +208,16 @@ describe('Keymap', () => {
       });
 
       runs(() => {
-        specHelpers.keydown('k', { ctrl: true, alt: true, element: workspaceElement });
+        const key = atom.keymaps.constructor.buildKeydownEvent('k', { ctrl: true, alt: true, target: workspaceElement });
+        atom.keymaps.handleKeyboardEvent(key);
       });
 
       waits(300);
 
       runs(() => {
         expect(workspaceElement.querySelector('.build')).not.toExist();
-        specHelpers.keydown('x', { ctrl: true, element: workspaceElement });
+        const key = atom.keymaps.constructor.buildKeydownEvent('x', { ctrl: true, target: workspaceElement });
+        atom.keymaps.handleKeyboardEvent(key);
       });
 
       waitsFor(() => {

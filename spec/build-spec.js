@@ -53,8 +53,8 @@ describe('Build', () => {
   });
 
   afterEach(() => {
-    fs.removeSync(directory);
     os.homedir = originalHomedirFn;
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
   });
 
   describe('when package is activated', () => {
@@ -381,6 +381,8 @@ describe('Build', () => {
         expect(output.indexOf('FROM_PROCESS_ENV=' + directory + '.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME=.atom-build.json')).not.toBe(-1);
         expect(output.indexOf('FILE_ACTIVE_NAME_BASE=.atom-build')).not.toBe(-1);
+        expect(output.indexOf('FILE_ACTIVE_CURSOR_ROW=2')).not.toBe(-1);
+        expect(output.indexOf('FILE_ACTIVE_CURSOR_COLUMN=7')).not.toBe(-1);
         expect(output.indexOf('SELECTION=cmd')).not.toBe(-1);
       });
     });
@@ -396,9 +398,9 @@ describe('Build', () => {
 
       waitsForPromise(() => atom.workspace.open('dummy'));
 
-      runs(() => {
+      waitsForPromise(() => {
         const editor = atom.workspace.getActiveTextEditor();
-        editor.save();
+        return editor.save();
       });
 
       waitsFor(() => {
@@ -421,9 +423,9 @@ describe('Build', () => {
 
       waitsForPromise(() => atom.workspace.open('dummy'));
 
-      runs(() => {
+      waitsForPromise(() => {
         const editor = atom.workspace.getActiveTextEditor();
-        editor.save();
+        return editor.save();
       });
 
       runs(() => {

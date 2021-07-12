@@ -19,7 +19,7 @@ The package should integrate via the service API. This is typically done in `pac
 ```
 
 The `build`-package will then call `providingFunction` when activated and expects an
-ES6 class in return. The next section describes in detail how that class is
+ES6 class or an array of classes in return. The next section describes in detail how that class is
 expected to operate.
 
 ## The provider implementation
