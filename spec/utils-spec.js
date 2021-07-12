@@ -1,6 +1,6 @@
 'use babel';
 
-import { uniquifySettings, getDefaultSettings } from '../lib/utils.js';
+import { uniquifySettings, getDefaultSettings, replace } from '../lib/utils.js';
 
 describe('utils', () => {
   describe('when uniquifying settings', () => {
@@ -74,6 +74,12 @@ describe('utils', () => {
         sh: true,
         errorMatch: ''
       });
+    });
+
+    it('should not replace values which are not strings', () => {
+      expect(replace(12)).toEqual(12);
+      expect(replace({a: '{FILE_ACTIVE}' })).toEqual({a: '{FILE_ACTIVE}'});
+      expect(replace([ 1, 2, 3 ])).toEqual([ 1, 2, 3 ]);
     });
   });
 });
