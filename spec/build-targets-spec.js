@@ -45,7 +45,24 @@ describe('Target', () => {
 
   afterEach(() => {
     os.homedir = originalHomedirFn;
-    fs.removeSync(directory);
+    try { fs.removeSync(directory); } catch (e) { console.warn('Failed to clean up: ', e); }
+  });
+
+  describe('when no targets exists', () => {
+    it('should show a notification', () => {
+      runs(() => {
+        atom.commands.dispatch(workspaceElement, 'build:select-active-target');
+      });
+
+      waitsFor(() => {
+        return workspaceElement.querySelector('.select-list.build-target');
+      });
+
+      runs(() => {
+        const targets = [ ...workspaceElement.querySelectorAll('.select-list li.build-target') ].map(el => el.textContent);
+        expect(targets).toEqual([]);
+      });
+    });
   });
 
   describe('when multiple targets exists', () => {
